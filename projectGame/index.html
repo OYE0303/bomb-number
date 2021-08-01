@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" href="/icon/bomb.png" type="" />
+
+    <title>Number Bomb</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- *** NAV BAR *** -->
+    <nav class="nav">
+      <div class="nav__first">
+        <!-- <img class="logo" src="" alt="" /> -->
+        <img class="logo" src="/icon/bomb.svg" alt="bomb" />
+
+        <!-- <svg >
+          <img class="logo" src="./icon/bomb.svg" alt="">
+        </svg> -->
+
+        <h6 class="username">Chen YI YOU</h6>
+      </div>
+      <div class="nav__second">
+        <button class="btn btn__nav">EASY</button>
+        <button class="btn btn__nav">MEDIUM</button>
+        <button class="btn btn__nav">HARD</button>
+        <button class="btn btn__nav">FAQ</button>
+      </div>
+
+      <input class="nav__checkbox" id="nav__toggle" type="checkbox" />
+
+      <label class="nav__checkbox__menu" for="nav__toggle" id="toggle-button">
+        <span class="nav__icon"></span>
+      </label>
+
+      <div class="nav__background">
+        <button class="btn btn__nav nav__background__btn">EASY</button>
+        <button class="btn btn__nav nav__background__btn">MEDIUM</button>
+        <button class="btn btn__nav nav__background__btn">HARD</button>
+        <button class="btn btn__nav nav__background__btn">FAQ</button>
+      </div>
+    </nav>
+
+    <!-- *** MAIN CONTENT *** -->
+    <main class="content">
+      <div class="score"><p class="score__number">34 ~ 100</p></div>
+      <div class="player player__main">
+        <!-- <span class="test"></span>
+        <span class="test" ></span>
+        <span class="test" ></span>
+        <span class="test" ></span> -->
+
+        <div class="player__overlay player__overlay__main">
+          <button class="btn btn__info">INFO</button>
+        </div>
+      </div>
+      <div class="player player1">
+        <div class="player__overlay player__overlay1">
+          <button class="btn__info">INFO</button>
+        </div>
+      </div>
+      <div class="player player2">
+        <div class="player__overlay player__overlay2">
+          <button class="btn__info">INFO</button>
+        </div>
+      </div>
+      <div class="player player3">
+        <div class="player__overlay player__overlay3">
+          <button class="btn__info">INFO</button>
+        </div>
+      </div>
+      <div class="square">
+        <input class="input" type="number" min="0" max="1000" required />
+      </div>
+    </main>
+
+    <!-- *** TOOL *** -->
+    <aside class="tool">
+      <ul class="tool__container hidden hiddenDisplay">
+        <li class="tool__item hidden hiddenDisplay">
+          <svg
+            class="tool__icon"
+            height="512pt"
+            viewBox="0 0 512 511"
+            width="512pt"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m322.535156 81.457031 28.269532-28.269531 49.972656 49.972656 82.953125-82.957031 28.269531 28.269531-111.222656 111.222656zm158.847656 54.171875c19.8125 36.785156 30.332032 78.121094 30.332032 121.078125 0 68.34375-26.613282 132.59375-74.9375 180.921875-48.324219 48.324219-112.578125 74.589844-180.917969 74.589844-68.34375 0-132.59375-26.265625-180.921875-74.589844-48.324219-48.328125-74.9375-112.578125-74.9375-180.921875 0-68.339843 26.613281-132.59375 74.9375-180.917969 48.328125-48.324218 112.578125-75.289062 180.921875-75.289062 27.058594 0 53.472656 4.539062 78.515625 12.578125l-32.664062 32.667969c-14.785157-3.210938-30.121094-4.917969-45.851563-4.917969-119.039063 0-215.882813 96.84375-215.882813 215.878906 0 54.457031 20.28125 104.265625 53.667969 142.285157 11.617188-51.980469 47.640625-94.84375 95.375-115.894532-19.929687-18.171875-32.457031-44.332031-32.457031-73.363281 0-54.75 44.542969-99.296875 99.296875-99.296875 54.75 0 99.292969 44.542969 99.292969 99.296875 0 29.03125-12.523438 55.191406-32.453125 73.363281 47.730469 21.050782 83.757812 63.914063 95.371093 115.894532 33.390626-38.023438 53.667969-87.828126 53.667969-142.285157 0-32.570312-7.265625-63.476562-20.238281-91.195312zm-225.523437 133.421875c32.707031 0 59.316406-26.609375 59.316406-59.316406 0-32.710937-26.609375-59.320313-59.316406-59.320313-32.710937 0-59.320313 26.609376-59.320313 59.320313 0 32.707031 26.609376 59.316406 59.320313 59.316406zm0 203.539063c47.070313 0 90.664063-15.15625 126.179687-40.828125-1.859374-67.992188-57.746093-122.734375-126.179687-122.734375s-124.324219 54.742187-126.179687 122.734375c35.515624 25.671875 79.105468 40.828125 126.179687 40.828125zm0 0"
+            />
+          </svg>
+          <p class="tool__item__name">ASSIGN</p>
+          <div class="tool__item__extension">
+            <p class="tool__item__reamaining">x0</p>
+            <button class="btn btn__tool__extenstion btn__tool__use">
+              <span class="btn__tool__usename">USE</span>
+              <span class="btn__tool__arrow">→</span>
+            </button>
+            <button class="btn btn__tool__extenstion btn__tool__question">
+              ?
+            </button>
+          </div>
+        </li>
+        <hr class="tool__line" />
+        <li class="tool__item hidden hiddenDisplay">
+          <svg
+            class="tool__icon"
+            version="1.1"
+            id="Capa_1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 426.1 426.1"
+            style="enable-background: new 0 0 426.1 426.1"
+            xml:space="preserve"
+          >
+            <g>
+              <g>
+                <path
+                  d="M384.7,71.5H41.3C18.5,71.5,0,90,0,112.8v200.5c0,22.8,18.5,41.3,41.3,41.3h343.5c22.8,0,41.3-18.5,41.3-41.3V112.8
+                C426,90,407.5,71.5,384.7,71.5z M406.1,313.2H406c0,11.7-9.5,21.3-21.3,21.3H41.3c-11.7,0-21.3-9.5-21.3-21.3V112.8
+                c0-11.7,9.5-21.3,21.3-21.3h343.5c11.7,0,21.3,9.5,21.3,21.3V313.2z"
+                />
+              </g>
+            </g>
+            <g>
+              <g>
+                <path
+                  d="M374.6,229.5H257.3c-5.5,0-10,4.5-10,10s4.5,10,10,10h117.3c5.5,0,10-4.5,10-10S380.1,229.5,374.6,229.5z"
+                />
+              </g>
+            </g>
+            <g>
+              <g>
+                <path
+                  d="M322.5,177.5h-65.2c-5.5,0-10,4.5-10,10s4.5,10,10,10h65.2c5.5,0,10-4.5,10-10S328,177.5,322.5,177.5z"
+                />
+              </g>
+            </g>
+            <g>
+              <g>
+                <path
+                  d="M200.1,121.5H71.9c-17,0-30.8,13.8-30.9,30.8v123.3c0,17,13.8,30.8,30.8,30.9h128.3c17,0,30.8-13.8,30.9-30.8V152.4
+                C231,135.3,217.2,121.5,200.1,121.5z M93.9,285.5c2.1-17,17.2-31,35.5-31h15.5c18.3,0,33.4,14,35.5,31H93.9z M211,152v123
+                c0.1,5.7-4.4,10.4-10.1,10.5c-0.2,0-0.3,0-0.5,0c-2.2-28-26.2-51-55.5-51h-15.5c-29.3,0-53.4,23-55.5,51h-1.6
+                c-6,0-11.3-4.5-11.3-10.5V152c0-6,5.3-10.5,11.3-10.5h128.2c5.7-0.1,10.4,4.4,10.5,10C211,151.7,211,151.8,211,152z"
+                />
+              </g>
+            </g>
+            <g>
+              <g>
+                <path
+                  d="M163.8,163.2c-7-7.1-16.6-11-26.5-11c-20.7,0-37.5,16.8-37.5,37.5s16.8,37.5,37.5,37.5s37.5-16.8,37.5-37.5
+                C174.8,179.8,170.8,170.2,163.8,163.2z M149.6,202.1c-6.8,6.8-17.9,6.8-24.7-0.1c-6.8-6.8-6.8-17.9,0.1-24.7
+                c6.8-6.8,17.9-6.8,24.7,0.1c3.3,3.3,5.1,7.7,5.1,12.4C154.8,194.4,152.9,198.8,149.6,202.1z"
+                />
+              </g>
+            </g>
+          </svg>
+          <p class="tool__item__name">PASS</p>
+          <div class="tool__item__extension">
+            <p class="tool__item__reamaining">x0</p>
+            <button class="btn btn__tool__extenstion btn__tool__use">
+              <span class="btn__tool__usename">USE</span>
+              <span class="btn__tool__arrow">→</span>
+            </button>
+            <button class="btn btn__tool__extenstion btn__tool__question">
+              ?
+            </button>
+          </div>
+        </li>
+        <hr class="tool__line" />
+        <li class="tool__item hidden hiddenDisplay">
+          <svg
+            class="tool__icon"
+            height="384pt"
+            viewBox="0 0 384 384"
+            width="384pt"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m240 312c8.832031 0 16-7.167969 16-16v-160c0-35.289062-28.710938-64-64-64s-64 28.710938-64 64v65.375l-12.6875-12.6875c-6.25-6.246094-16.375-6.246094-22.625 0-6.246094 6.25-6.246094 16.375 0 22.625l40 40c.234375.230469.511719.398438.761719.617188.277343.246093.558593.46875.863281.703124 1.085938.839844 2.230469 1.558594 3.457031 2.078126.039063.015624.070313.050781.109375.074218.007813.007813.023438 0 .03125.007813 1.328125.542969 2.714844.847656 4.113282 1.023437.3125.039063.625.070313.9375.085938.34375.019531.6875.097656 1.039062.097656 1.039062 0 2.089844-.105469 3.113281-.3125.015625 0 .023438-.007812.039063-.015625 1.335937-.265625 2.617187-.761719 3.855468-1.375.296876-.144531.585938-.296875.871094-.464844 1.21875-.695312 2.386719-1.496093 3.425782-2.535156l40-40c6.246093-6.25 6.246093-16.375 0-22.625-6.25-6.246094-16.375-6.246094-22.625 0l-12.679688 12.703125v-65.375c0-17.648438 14.351562-32 32-32s32 14.351562 32 32v160c0 8.832031 7.167969 16 16 16zm0 0"
+            />
+            <path
+              d="m192 0c-105.863281 0-192 86.128906-192 192 0 38.792969 11.472656 76.128906 33.175781 107.96875 4.976563 7.304688 14.921875 9.207031 22.222657 4.207031 7.304687-4.976562 9.1875-14.929687 4.210937-22.222656-18.066406-26.511719-27.609375-57.617187-27.609375-89.953125 0-88.222656 71.777344-160 160-160s160 71.777344 160 160-71.777344 160-160 160c-28.167969 0-55.832031-7.390625-79.984375-21.367188-7.648437-4.433593-17.441406-1.824218-21.855469 5.832032-4.433594 7.648437-1.824218 17.4375 5.832032 21.855468 29.007812 16.808594 62.207031 25.679688 96.007812 25.679688 105.863281 0 192-86.136719 192-192 0-105.871094-86.136719-192-192-192zm0 0"
+            />
+          </svg>
+          <p class="tool__item__name">U-TURN</p>
+          <!-- <button class="btn__tool__arrow ">
+            →
+           </button> -->
+          <div class="tool__item__extension">
+            <p class="tool__item__reamaining">x0</p>
+            <button class="btn btn__tool__extenstion btn__tool__use">
+              <span class="btn__tool__usename">USE</span>
+              <span class="btn__tool__arrow">→</span>
+            </button>
+            <button class="btn btn__tool__extenstion btn__tool__question">
+              ?
+            </button>
+          </div>
+        </li>
+
+        <!-- <button class="btn btn__tool__close">x</button> -->
+      </ul>
+      <button class="btn btn__tool">TOOL</button>
+    </aside>
+
+    <!-- *** COUNTDOWN *** -->
+    <aside class="countdown">
+      <h6 class="countdown__time">00:30</h6>
+    </aside>
+
+    <!-- *** SHOWLEVEL *** -->
+    <aside class="showLevel">
+      <button class="btn btn__showLevel">EASY</button>
+    </aside>
+
+    <!-- *** COUNTRY INFO *** -->
+    <aside class="country__info hiddenDisplay hidden">
+      <button class="btn btn__country__info__close">X</button>
+      <h6 class="country__info__name">Japan</h6>
+      <ul class="country__info__ul">
+        <li class="country__info__item country__info__content">
+          content: Asia
+        </li>
+        <li class="country__info__item country__info__capital">
+          capital: Tokyo
+        </li>
+        <li class="country__info__item country__info__area">area: 377930</li>
+        <li class="country__info__item country__info__population">
+          population: 12696000
+        </li>
+        <li class="country__info__item country__info__currencies">
+          currencies: JPY ¥
+        </li>
+        <li class="country__info__item country__info__language">
+          language: Japanese
+        </li>
+      </ul>
+    </aside>
+
+    <script src="script.js"></script>
+  </body>
+</html>
