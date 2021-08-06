@@ -46,6 +46,7 @@ export class DOM_SELECTION {
     this.btnTool = document.querySelector(".btn__tool");
     this.toolItem = document.querySelectorAll(".tool__item");
     this.btnToolUse = document.querySelectorAll(".btn__tool--use");
+    this.btnToolQuestion = document.querySelectorAll(".btn__tool--question");
 
     ///////////////////////////
     // *** COUNTDOWN ***
@@ -95,6 +96,25 @@ export class DOM_SELECTION {
     this.btnPopupAssign = document.querySelector(".btn__popup__assign");
     this.popupUseToolDescription = document.querySelector(
       ".popup__useTool__description"
+    );
+
+    // CANT USE TOOL
+    this.popupCantUseTool = document.querySelector(".popup__cantUseTool");
+    this.btnCantUseTool = document.querySelector(".btn__popup__cantUseTool");
+
+    // FORM
+    this.formInput = document.querySelector(".form__input");
+    this.btnForm = document.querySelector(".btn__form");
+
+    // FORM LEVEL
+    this.formLevelInputGroup = document.querySelector(
+      ".form__level__input__group"
+    );
+    this.formLevelInput = document.querySelectorAll(
+      ".form__level__radio--input"
+    );
+    this.formLevelDescriptionCounts = document.querySelector(
+      ".form__level__description--counts"
     );
   }
 }
