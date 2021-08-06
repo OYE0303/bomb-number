@@ -23,6 +23,7 @@ class APP {
 
     // reverse
     this.reverse = false;
+    this.myTurn = true;
 
     // init
     this.#addEventListener();
@@ -92,13 +93,24 @@ class APP {
     );
     DOM.btnPopupUseToolYes.addEventListener("click", this.#useTool.bind(this));
 
-    // use assign
-    // DOM.btnPopupAssign.addEventListener(
-    //   "click",
-    //   this.#closePopupAssign.bind(this)
-    // );
+    DOM.btnToolQuestion.forEach((btn) =>
+      btn.addEventListener("click", this.#showDiffToolUI.bind(this))
+    );
 
-    // DOM.guessInput.addEventListener("focus", this.#showBtnInput.bind(this));
+    // can't use tool
+    DOM.btnCantUseTool.addEventListener(
+      "click",
+      this.#closePopupCantUseTool.bind(this)
+    );
+
+    // form username
+    DOM.btnForm.addEventListener("click", this.#takeInputName.bind(this));
+
+    // form level
+    DOM.formLevelInputGroup.addEventListener(
+      "click",
+      this.#showFormDiffLevel.bind(this)
+    );
   }
 
   ///////////////////////////////////////
@@ -126,6 +138,27 @@ class APP {
   }
 
   ///////////////////////////////////////
+  // *** COUNTDOWN ***
+  ///////////////////////////////////////
+  #countdown() {
+    let i = 30;
+
+    const time = setInterval(() => {
+      if (i >= 10) DOM.countdownTime.textContent = `00:${i}`;
+      else DOM.countdownTime.textContent = `00:0${i}`;
+      i--;
+
+      if (i < 0) {
+        DOM.popupLoseDescription.textContent = `Because time is over`;
+        DOM.popupLose.classList.remove("hiddenDisplay");
+        DOM.popupOverlay.classList.remove("hiddenDisplay");
+        clearInterval(time);
+        DOM.countdownTime.textContent = `00:30`;
+      }
+    }, 1000);
+  }
+
+  ///////////////////////////////////////
   // *** CHECK ORDER AND UPDATE ***
   ///////////////////////////////////////
   // use this.reverse to check current order
@@ -146,6 +179,8 @@ class APP {
   // this is only invoked when user submit input
   #takeGuessInput(e) {
     e.preventDefault();
+
+    this.myTurn = false;
 
     // close "Your turn" UI
     this.#closePlayerOrderUI();
@@ -201,6 +236,8 @@ class APP {
   }
 
   #takeComputerGuessInput() {
+    // can use tool
+
     // create random guessing number
     const guessNumber = this.#createComputerGuessingNumber(
       this.minNumber,
@@ -268,6 +305,8 @@ class APP {
     if (order === 0) {
       this.#showGuessInput();
       this.#showPlayerOrderUI("Your turn");
+
+      this.myTurn = true;
     }
     // it's computer's turn
     else {
@@ -686,30 +725,22 @@ class APP {
   ///////////////////////////////////////
   // *** POPUP USE ASSIGN ***
   ///////////////////////////////////////
-  // TODO think how to organize the code
+  // TODO think how to organize
   #showPopupAssignUI() {
-    if (this.reverse)
-      return `
+    let result;
+
+    if (this.reverse) result = [2, 3, 4];
+    else result = [0, 1, 2];
+
+    return `
     <h5 class = "popup__assign__subTitle">
       Which player <br />
       do you want to assign?
     </h5>
     <select class="popup__assign__select" id="assign">
-      <option value="2">player1</option>
-      <option value="3">player2</option>
-      <option value="4">player3</option>
-    </select>
-    `;
-    else
-      return `
-    <h5 class = "popup__assign__subTitle">
-      Which player <br />
-      do you want to assign?
-    </h5>
-    <select class="popup__assign__select" id="assign">
-      <option value="0">player1</option>
-      <option value="1">player2</option>
-      <option value="2">player3</option>
+      <option value="${result[0]}">player1</option>
+      <option value="${result[1]}">player2</option>
+      <option value="${result[2]}">player3</option>
     </select>
     `;
   }
@@ -720,29 +751,38 @@ class APP {
   // TODO (think how to organize the code)
   #showPopupUseTool(e) {
     this.#showPopupOverlay();
-    DOM.popupUseTool.classList.remove("hiddenDisplay");
 
-    if (e.target.closest(".btn__tool--use").dataset.id === "assign") {
-      DOM.popupUseToolTitle.insertAdjacentHTML(
-        "afterend",
-        this.#showPopupAssignUI()
+    if (this.myTurn) {
+      DOM.popupUseTool.classList.remove("hiddenDisplay");
+
+      if (e.target.closest(".btn__tool--use").dataset.id === "assign") {
+        DOM.popupUseToolTitle.insertAdjacentHTML(
+          "afterend",
+          this.#showPopupAssignUI()
+        );
+        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.assign);
+
+        // font size of description smaller
+        // because UI of assign is more
+        DOM.popupUseToolDescription.style.fontSize = "1.5rem";
+      }
+
+      if (e.target.closest(".btn__tool--use").dataset.id === "pass")
+        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.pass);
+
+      if (e.target.closest(".btn__tool--use").dataset.id === "uturn")
+        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
+
+      this.#timeout(0).then(() =>
+        DOM.popupUseTool.classList.remove("hiddenOpacity")
       );
-      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.assign);
+    } else {
+      DOM.popupCantUseTool.classList.remove("hiddenDisplay");
 
-      // font size of description smaller
-      // because UI of assign is more
-      DOM.popupUseToolDescription.style.fontSize = "1.5rem";
+      this.#timeout(0).then(() =>
+        DOM.popupCantUseTool.classList.remove("hiddenOpacity")
+      );
     }
-
-    if (e.target.closest(".btn__tool--use").dataset.id === "pass")
-      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.pass);
-
-    if (e.target.closest(".btn__tool--use").dataset.id === "uturn")
-      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
-
-    this.#timeout(0).then(() =>
-      DOM.popupUseTool.classList.remove("hiddenOpacity")
-    );
   }
 
   #closePopupUseTool() {
@@ -798,6 +838,12 @@ class APP {
     // close "Your turn" UI
     this.#closePlayerOrderUI();
 
+    // close tool UI
+    this.#toolBtnToggle();
+
+    // not my turn anymore
+    this.myTurn = false;
+
     // get the current player and used tool
     const player = this.currentOrder;
     const tool = e.target
@@ -835,24 +881,53 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** COUNTDOWN ***
+  // *** TOOL EXTENSION BTN ***
   ///////////////////////////////////////
-  #countdown() {
-    let i = 30;
+  #showDiffToolUI() {
+    this.#showPopupOverlay();
+    DOM.popupTool.classList.remove("hiddenDisplay");
 
-    const time = setInterval(() => {
-      if (i >= 10) DOM.countdownTime.textContent = `00:${i}`;
-      else DOM.countdownTime.textContent = `00:0${i}`;
-      i--;
+    // close tool btn UI
+    // this.#toolBtnToggle();
+  }
 
-      if (i < 0) {
-        DOM.popupLoseDescription.textContent = `Because time is over`;
-        DOM.popupLose.classList.remove("hiddenDisplay");
-        DOM.popupOverlay.classList.remove("hiddenDisplay");
-        clearInterval(time);
-        DOM.countdownTime.textContent = `00:30`;
-      }
-    }, 1000);
+  ///////////////////////////////////////
+  // *** POP UP CAN'T USE TOOL ***
+  ///////////////////////////////////////
+  #showPopupCantUseTool() {
+    this.#showPopupOverlay();
+    DOM.popupCantUseTool.classList.remove("hiddenDisplay");
+
+    this.#timeout(0).then(() =>
+      DOM.popupCantUseTool.classList.remove("hiddenOpacity")
+    );
+  }
+
+  #closePopupCantUseTool() {
+    this.#closePopupOverlay();
+    DOM.popupCantUseTool.classList.add("hiddenDisplay");
+    DOM.popupCantUseTool.classList.add("hiddenOpacity");
+  }
+
+  ///////////////////////////////////////
+  // *** FORM ***
+  ///////////////////////////////////////
+  #takeInputName() {
+    console.log(DOM.formInput.value);
+  }
+
+  ///////////////////////////////////////
+  // *** FORM LEVEL***
+  ///////////////////////////////////////
+  #showFormDiffLevel(e) {
+    // note that e.target will select two element at the same time(input & level)
+    // (1) find the elemet has data-id attribute
+    const level = e.target.closest(".form__level__radio--input");
+
+    // (2) filter any possible outcome is null
+    if (level) {
+      DOM.formLevelDescriptionCounts.textContent = level.dataset.id;
+    }
   }
 }
 
