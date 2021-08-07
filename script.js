@@ -8,6 +8,26 @@ class APP {
   constructor() {
     this.allCountry;
 
+    // form collection & order
+    this.formCollection = Array.from(
+      document.querySelectorAll(".form__container")
+    );
+    this.formOrder = 0;
+
+    // userName
+    this.userName;
+
+    // level
+    this.level;
+
+    // user country
+    this.userCountry;
+
+    // computer country name
+    this.country1;
+    this.country2;
+    this.country3;
+
     // NUMBER
     this.targetNumber;
     this.minNumber = 0;
@@ -21,9 +41,12 @@ class APP {
     this.currentOrder = 0;
     this.playerArr = [0, 1, 2, 3];
 
-    // reverse
+    // reverse & order
     this.reverse = false;
     this.myTurn = true;
+
+    // how many tool counts can a player use?
+    this.toolCounts;
 
     // init
     this.#addEventListener();
@@ -104,12 +127,51 @@ class APP {
     );
 
     // form username
-    DOM.btnForm.addEventListener("click", this.#takeInputName.bind(this));
+    DOM.btnFormUserNameNext.addEventListener(
+      "click",
+      this.#takeInputName.bind(this)
+    );
 
     // form level
     DOM.formLevelInputGroup.addEventListener(
       "click",
       this.#showFormDiffLevel.bind(this)
+    );
+    DOM.btnFormLevelNext.addEventListener(
+      "click",
+      this.#takeInputDiffLevel.bind(this)
+    );
+    DOM.btnFormLevelBack.addEventListener(
+      "click",
+      this.#backFormPage.bind(this)
+    );
+
+    // form country
+    DOM.formCountryRegionSelect.addEventListener(
+      "input",
+      this.#takeFormCountryRegionSelect.bind(this)
+    );
+    DOM.formCountryNameSelect.addEventListener(
+      "input",
+      this.#setCountryName.bind(this)
+    );
+    DOM.btnFormCountryNext.addEventListener(
+      "click",
+      this.#takeFormCountryNameSelect.bind(this)
+    );
+    DOM.btnFormCountryBack.addEventListener(
+      "click",
+      this.#backFormPage.bind(this)
+    );
+
+    // form range
+    DOM.btnFormRangeNext.addEventListener(
+      "click",
+      this.#takeFormRange.bind(this)
+    );
+    DOM.btnFormRangeBack.addEventListener(
+      "click",
+      this.#backFormPage.bind(this)
     );
   }
 
@@ -156,6 +218,323 @@ class APP {
         DOM.countdownTime.textContent = `00:30`;
       }
     }, 1000);
+  }
+
+  ///////////////////////////////////////
+  // *** FORM ORDER***
+  ///////////////////////////////////////
+  #nextFormPage() {
+    this.formCollection[this.formOrder].classList.add("hiddenDisplay");
+
+    this.formOrder++;
+    this.formCollection[this.formOrder].classList.remove("hiddenDisplay");
+  }
+
+  #backFormPage() {
+    this.formCollection[this.formOrder].classList.add("hiddenDisplay");
+
+    this.formOrder--;
+    this.formCollection[this.formOrder].classList.remove("hiddenDisplay");
+  }
+
+  ///////////////////////////////////////
+  // *** FORM ***
+  ///////////////////////////////////////
+  #takeInputName() {
+    this.userName = DOM.formInput.value;
+
+    this.#nextFormPage();
+  }
+
+  ///////////////////////////////////////
+  // *** FORM LEVEL***
+  ///////////////////////////////////////
+  #showFormDiffLevel(e) {
+    // note that e.target will select two element at the same time(input & level)
+    // (1) find the elemet has data-id attribute
+    const level = e.target.closest(".form__level__radio--input");
+
+    // (2) filter any possible outcome is null
+    if (level) {
+      DOM.formLevelDescriptionCounts.textContent = level.dataset.id;
+    }
+  }
+
+  #takeInputDiffLevel() {
+    DOM.formLevelInput.forEach((el) => {
+      if (el.checked) this.level = el.value;
+    });
+
+    // set tool counts based on level
+    if (this.level === "easy") this.toolCounts = 3;
+    else if (this.level === "medium") this.toolCounts = 2;
+    else this.toolCounts = 1;
+
+    this.#nextFormPage();
+  }
+
+  ///////////////////////////////////////
+  // *** FORM COUNTRY ***
+  ///////////////////////////////////////
+  async #takeFormCountryRegionSelect() {
+    // get input value(which region)
+    const region = DOM.formCountryRegionSelect.value;
+
+    // convert children to array
+    const CountryNameChildren = Array.from(DOM.formCountryNameSelect.children);
+
+    // if selected before, delete original one
+    // if (CountryNameChildren.length !== 1)
+    this.#deleteFormCountryName(CountryNameChildren);
+
+    // if slected before, and select random again, then set random back
+    if (region === "Random" && CountryNameChildren.length !== 1) {
+      DOM.formCountryNameSelect.insertAdjacentHTML(
+        "beforeend",
+        `<option value="Random">(Random)</option>`
+      );
+
+      DOM.formCountryImg.classList.remove("form__country__img--animation");
+      return;
+    }
+
+    const countryData = await this.getRegionCountryData(region);
+
+    this.#showFormCountryName(countryData);
+
+    this.#showFormCountryImg(countryData[0]);
+  }
+
+  #takeFormCountryNameSelect() {
+    this.userCountry = DOM.formCountryNameSelect.value;
+
+    this.#nextFormPage();
+
+    // show form range UI
+    this.#showFormRange();
+  }
+
+  #setCountryName() {
+    const countryName = DOM.formCountryNameSelect.value;
+    this.#showFormCountryImg(countryName);
+
+    // set user country
+    this.userCountry = countryName;
+  }
+
+  #deleteFormCountryName(childrenArr) {
+    childrenArr.forEach((child) => DOM.formCountryNameSelect.remove(child));
+  }
+
+  #generateFormCountryNameOptionHtml(countryNameArr) {
+    let html = ``;
+    countryNameArr.forEach(
+      (country) => (html += `<option>${country}</option>`)
+    );
+
+    return html;
+  }
+
+  #showFormCountryName(countryNameArr) {
+    const html = this.#generateFormCountryNameOptionHtml(countryNameArr);
+    DOM.formCountryNameSelect.insertAdjacentHTML("beforeend", html);
+  }
+
+  async #showFormCountryImg(country) {
+    const countryFlag = await fetch(
+      `https://restcountries.eu/rest/v2/name/${country}?fields=flag`
+    );
+
+    // nice
+    const [{ flag: data }] = await countryFlag.json();
+
+    DOM.formCountryImg.src = data;
+    DOM.formCountryImg.classList.add("form__country__img--animation");
+  }
+
+  ///////////////////////////////////////
+  // *** FORM RANGE***
+  ///////////////////////////////////////
+  #takeFormRange() {
+    this.maxNumber = Number(DOM.formRangeInput.value);
+
+    // start the game
+    this.#hideForm();
+    this.#showContent();
+  }
+
+  #showFormRange() {
+    DOM.formRangeOutput.textContent = DOM.formRangeInput.value;
+
+    DOM.formRangeInput.addEventListener("input", function () {
+      console.log("haha");
+      DOM.formRangeOutput.textContent = DOM.formRangeInput.value;
+    });
+  }
+
+  ///////////////////////////////////////
+  // *** COUNTRY DATA (USER & COMPUTER)***
+  ///////////////////////////////////////
+  async #showUserCountryImg() {
+    const countryName = this.userCountry;
+    const countryData = await this.#getOneCountryData(countryName);
+
+    this.#createCountryHTMLAndShowUI(
+      countryData,
+      DOM.playerMain,
+      DOM.playerOverlayMain
+    );
+  }
+
+  // TODO organize
+  async #showComputerCountryImg() {
+    const countryNameArr = await this.#randomlyChooseCountryName();
+
+    for (let i = 0; i < countryNameArr.length; i++) {
+      const countryData = await this.#getOneCountryData(countryNameArr[i]);
+      if (i == 0) {
+        this.#createCountryHTMLAndShowUI(
+          countryData,
+          DOM.player1,
+          DOM.playerOverlay1
+        );
+      } else if (i == 1) {
+        this.#createCountryHTMLAndShowUI(
+          countryData,
+          DOM.player2,
+          DOM.playerOverlay2
+        );
+      } else {
+        this.#createCountryHTMLAndShowUI(
+          countryData,
+          DOM.player3,
+          DOM.playerOverlay3
+        );
+      }
+    }
+  }
+
+  #resizeCountryName(countryName, player) {}
+
+  ///////////////////////////////////////
+  // *** GET API DATA ***
+  ///////////////////////////////////////
+  async getRegionCountryData(region) {
+    const res = await fetch(
+      `https://restcountries.eu/rest/v2/region/${region}?fields=name`
+    );
+
+    const data = await res.json();
+
+    // destructuring!!!
+    const countryNameArr = data.map(({ name }) => name);
+    return countryNameArr;
+  }
+
+  async #getOneCountryData(countryName) {
+    const res = await fetch(
+      `https://restcountries.eu/rest/v2/name/${countryName}`
+    );
+
+    const [data] = await res.json();
+
+    return data;
+  }
+
+  async #randomlyChooseCountryName() {
+    const res = await fetch("https://restcountries.eu/rest/v2/all?fields=name");
+    const data = await res.json();
+
+    const countryNameArr = [];
+    let i = 0;
+    while (i < 3) {
+      const randomNum = this.#createRandomNumber(0, data.length);
+      const countryName = data[randomNum];
+
+      // check random country is not duplicate, and not as same as user's country
+      if (
+        !countryNameArr.includes(countryName) &&
+        this.userCountry !== countryName &&
+        countryName
+      ) {
+        countryNameArr.push(countryName.name);
+
+        // nice!!!
+        this.country1
+          ? this.country2
+            ? (this.country3 = countryName.name)
+            : (this.country2 = countryName.name)
+          : (this.country1 = countryName.name);
+
+        i++;
+      }
+    }
+
+    return countryNameArr;
+  }
+
+  ///////////////////////////////////////
+  // *** CREATE COUNTRY HTML ***
+  ///////////////////////////////////////
+  #createCountryHTMLAndShowUI(data, player, playerOverlay) {
+    const countryName = data.name;
+    let htmlCountryName;
+
+    // resize the name of country
+    if (countryName.length >= 30)
+      htmlCountryName = `<p class = "country__name font1">${countryName}</p>`;
+    else if (countryName.length >= 20 && countryName.length < 30)
+      htmlCountryName = `<p class = "country__name font2">${countryName}</p>`;
+    else if (countryName.length >= 10 && countryName.length < 20)
+      htmlCountryName = `<p class = "country__name font3">${countryName}</p>`;
+    else
+      htmlCountryName = `<p class = "country__name font4">${countryName}</p>`;
+
+    const htmlImg = `        
+          <img class="country__img" src="${data.flag}" />`;
+
+    playerOverlay.insertAdjacentHTML("afterbegin", htmlCountryName);
+    player.insertAdjacentHTML("beforeend", htmlImg);
+  }
+
+  ///////////////////////////////////////
+  // *** MAIN CONTENT ***
+  ///////////////////////////////////////
+  #setAllCountentUI() {
+    // set userName on UI
+    DOM.userName.textContent = this.userName;
+
+    // set level on UI
+    DOM.btnShowLevel.textContent = this.level;
+
+    // set max number on UI
+    DOM.rangeNumberMax.textContent = this.maxNumber;
+
+    // show country image and name on UI
+    this.#showUserCountryImg();
+    this.#showComputerCountryImg();
+
+    // show remaining counts of tool
+    DOM.remaingCounts.forEach((count) => (count.textContent = this.toolCounts));
+  }
+
+  #showContent() {
+    this.#setAllCountentUI();
+
+    DOM.page.forEach((page) => {
+      page.classList.remove("hiddenDisplay");
+    });
+
+    this.#timeout(0).then(() => {
+      DOM.page.forEach((page) => {
+        page.classList.remove("hiddenOpacity");
+      });
+    });
+  }
+
+  #hideForm() {
+    DOM.formOverlay.classList.add("hiddenDisplay");
+    this.formCollection.forEach((form) => form.classList.add("hiddenDisplay"));
   }
 
   ///////////////////////////////////////
@@ -456,33 +835,6 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** GET API DATA ***
-  ///////////////////////////////////////
-  async #getAllCountryData() {
-    const res = await fetch("https://restcountries.eu/rest/v2/all");
-    const data = await res.json();
-    this.allCountry = data;
-  }
-
-  ///////////////////////////////////////
-  // *** CREATE HTML ***
-  ///////////////////////////////////////
-  #getRandomCountry() {
-    const randomNumber = this.#createRandomNumber(0, this.allCountry.length);
-  }
-
-  #createCountryHTML(data, country = "", player, playerOverlay) {
-    console.log(data);
-    const htmlImg = `        
-          <img class="country__img" src="${data.flag}" />`;
-
-    const htmlCountryName = `<p class = "country__name">${data.name}</p>`;
-
-    playerOverlay.insertAdjacentHTML("afterbegin", htmlCountryName);
-    player.insertAdjacentHTML("beforeend", htmlImg);
-  }
-
-  ///////////////////////////////////////
   // *** TOOL ***
   ///////////////////////////////////////
   #showTool() {
@@ -738,9 +1090,9 @@ class APP {
       do you want to assign?
     </h5>
     <select class="popup__assign__select" id="assign">
-      <option value="${result[0]}">player1</option>
-      <option value="${result[1]}">player2</option>
-      <option value="${result[2]}">player3</option>
+      <option value="${result[0]}">${this.country1}(left)</option>
+      <option value="${result[1]}">${this.country2}(top)</option>
+      <option value="${result[2]}">${this.country3}(right)</option>
     </select>
     `;
   }
@@ -750,39 +1102,53 @@ class APP {
   ///////////////////////////////////////
   // TODO (think how to organize the code)
   #showPopupUseTool(e) {
-    this.#showPopupOverlay();
-
-    if (this.myTurn) {
-      DOM.popupUseTool.classList.remove("hiddenDisplay");
-
-      if (e.target.closest(".btn__tool--use").dataset.id === "assign") {
-        DOM.popupUseToolTitle.insertAdjacentHTML(
-          "afterend",
-          this.#showPopupAssignUI()
-        );
-        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.assign);
-
-        // font size of description smaller
-        // because UI of assign is more
-        DOM.popupUseToolDescription.style.fontSize = "1.5rem";
-      }
-
-      if (e.target.closest(".btn__tool--use").dataset.id === "pass")
-        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.pass);
-
-      if (e.target.closest(".btn__tool--use").dataset.id === "uturn")
-        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
-
-      this.#timeout(0).then(() =>
-        DOM.popupUseTool.classList.remove("hiddenOpacity")
-      );
-    } else {
-      DOM.popupCantUseTool.classList.remove("hiddenDisplay");
-
-      this.#timeout(0).then(() =>
-        DOM.popupCantUseTool.classList.remove("hiddenOpacity")
-      );
+    // first check if it's user's turn
+    if (!this.myTurn) {
+      this.#showPopupCantUseTool();
+      return;
     }
+
+    // then check counts if can use tool
+    if (this.toolCounts === 0) {
+      this.#showPopupCantUseTool(true);
+      return;
+    }
+
+    console.log("hi");
+
+    // okay, user can use tool
+    this.#showPopupOverlay();
+    DOM.popupUseTool.classList.remove("hiddenDisplay");
+
+    // assign
+    if (e.target.closest(".btn__tool--use").dataset.id === "assign") {
+      DOM.popupUseToolTitle.insertAdjacentHTML(
+        "afterend",
+        this.#showPopupAssignUI()
+      );
+      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.assign);
+
+      // font size of description smaller
+      // because UI of assign is more
+      DOM.popupUseToolDescription.style.fontSize = "1.5rem";
+    }
+
+    // pass
+    if (e.target.closest(".btn__tool--use").dataset.id === "pass")
+      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.pass);
+
+    // uturn
+    if (e.target.closest(".btn__tool--use").dataset.id === "uturn")
+      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
+
+    this.#timeout(0).then(() =>
+      DOM.popupUseTool.classList.remove("hiddenOpacity")
+    );
+
+    // DOM.popupCantUseTool.classList.remove("hiddenDisplay");
+    // this.#timeout(0).then(() =>
+    //   DOM.popupCantUseTool.classList.remove("hiddenOpacity")
+    // );
   }
 
   #closePopupUseTool() {
@@ -835,6 +1201,11 @@ class APP {
   }
 
   #useTool(e) {
+    this.toolCounts--;
+
+    // reset all counts UI
+    DOM.remaingCounts.forEach((count) => (count.textContent = this.toolCounts));
+
     // close "Your turn" UI
     this.#closePlayerOrderUI();
 
@@ -862,9 +1233,24 @@ class APP {
       .then(() => {
         // later, close whole UI
         this.#closeUseToolUI();
+
+        // next round
         this.#checkOrderAndUpdate();
       });
   }
+
+  // #checkUseTool(e) {
+  //   if (this.toolCounts === 0) {
+  //     this.#showPopupCantUseTool(true);
+  //     return;
+  //   } else {
+  //     // minus tool counts
+  //     this.toolCounts--;
+
+  //     // use tool UI
+  //     this.#showPopupUseTool();
+  //   }
+  // }
 
   ///////////////////////////////////////
   // *** WHICH TOOL ***
@@ -894,8 +1280,18 @@ class APP {
   ///////////////////////////////////////
   // *** POP UP CAN'T USE TOOL ***
   ///////////////////////////////////////
-  #showPopupCantUseTool() {
+  #showPopupCantUseTool(counts = false) {
     this.#showPopupOverlay();
+
+    // set content of error
+    if (counts) {
+      DOM.popupCantUseToolDescription.textContent =
+        "You ran out of the tool counts";
+    } else {
+      DOM.popupCantUseToolDescription.textContent =
+        "can't use tool during other player's round";
+    }
+
     DOM.popupCantUseTool.classList.remove("hiddenDisplay");
 
     this.#timeout(0).then(() =>
@@ -907,27 +1303,6 @@ class APP {
     this.#closePopupOverlay();
     DOM.popupCantUseTool.classList.add("hiddenDisplay");
     DOM.popupCantUseTool.classList.add("hiddenOpacity");
-  }
-
-  ///////////////////////////////////////
-  // *** FORM ***
-  ///////////////////////////////////////
-  #takeInputName() {
-    console.log(DOM.formInput.value);
-  }
-
-  ///////////////////////////////////////
-  // *** FORM LEVEL***
-  ///////////////////////////////////////
-  #showFormDiffLevel(e) {
-    // note that e.target will select two element at the same time(input & level)
-    // (1) find the elemet has data-id attribute
-    const level = e.target.closest(".form__level__radio--input");
-
-    // (2) filter any possible outcome is null
-    if (level) {
-      DOM.formLevelDescriptionCounts.textContent = level.dataset.id;
-    }
   }
 }
 
