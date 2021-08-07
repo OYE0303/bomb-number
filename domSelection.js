@@ -1,5 +1,6 @@
 export class DOM_SELECTION {
   constructor() {
+    this.remaingCounts = document.querySelectorAll(".remaing__counts");
     ///////////////////////////
     // *** NAV BAR ***
     ///////////////////////////
@@ -101,10 +102,19 @@ export class DOM_SELECTION {
     // CANT USE TOOL
     this.popupCantUseTool = document.querySelector(".popup__cantUseTool");
     this.btnCantUseTool = document.querySelector(".btn__popup__cantUseTool");
+    this.popupCantUseToolDescription = document.querySelector(
+      ".popup__cantUseTool__description"
+    );
+
+    // content
+    this.page = document.querySelectorAll(".page");
 
     // FORM
     this.formInput = document.querySelector(".form__input");
-    this.btnForm = document.querySelector(".btn__form");
+    this.btnFormUserNameNext = document.querySelector(
+      ".btn__form--username--next"
+    );
+    this.formOverlay = document.querySelector(".form__overlay");
 
     // FORM LEVEL
     this.formLevelInputGroup = document.querySelector(
@@ -116,5 +126,38 @@ export class DOM_SELECTION {
     this.formLevelDescriptionCounts = document.querySelector(
       ".form__level__description--counts"
     );
+    this.formLevelInput = document.querySelectorAll(
+      ".form__level__radio--input"
+    );
+    this.btnFormLevelNext = document.querySelector(".btn__form--level--next");
+    this.btnFormLevelBack = document.querySelector(".btn__form--level--back");
+
+    // form country
+    this.formCountryRegionSelect = document.querySelector(
+      ".form__country__region__select"
+    );
+    this.formCountryNameSelect = document.querySelector(
+      ".form__country__name__select"
+    );
+    this.formCountryImgContainer = document.querySelector(
+      ".form__country__img__container"
+    );
+    this.formCountryImg = document.querySelector(".form__country__img");
+    this.formCountryNameSelect = document.querySelector(
+      ".form__country__name__select"
+    );
+    this.btnFormCountryNext = document.querySelector(
+      ".btn__form--country--next"
+    );
+    this.btnFormCountryBack = document.querySelector(
+      ".btn__form--country--back"
+    );
+
+    // form range
+    this.formRangeInput = document.querySelector(".form__range__input");
+    this.formRangeOutput = document.querySelector(".form__range__output");
+    this.btnFormRangeNext = document.querySelector(".btn__form--range-next");
+    this.btnFormRangeNext = document.querySelector(".btn__form--range-next");
+    this.btnFormRangeBack = document.querySelector(".btn__form--range-back");
   }
 }
