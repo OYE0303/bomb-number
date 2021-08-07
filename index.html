@@ -16,7 +16,7 @@
     <!-- *** FORM *** -->
     <div class="form form__overlay">
       <!-- USER NAEM  -->
-      <div class="form__container form__userName hiddenDisplay">
+      <div class="form__container form__userName">
         <div class="form__title__container">
           <h3 class="form__welcome">welcome</h3>
           <h4>to</h4>
@@ -99,12 +99,6 @@
           </h3>
         </div>
 
-        <!-- 
-              type="text" means we wanna people input text here 
-              placeholder="Full Name" means the value put inside before user type in
-              id="name" to connet the <label>
-              required means it's required
-          -->
         <input
           class="form__input"
           type="text"
@@ -112,22 +106,20 @@
           required
           id="name"
         />
-        <!-- 
-              for => Specifies the id of the form element the label should be bound to 
-          -->
+
         <label class="form__label form__label-name" for="name"></label>
 
         <div class="btn__form__container">
-          <button class="btn btn--blue btn__form btn__form--username">
+          <button class="btn btn--blue btn__form btn__form--username--next">
             next
           </button>
         </div>
       </div>
 
       <!-- LEVEL  -->
-      <div class="form__container form__level">
+      <div class="form__container form__level hiddenDisplay">
         <h3 class="form__level__title text--upper">
-          please choose <br />
+          choose <br />
           your game level
         </h3>
         <p class="form__level__description">
@@ -146,6 +138,7 @@
             name="level"
             checked
             data-id="three"
+            value="easy"
           />
           <label
             class="
@@ -163,6 +156,7 @@
             type="radio"
             name="level"
             data-id="two"
+            value="medium"
           />
           <label
             class="
@@ -180,6 +174,7 @@
             type="radio"
             name="level"
             data-id="one"
+            value="hard"
           />
           <label
             class="
@@ -192,20 +187,139 @@
           </label>
         </div>
 
-        <div class="btn btn--blue btn__form btn__form--next text--upper">
+        <button
+          class="
+            btn btn--blue btn__form btn__form--next
+            text--upper
+            btn__form--level--next
+          "
+        >
           next
-        </div>
-        <div class="btn btn--pink btn__form btn__form--back text--upper">
+        </button>
+        <button
+          class="
+            btn btn--pink btn__form btn__form--back
+            text--upper
+            btn__form--level--back
+          "
+        >
           back
-        </div>
+        </button>
 
         <!-- for space of next and back button -->
         <div></div>
       </div>
+
+      <!-- COUNTRY  -->
+      <div class="form__container form__country hiddenDisplay">
+        <h3 class="form__country__title title--small">
+          please select your country
+        </h3>
+        <p class="form__country__description">
+          In this game <br />
+          using country as your character to against other countries
+        </p>
+        <div class="form__country__user">
+          <div class="form__country__user__group">
+            <label class="form__country__region__label" for="region"
+              >Select Region</label
+            >
+            <select class="form__country__region__select" id="region">
+              <option value="Random">(Random)</option>
+              <option>Asia</option>
+              <option>Europe</option>
+              <option>Africa</option>
+              <option>Oceania</option>
+              <option>Americas</option>
+              <option>Polar</option>
+            </select>
+          </div>
+          <div class="form__country__user__group">
+            <label class="form__country__country__label" for="country"
+              >Select Country</label
+            >
+            <select class="form__country__name__select" id="country">
+              <option value="Random">(Random)</option>
+            </select>
+          </div>
+
+          <div class="form__country__img__container">
+            <img
+              class="form__country__img"
+              src="https://restcountries.eu/data/col.svg"
+              alt=""
+            />
+          </div>
+        </div>
+
+        <!-- <div></div> -->
+        <button
+          class="
+            btn btn--blue btn__form btn__form--next
+            text--upper
+            btn__form--country--next
+          "
+        >
+          next
+        </button>
+        <button
+          class="
+            btn btn--pink btn__form btn__form--back
+            text--upper
+            btn__form--country--back
+          "
+        >
+          back
+        </button>
+      </div>
+
+      <!-- RANGE   -->
+      <div class="form__container form__range hiddenDisplay">
+        <h3 class="form__range__title title--small">
+          select the number of range
+        </h3>
+        <div class="form__range__container">
+          <label class="form__range__label" for="range"
+            >Choose a maximum number:
+          </label>
+          <input
+            type="range"
+            name="range"
+            id="range"
+            min="100"
+            max="900"
+            step="50"
+            value="100"
+            class="form__range__input"
+          />
+          <div class="form__range__number">
+            <p>0 ~</p>
+            <output class="form__range__output" for="range"></output>
+          </div>
+        </div>
+        <button
+          class="
+            btn btn--blue btn__form btn__form--next
+            text--upper
+            btn__form--range-next
+          "
+        >
+          start game
+        </button>
+        <button
+          class="
+            btn btn--pink btn__form btn__form--back
+            text--upper
+            btn__form--range-back
+          "
+        >
+          back
+        </button>
+      </div>
     </div>
 
     <!-- *** NAV BAR *** -->
-    <nav class="nav hiddenDisplay">
+    <nav class="nav page hiddenDisplay hiddenOpacity">
       <div class="nav__first">
         <svg
           version="1.1"
@@ -281,7 +395,7 @@
           />
         </svg>
 
-        <h6 class="nav__username">Chen YI YOU</h6>
+        <h6 class="nav__username"></h6>
       </div>
       <div class="nav__second">
         <button class="btn btn__nav btn__nav__level btn__level">EASY</button>
@@ -321,11 +435,11 @@
     </nav>
 
     <!-- *** MAIN CONTENT *** -->
-    <main class="content hiddenDisplay">
+    <main class="content page hiddenDisplay">
       <div class="range">
         <p class="range__number">
           <span class="range__number__min">0</span> ~
-          <span class="range__number__max">200</span>
+          <span class="range__number__max">100</span>
         </p>
       </div>
 
@@ -372,7 +486,7 @@
     </main>
 
     <!-- *** TOOL *** -->
-    <aside class="tool hiddenDisplay">
+    <aside class="tool page hiddenDisplay hiddenOpacity">
       <ul class="tool__container hiddenOpacity hiddenDisplay">
         <li class="tool__item hiddenOpacity hiddenDisplay">
           <svg
@@ -388,7 +502,9 @@
           </svg>
           <p class="tool__item__name">ASSIGN</p>
           <div class="tool__item__extension">
-            <p class="tool__item__reamaining">x0</p>
+            <p class="tool__item__reamaining">
+              x<span class="remaing__counts"></span>
+            </p>
             <button
               data-id="assign"
               class="btn btn__tool__extension btn__tool--use"
@@ -460,7 +576,9 @@
           </svg>
           <p class="tool__item__name">PASS</p>
           <div class="tool__item__extension">
-            <p class="tool__item__reamaining">x0</p>
+            <p class="tool__item__reamaining">
+              x<span class="remaing__counts"></span>
+            </p>
             <button
               data-id="pass"
               class="btn btn__tool__extension btn__tool--use"
@@ -491,7 +609,9 @@
           </svg>
           <p class="tool__item__name">U-TURN</p>
           <div class="tool__item__extension">
-            <p class="tool__item__reamaining">x0</p>
+            <p class="tool__item__reamaining">
+              x<span class="remaing__counts"></span>
+            </p>
             <button
               data-id="uturn"
               class="btn btn__tool__extension btn__tool--use"
@@ -509,13 +629,15 @@
     </aside>
 
     <!-- *** COUNTDOWN *** -->
-    <aside class="countdown hiddenDisplay">
+    <aside class="countdown page hiddenDisplay hiddenOpacity">
       <h6 class="countdown__time">00:30</h6>
     </aside>
 
     <!-- *** SHOWLEVEL *** -->
-    <aside class="showLevel hiddenDisplay">
-      <button class="btn btn--purple btn__showLevel btn__level">EASY</button>
+    <aside class="showLevel page hiddenDisplay hiddenOpacity">
+      <button class="btn btn--purple btn__showLevel btn__level text--upper">
+        EASY
+      </button>
     </aside>
 
     <!-- *** COUNTRY INFO *** -->
@@ -801,7 +923,8 @@
         <!-- <h3 class="popup__useTool__icon"></h3> -->
 
         <p class="popup__useTool__description">
-          You will only have <span>1</span> times to use after using it
+          You will only have <span class="remaing__counts"></span> times to use
+          tool after using it
         </p>
         <div>
           <button
@@ -817,10 +940,10 @@
         </div>
       </div>
 
-      <!-- POP UP CAN'T USE TOOL  -->
+      <!-- *** POP UP CAN'T USE TOOL ***  -->
       <div class="popup popup__cantUseTool hiddenDisplay hiddenOpacity">
         <h3>sorry</h3>
-        <h3>can't use tool during other player's round</h3>
+        <h3 class="popup__cantUseTool__description"></h3>
         <button class="btn btn--blue btn__popup__cantUseTool">back</button>
       </div>
     </div>
