@@ -54,6 +54,18 @@ h3 {
   text-transform: uppercase;
 }
 
+li {
+  /* list-style: none; */
+  margin: 0;
+  padding: 0;
+}
+
+select {
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
+
 .btn {
   border: none;
   background-color: transparent;
@@ -61,12 +73,6 @@ h3 {
   padding: 0;
   cursor: pointer;
   border-radius: 30px;
-}
-
-li {
-  /* list-style: none; */
-  margin: 0;
-  padding: 0;
 }
 
 .btn--purple {
@@ -124,8 +130,33 @@ li {
   box-shadow: 0 0 40px var(--pink) inset, 0 0 0 0 var(--pink);
 }
 
+.title--small {
+  text-transform: uppercase;
+  text-align: center;
+}
+
 .text--upper {
   text-transform: uppercase;
+}
+
+.page {
+  transition: all 2s ease;
+}
+
+.font4 {
+  font-size: 4rem;
+}
+
+.font3 {
+  font-size: 3rem;
+}
+
+.font2 {
+  font-size: 2rem;
+}
+
+.font1 {
+  font-size: 1rem;
 }
 
 /* /////////////////////////// */
@@ -479,7 +510,8 @@ And use whitee space to find the child (.nav__menu__icon)
   z-index: 10;
 
   color: var(--black);
-  font-size: 4rem;
+  text-align: center;
+  /* font-size: 4rem; */
 }
 
 .player:hover .test,
@@ -1133,6 +1165,10 @@ And use whitee space to find the child (.nav__menu__icon)
   padding: 1rem 2rem;
 }
 
+.popup__cantUseTool--counts h3 {
+  font-size: 2.5rem;
+}
+
 /* /////////////////////////// */
 /* *** FORM *** */
 /* /////////////////////////// */
@@ -1325,6 +1361,92 @@ And use whitee space to find the child (.nav__menu__icon)
   position: absolute;
   bottom: 10px;
   left: 10px;
+}
+
+/* /////////////////////////// */
+/* *** FORM COUNTRY *** */
+/* /////////////////////////// */
+.form__country__title {
+  font-size: 2.5rem;
+}
+
+.form__country__user {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  gap: 3rem;
+}
+
+.form__country__user__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form__country__region__label,
+.form__country__country__label {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.form__country__region__select,
+.form__country__name__select {
+  padding: 3px 0;
+  border-radius: 5px;
+}
+
+.form__country__img__container {
+  height: 8rem;
+}
+
+.form__country__img {
+  width: 8rem;
+  transform: translateY(-50px);
+  opacity: 0;
+
+  transition: all 1s ease;
+}
+
+.form__country__img--animation {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.form__country__description {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* /////////////////////////// */
+/* *** FORM RANGE *** */
+/* /////////////////////////// */
+.form__range__title {
+  font-size: 2.5rem;
+}
+
+.form__range__container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form__range__input {
+  cursor: pointer;
+}
+
+.form__range__label {
+  font-size: 2rem;
+}
+
+.form__range__number {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.form__range__number,
+.form__range__output {
+  font-size: 2rem;
+  text-align: center;
 }
 
 /* /////////////////////////// */
