@@ -435,7 +435,7 @@
     </nav>
 
     <!-- *** MAIN CONTENT *** -->
-    <main class="content page hiddenDisplay">
+    <main class="content page hiddenDisplay hiddenOpacity">
       <div class="range">
         <p class="range__number">
           <span class="range__number__min">0</span> ~
@@ -474,8 +474,14 @@
         <p class="guess__item guess__number"></p>
 
         <p class="guess__item guess__order"></p>
+        <div class="spinner hiddenDisplay">
+          <div class="bounce1 hiddenDisplay"></div>
+          <div class="bounce2 hiddenDisplay"></div>
+          <div class="bounce3 hiddenDisplay"></div>
+        </div>
 
         <p class="guess__item guess__useTool__playerName"></p>
+
         <p class="guess__item guess__useTool"></p>
 
         <input class="guess__input" type="number" min="0" max="100" required />
@@ -923,8 +929,7 @@
         <!-- <h3 class="popup__useTool__icon"></h3> -->
 
         <p class="popup__useTool__description">
-          You will only have <span class="remaing__counts"></span> times to use
-          tool after using it
+          You only have <span class="remaing__counts"></span> times to use tool
         </p>
         <div>
           <button
@@ -945,6 +950,19 @@
         <h3>sorry</h3>
         <h3 class="popup__cantUseTool__description"></h3>
         <button class="btn btn--blue btn__popup__cantUseTool">back</button>
+      </div>
+
+      <!-- *** POP UP COMPUTER LOSE THE GAME  *** -->
+      <div class="popup popup__computerLoseGame hiddenDisplay">
+        <h3 class="title--small">congratulation</h3>
+        <h5 class="popup__computerLoseGame__description">
+          <span class="popup__computerLoseGame__countryName">player</span> guess
+          the bomb number <br />
+          so you get one more tool counts
+        </h5>
+        <button class="btn btn--blue text--upper btn__popup__computerLoseGame">
+          continue
+        </button>
       </div>
     </div>
 
