@@ -40,6 +40,11 @@ export class DOM_SELECTION {
     this.rangeNumberMin = document.querySelector(".range__number__min");
     this.rangeNumberMax = document.querySelector(".range__number__max");
 
+    this.spinner = document.querySelector(".spinner");
+    this.bounce1 = document.querySelector(".bounce1");
+    this.bounce2 = document.querySelector(".bounce2");
+    this.bounce3 = document.querySelector(".bounce3");
+
     ///////////////////////////
     // *** TOOL ***
     ///////////////////////////
@@ -54,9 +59,14 @@ export class DOM_SELECTION {
     ///////////////////////////
     this.countdownTime = document.querySelector(".countdown__time");
 
+    ///////////////////////////
     // *** SHOW LEVEL ***
+    ///////////////////////////
     this.btnShowLevel = document.querySelector(".btn__showLevel");
+
+    ///////////////////////////
     // *** COUNTRY INFO ***
+    ///////////////////////////
     this.countryInfo = document.querySelector(".countryInfo");
     this.btnCountryInfoClose = document.querySelector(
       ".btn__countryInfo__close"
@@ -74,6 +84,7 @@ export class DOM_SELECTION {
     this.popupDiffLevel = document.querySelector(".popup__diffLevel");
     this.popupTool = document.querySelector(".popup__tool");
 
+    this.popupLevelWord = document.querySelector(".popup__level__word");
     this.btnPopupLevelNo = document.querySelector(".btn__popup__level--no");
     this.popupLose = document.querySelector(".popup__lose");
     this.popupLoseDescription = document.querySelector(
@@ -109,7 +120,17 @@ export class DOM_SELECTION {
     // content
     this.page = document.querySelectorAll(".page");
 
-    // FORM
+    // computer lose game
+    this.popupComputerLoseGame = document.querySelector(
+      ".popup__computerLoseGame"
+    );
+    this.btnPopupComputerLoseGame = document.querySelector(
+      ".btn__popup__computerLoseGame"
+    );
+
+    ///////////////////////////
+    // *** FORM ***
+    ///////////////////////////
     this.formInput = document.querySelector(".form__input");
     this.btnFormUserNameNext = document.querySelector(
       ".btn__form--username--next"
