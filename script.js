@@ -1,12 +1,16 @@
 import { DOM_SELECTION } from "./domSelection.js";
 import { SVGIcon } from "./svgIcon.js";
+import { PLAYER__INFO } from "./playerInfo.js";
 
 const DOM = new DOM_SELECTION();
 const SVG = new SVGIcon();
 
 class APP {
   constructor() {
-    this.allCountry;
+    this.userCountryInfo = new PLAYER__INFO();
+    this.Computer1CountryInfo = new PLAYER__INFO();
+    this.Computer2CountryInfo = new PLAYER__INFO();
+    this.Computer3CountryInfo = new PLAYER__INFO();
 
     // form collection & order
     this.formCollection = Array.from(
@@ -20,18 +24,11 @@ class APP {
     // level
     this.level;
 
-    // user country
-    this.userCountry;
-
-    // computer country name
-    this.country1;
-    this.country2;
-    this.country3;
-
     // NUMBER
     this.targetNumber;
     this.minNumber = 0;
-    this.maxNumber = 200;
+    this.maxNumber;
+    this.maxNumberNoChange;
 
     // click toggle
     this.firstTimeTool = true;
@@ -39,19 +36,18 @@ class APP {
 
     // player order array
     this.currentOrder = 0;
-    this.playerArr = [0, 1, 2, 3];
+    this.computerNameOrderArr;
+    this.allPlayerArr;
+    this.computerPlayerArrNum = [0, 1, 2];
 
     // reverse & order
     this.reverse = false;
     this.myTurn = true;
 
-    // how many tool counts can a player use?
-    this.toolCounts;
-
     // init
     this.#addEventListener();
     // this.#countdown();
-    this.#createTargetNumber();
+    // this.#createTargetNumber();
     // this.#nextPlayerOrder();
 
     // this.#takeComputerGuessInput();
@@ -126,6 +122,12 @@ class APP {
       this.#closePopupCantUseTool.bind(this)
     );
 
+    // computer lose game
+    DOM.btnPopupComputerLoseGame.addEventListener(
+      "click",
+      this.#closePopupComputerLoseGame.bind(this)
+    );
+
     // form username
     DOM.btnFormUserNameNext.addEventListener(
       "click",
@@ -186,8 +188,15 @@ class APP {
   // *** CREATE TARGET NUMBER ***
   ///////////////////////////////////////
   #createTargetNumber() {
-    this.targetNumber = this.#createRandomNumber(0, 200);
+    this.targetNumber = this.#createRandomNumber(1, this.maxNumber - 1);
     console.log(this.targetNumber);
+  }
+
+  ///////////////////////////////////////
+  // *** DELETE ELEMENT FROM ARRAY ***
+  ///////////////////////////////////////
+  #deleteElementFromArray(arr, element) {
+    return arr.filter((el) => el !== element);
   }
 
   ///////////////////////////////////////
@@ -218,6 +227,16 @@ class APP {
         DOM.countdownTime.textContent = `00:30`;
       }
     }, 1000);
+  }
+
+  ///////////////////////////////////////
+  // *** SET COUNTRY INFO ***
+  ///////////////////////////////////////
+  #setCountryInfo(player, order, toolCounts, data, position) {
+    player.order = order;
+    player.toolCounts = toolCounts;
+    player.countryData = data;
+    player.position = position;
   }
 
   ///////////////////////////////////////
@@ -266,9 +285,9 @@ class APP {
     });
 
     // set tool counts based on level
-    if (this.level === "easy") this.toolCounts = 3;
-    else if (this.level === "medium") this.toolCounts = 2;
-    else this.toolCounts = 1;
+    if (this.level === "easy") this.userCountryInfo.toolCounts = 3;
+    else if (this.level === "medium") this.userCountryInfo.toolCounts = 2;
+    else this.userCountryInfo.toolCounts = 1;
 
     this.#nextFormPage();
   }
@@ -305,8 +324,14 @@ class APP {
     this.#showFormCountryImg(countryData[0]);
   }
 
-  #takeFormCountryNameSelect() {
-    this.userCountry = DOM.formCountryNameSelect.value;
+  async #takeFormCountryNameSelect() {
+    // if user randomly choose country
+    if (DOM.formCountryNameSelect.value === "Random") {
+      const countryName = await this.#randomlyChooseUserCountryName();
+      this.userCountryInfo.countryName = countryName;
+    }
+    // set country info (name)
+    else this.userCountryInfo.countryName = DOM.formCountryNameSelect.value;
 
     this.#nextFormPage();
 
@@ -317,9 +342,6 @@ class APP {
   #setCountryName() {
     const countryName = DOM.formCountryNameSelect.value;
     this.#showFormCountryImg(countryName);
-
-    // set user country
-    this.userCountry = countryName;
   }
 
   #deleteFormCountryName(childrenArr) {
@@ -357,6 +379,7 @@ class APP {
   ///////////////////////////////////////
   #takeFormRange() {
     this.maxNumber = Number(DOM.formRangeInput.value);
+    this.maxNumberNoChange = this.maxNumber;
 
     // start the game
     this.#hideForm();
@@ -376,8 +399,12 @@ class APP {
   // *** COUNTRY DATA (USER & COMPUTER)***
   ///////////////////////////////////////
   async #showUserCountryImg() {
-    const countryName = this.userCountry;
+    const countryName = this.userCountryInfo.countryName;
     const countryData = await this.#getOneCountryData(countryName);
+
+    // set user country info
+    this.userCountryInfo.order = 0;
+    this.userCountryInfo.countryData = countryData;
 
     this.#createCountryHTMLAndShowUI(
       countryData,
@@ -392,19 +419,45 @@ class APP {
 
     for (let i = 0; i < countryNameArr.length; i++) {
       const countryData = await this.#getOneCountryData(countryNameArr[i]);
+
+      // also set computer country data
       if (i == 0) {
+        this.#setCountryInfo(
+          this.Computer1CountryInfo,
+          1,
+          3,
+          countryData,
+          "left"
+        );
+
         this.#createCountryHTMLAndShowUI(
           countryData,
           DOM.player1,
           DOM.playerOverlay1
         );
       } else if (i == 1) {
+        this.#setCountryInfo(
+          this.Computer2CountryInfo,
+          2,
+          3,
+          countryData,
+          "top"
+        );
+
         this.#createCountryHTMLAndShowUI(
           countryData,
           DOM.player2,
           DOM.playerOverlay2
         );
       } else {
+        this.#setCountryInfo(
+          this.Computer3CountryInfo,
+          3,
+          3,
+          countryData,
+          "right"
+        );
+
         this.#createCountryHTMLAndShowUI(
           countryData,
           DOM.player3,
@@ -454,23 +507,40 @@ class APP {
       // check random country is not duplicate, and not as same as user's country
       if (
         !countryNameArr.includes(countryName) &&
-        this.userCountry !== countryName &&
+        this.userCountryInfo.countryName !== countryName &&
         countryName
       ) {
         countryNameArr.push(countryName.name);
 
         // nice!!!
-        this.country1
-          ? this.country2
-            ? (this.country3 = countryName.name)
-            : (this.country2 = countryName.name)
-          : (this.country1 = countryName.name);
+        this.Computer1CountryInfo.countryName
+          ? this.Computer2CountryInfo.countryName
+            ? (this.Computer3CountryInfo.countryName = countryName.name)
+            : (this.Computer2CountryInfo.countryName = countryName.name)
+          : (this.Computer1CountryInfo.countryName = countryName.name);
 
         i++;
       }
     }
 
+    // set country name order array
+    this.computerNameOrderArr = [
+      this.Computer1CountryInfo,
+      this.Computer2CountryInfo,
+      this.Computer3CountryInfo,
+    ];
+
+    this.allPlayerArr = [this.userCountryInfo, ...this.computerNameOrderArr];
+
     return countryNameArr;
+  }
+
+  async #randomlyChooseUserCountryName() {
+    const res = await fetch("https://restcountries.eu/rest/v2/all?fields=name");
+    const data = await res.json();
+    const randomNum = this.#createRandomNumber(0, data.length);
+
+    return data[randomNum].name;
   }
 
   ///////////////////////////////////////
@@ -506,6 +576,7 @@ class APP {
 
     // set level on UI
     DOM.btnShowLevel.textContent = this.level;
+    DOM.popupLevelWord.textContent = this.level;
 
     // set max number on UI
     DOM.rangeNumberMax.textContent = this.maxNumber;
@@ -515,7 +586,12 @@ class APP {
     this.#showComputerCountryImg();
 
     // show remaining counts of tool
-    DOM.remaingCounts.forEach((count) => (count.textContent = this.toolCounts));
+    DOM.remaingCounts.forEach(
+      (count) => (count.textContent = this.userCountryInfo.toolCounts)
+    );
+
+    // set target number
+    this.#createTargetNumber();
   }
 
   #showContent() {
@@ -572,41 +648,7 @@ class APP {
     // get input value
     const guessNumber = Number(DOM.guessInput.value);
 
-    // check input again 1) is number 2) is inside valid range
-    const checked = this.#checkInput(guessNumber);
-    if (checked) {
-      // wrong input UI
-      this.#showPopupInvalidInput();
-    }
-
-    // guess the target number (game over)
-    else if (guessNumber == this.targetNumber) {
-      // game over UI
-    }
-
-    // correct input UI
-    else {
-      // guessNumber UI(pink & blue)
-      this.#showGuessNumberUI(guessNumber);
-
-      // wait for 5 second because the above animation is exactly 5 second
-      this.#timeout(5)
-        .then(() => {
-          this.#showPassUI();
-          this.#updateMinMaxRange(guessNumber);
-
-          // wait another 3 second because showPassUI is exactly 3 second
-          return this.#timeout(3);
-        })
-        .then(() => {
-          this.#closeGuessNumberUI();
-          this.#closePassUI();
-        })
-        .then(() => {
-          // update next order(go to next player)
-          this.#checkOrderAndUpdate();
-        });
-    }
+    this.#checkGuessInput(guessNumber);
 
     // close guess input
     // have to put here, or we cannot accept the user's input
@@ -615,36 +657,181 @@ class APP {
   }
 
   #takeComputerGuessInput() {
-    // can use tool
-
     // create random guessing number
     const guessNumber = this.#createComputerGuessingNumber(
       this.minNumber,
       this.maxNumber
     );
 
-    if (guessNumber == this.targetNumber) {
-      // another logic
-    } else {
-      // guessNumber UI
-      this.#showGuessNumberUI(guessNumber);
+    this.#checkGuessInput(guessNumber, false);
+  }
 
-      this.#timeout(5)
-        .then(() => {
-          this.#showPassUI();
-          this.#updateMinMaxRange(guessNumber);
-
-          return this.#timeout(3);
-        })
-        .then(() => {
-          this.#closeGuessNumberUI();
-          this.#closePassUI();
-        })
-        .then(() => {
-          // update next order
-          this.#checkOrderAndUpdate();
-        });
+  #checkGuessInput(guessNumber, userPlayer = true) {
+    if (!userPlayer && this.targetNumber === guessNumber) {
+      if (!this.#computerGuessNumberLogic()) {
+        this.#useToolComputer();
+        return;
+      }
     }
+
+    // check input again 1) is number 2) is inside valid range
+    const checked = this.#checkInput(guessNumber);
+
+    if (checked) {
+      // wrong input UI
+      this.#showPopupInvalidInput();
+
+      return;
+    }
+
+    this.#timeout(0)
+      .then(() => {
+        // guessNumber UI(pink & blue)
+        this.#showGuessNumberUI(guessNumber);
+
+        return this.#timeout(5);
+      })
+      .then(() => {
+        // guess the target number
+        if (guessNumber === this.targetNumber) {
+          if (userPlayer) {
+            // user game over UI
+          } else {
+            this.#computerLoseGame();
+          }
+
+          this.#closeGuessNumberUI();
+          return;
+        } else {
+          this.#timeout(0)
+            .then(() => {
+              this.#showPassUI();
+              this.#updateMinMaxRange(guessNumber);
+
+              // wait another 3 second because showPassUI is exactly 3 second
+              return this.#timeout(3);
+            })
+            .then(() => {
+              this.#closeGuessNumberUI();
+              this.#closePassUI();
+            })
+            .then(() => {
+              // update next order(go to next player)
+              this.#checkOrderAndUpdate();
+            });
+        }
+      });
+  }
+
+  #computerGuessNumberLogic() {
+    // let currentOrder;
+    // if (this.reverse) currentOrder = this.currentOrder + 1;
+    // else currentOrder = this.currentOrder - 1;
+
+    // first check computer out of tool counts
+    // if yes, lose game
+    // then check computer wants use tool
+    /*
+    if (
+      this.#checkComputerUseToolCounts(this.allPlayerArr[this.currentOrder]) ||
+      this.#checkIfComputerUseTool()
+    ) {
+      // lose game
+      return true;
+    }
+    */
+
+    // use tool
+    // return false;
+
+    return true;
+  }
+
+  #checkIfComputerUseTool() {
+    // if remaining one guess number, defenitely use tool
+    if (this.maxNumber - this.minNumber === 2) return true;
+
+    const randomNum = this.#createRandomNumber(1, 100);
+    if (randomNum % 2 === 0) return true;
+    else return false;
+  }
+
+  ///////////////////////////////////////
+  // *** COMPUTER LOSE GAME ***
+  ///////////////////////////////////////
+  #computerLoseGame() {
+    // blur lose image
+    this.#blurCountryImg();
+
+    // show popup UI
+    this.#showPopupComputerLoseGame();
+
+    // add user tool counts
+    this.userCountryInfo.toolCounts++;
+
+    // show remaining counts of tool
+    DOM.remaingCounts.forEach(
+      (count) => (count.textContent = this.userCountryInfo.toolCounts)
+    );
+  }
+
+  #showPopupComputerLoseGame() {
+    this.#showPopupOverlay();
+    DOM.popupComputerLoseGame.classList.remove("hiddenDisplay");
+  }
+
+  #closePopupComputerLoseGame() {
+    this.#closePopupOverlay();
+    DOM.popupComputerLoseGame.classList.add("hiddenDisplay");
+
+    // eliminate player
+    this.#eliminatePlayer(this.currentOrder);
+    this.#checkOrderAndUpdate();
+  }
+
+  #eliminatePlayer(playerNumber) {
+    const playerElement = this.allPlayerArr[playerNumber];
+
+    const newPlayerArr = this.#deleteElementFromArray(
+      this.allPlayerArr,
+      playerElement
+    );
+
+    // reset all player all
+    this.allPlayerArr = newPlayerArr;
+
+    // reset number range
+    this.#resetNumberRange();
+
+    // reset target number
+    this.#createTargetNumber();
+
+    // cuz player array will decrease by 1
+    // have to decrease current order by 1, so it makes sense
+    this.currentOrder--;
+  }
+
+  #resetNumberRange() {
+    this.minNumber = 0;
+    this.maxNumber = this.maxNumberNoChange;
+
+    // set range number on UI
+    DOM.rangeNumberMax.textContent = this.maxNumber;
+    DOM.rangeNumberMin.textContent = this.minNumber;
+  }
+
+  #blurCountryImg() {
+    const losingCountryOrder = this.allPlayerArr[this.currentOrder].order;
+
+    const contentChildren = Array.from(
+      document.querySelector(".content").children
+    );
+
+    const losingPlayer = contentChildren.find((child) =>
+      child.classList.contains(`player--${losingCountryOrder}`)
+    );
+
+    losingPlayer.classList.add("country__img--lose");
   }
 
   ///////////////////////////////////////
@@ -691,9 +878,14 @@ class APP {
     else {
       this.#closePlayerOrderUI();
 
+      // note that this.computerNameOrderArr only has computer data, not include user data
+      // so it has to -1 to access the corret computer data
+      const currentCountryName =
+        this.allPlayerArr[this.currentOrder].countryName;
+
       // wait for computer's guessing(pretend computer is thinking(guessing))
       this.#waitComputerGuessingNumber(
-        this.#showComputerWaitingUI.bind(this, `Player${order}`)
+        this.#showComputerWaitingUI.bind(this, `${currentCountryName}`)
       );
     }
   }
@@ -704,15 +896,14 @@ class APP {
   #updateClockwiseOrder() {
     this.currentOrder++;
 
-    if (this.currentOrder === 4) this.currentOrder = 0;
-    return this.currentOrder;
+    if (this.currentOrder === this.allPlayerArr.length) this.currentOrder = 0;
   }
 
   #updateCounterClockwiseOrder() {
     this.currentOrder--;
 
-    if (this.currentOrder === -1) this.currentOrder = 3;
-    return this.currentOrder;
+    if (this.currentOrder === -1)
+      this.currentOrder = this.allPlayerArr.length - 1;
   }
 
   ///////////////////////////////////////
@@ -727,6 +918,8 @@ class APP {
     this.#timeout(randomTime).then(() => {
       // after waiting, do these two things
       this.#closeComputerWaitingUI();
+
+      // next player
       this.#takeComputerGuessInput();
     });
   }
@@ -790,6 +983,13 @@ class APP {
     );
   }
 
+  #closePopupInvalidInput() {
+    this.#closePopupOverlay();
+    DOM.popupInvalidInput.classList.add("hiddenDisplay");
+
+    DOM.popupInvalidInput.classList.add("hiddenOpacity");
+  }
+
   ///////////////////////////////////////
   // *** SHOW GUESS INPUT ***
   ///////////////////////////////////////
@@ -817,14 +1017,32 @@ class APP {
   ///////////////////////////////////////
   // *** COMPUTER WAITING UI ***
   ///////////////////////////////////////
-  #showComputerWaitingUI(order) {
-    DOM.guessOrder.textContent = order;
-    DOM.guessOrder.classList.add("computer--animation");
+  #showComputerWaitingUI(playerCountry) {
+    DOM.guessOrder.textContent = playerCountry;
+    // DOM.guessOrder.classList.add("computer--animation");
+
+    DOM.spinner.classList.remove("hiddenDisplay");
+    DOM.bounce1.classList.remove("hiddenDisplay");
+    DOM.bounce2.classList.remove("hiddenDisplay");
+    DOM.bounce3.classList.remove("hiddenDisplay");
+
+    DOM.bounce1.classList.add("spinner--animation1");
+    DOM.bounce2.classList.add("spinner--animation2");
+    DOM.bounce3.classList.add("spinner--animation3");
   }
 
   #closeComputerWaitingUI() {
     DOM.guessOrder.textContent = "";
-    DOM.guessOrder.classList.remove("computer--animation");
+    // DOM.guessOrder.classList.remove("computer--animation");
+
+    DOM.spinner.classList.add("hiddenDisplay");
+    DOM.bounce1.classList.add("hiddenDisplay");
+    DOM.bounce2.classList.add("hiddenDisplay");
+    DOM.bounce3.classList.add("hiddenDisplay");
+
+    DOM.bounce1.classList.remove("spinner--animation1");
+    DOM.bounce2.classList.remove("spinner--animation2");
+    DOM.bounce3.classList.remove("spinner--animation3");
   }
 
   ///////////////////////////////////////
@@ -1079,22 +1297,36 @@ class APP {
   ///////////////////////////////////////
   // TODO think how to organize
   #showPopupAssignUI() {
+    // get current number of player (exclude user player)
+    const currentPlayerNumber = this.allPlayerArr.length - 1;
     let result;
 
     if (this.reverse) result = [2, 3, 4];
     else result = [0, 1, 2];
 
-    return `
+    while (currentPlayerNumber !== result.length) {
+      result.pop();
+    }
+
+    console.log(this.allPlayerArr);
+    let html = `
     <h5 class = "popup__assign__subTitle">
       Which player <br />
       do you want to assign?
     </h5>
     <select class="popup__assign__select" id="assign">
-      <option value="${result[0]}">${this.country1}(left)</option>
-      <option value="${result[1]}">${this.country2}(top)</option>
-      <option value="${result[2]}">${this.country3}(right)</option>
-    </select>
     `;
+
+    for (let i = 0; i < result.length; i++) {
+      html += `<option value="${result[i]}">${
+        this.allPlayerArr[i + 1].countryName
+      }(${this.allPlayerArr[i + 1].position})</option>
+      `;
+    }
+
+    html += `</select>`;
+
+    return html;
   }
 
   ///////////////////////////////////////
@@ -1109,12 +1341,10 @@ class APP {
     }
 
     // then check counts if can use tool
-    if (this.toolCounts === 0) {
+    if (this.userCountryInfo.toolCounts === 0) {
       this.#showPopupCantUseTool(true);
       return;
     }
-
-    console.log("hi");
 
     // okay, user can use tool
     this.#showPopupOverlay();
@@ -1144,11 +1374,6 @@ class APP {
     this.#timeout(0).then(() =>
       DOM.popupUseTool.classList.remove("hiddenOpacity")
     );
-
-    // DOM.popupCantUseTool.classList.remove("hiddenDisplay");
-    // this.#timeout(0).then(() =>
-    //   DOM.popupCantUseTool.classList.remove("hiddenOpacity")
-    // );
   }
 
   #closePopupUseTool() {
@@ -1182,11 +1407,11 @@ class APP {
     const useToolHTML = `use ${tool}`;
 
     // show html on UI
-    DOM.guessUseToolUserName.textContent = `player${player}`;
+    DOM.guessUseToolUserName.textContent = `${player}`;
     DOM.guessUseTool.textContent = useToolHTML;
 
     // close popup
-    this.#closePopupUseTool();
+    if (player === this.userCountryInfo.countryName) this.#closePopupUseTool();
 
     // add class for animation
     DOM.guessUseToolUserName.classList.add("guess__useTool--animation");
@@ -1201,13 +1426,19 @@ class APP {
   }
 
   #useTool(e) {
-    this.toolCounts--;
+    this.userCountryInfo.toolCounts--;
 
     // reset all counts UI
-    DOM.remaingCounts.forEach((count) => (count.textContent = this.toolCounts));
+    DOM.remaingCounts.forEach(
+      (count) => (count.textContent = this.userCountryInfo.toolCounts)
+    );
 
     // close "Your turn" UI
     this.#closePlayerOrderUI();
+
+    // close guess input UI
+    this.#closeGuessInput();
+    DOM.guessInput.value = "";
 
     // close tool UI
     this.#toolBtnToggle();
@@ -1215,18 +1446,29 @@ class APP {
     // not my turn anymore
     this.myTurn = false;
 
-    // get the current player and used tool
-    const player = this.currentOrder;
+    // get the used tool
     const tool = e.target
       .closest(".popup__useTool")
       .querySelector(".popup__useTool__icon").dataset.id;
 
+    this.#useToolLogic(tool, this.userCountryInfo.countryName);
+  }
+
+  #useToolComputer() {
+    // check current player(country)
+    const currentCountryName = this.allPlayerArr[this.currentOrder].countryName;
+    const tool = this.#whichToolComputer();
+
+    this.#useToolLogic(tool, currentCountryName);
+  }
+
+  #useToolLogic(tool, playerName) {
     this.#timeout(0)
       .then(() => {
         this.#whichTool(tool);
       })
       .then(() => {
-        this.#showUseToolUI(tool, player);
+        this.#showUseToolUI(tool, playerName);
 
         return this.#timeout(3);
       })
@@ -1239,30 +1481,71 @@ class APP {
       });
   }
 
-  // #checkUseTool(e) {
-  //   if (this.toolCounts === 0) {
-  //     this.#showPopupCantUseTool(true);
-  //     return;
-  //   } else {
-  //     // minus tool counts
-  //     this.toolCounts--;
-
-  //     // use tool UI
-  //     this.#showPopupUseTool();
-  //   }
-  // }
+  #checkComputerUseToolCounts(player) {
+    if (player.toolCounts === 0) return true;
+    player.toolCounts--;
+    return false;
+  }
 
   ///////////////////////////////////////
   // *** WHICH TOOL ***
   ///////////////////////////////////////
   #whichTool(tool) {
+    // pass
     if (tool === "PASS") {
-    } else if (tool === "U-TURN") {
+      return;
+    }
+
+    // uturn
+    if (tool === "U-TURN") {
       this.reverse = !this.reverse;
-    } else {
-      this.currentOrder = document.querySelector(
-        ".popup__assign__select"
-      ).value;
+      return;
+    }
+
+    // assign
+    const assignOrder = document.querySelector(".popup__assign__select");
+
+    if (assignOrder) this.currentOrder = assignOrder.value;
+    else {
+      // let result;
+      // if (this.reverse) result = [1, 2, 3, 4];
+      // else result = [0, 1, 2, 3];
+
+      // avoid assign itself
+      while (true) {
+        let randomNumAssign = this.#createRandomNumber(
+          0,
+          this.allPlayerArr.length
+        );
+
+        // avoid assign itself
+        // Logic
+        // if now it's reverse, we don't wanna select a random number === current order + 1
+        // because later will immediately add one on current order, then it will back to itself
+        // same for non-reverse
+        if (this.reverse) {
+          if (randomNumAssign !== this.currentOrder + 1) break;
+        } else if (randomNumAssign !== this.currentOrder - 1) break;
+      }
+
+      this.currentOrder = assignOrder;
+    }
+  }
+
+  #whichToolComputer() {
+    const randomNumberTool = this.#createRandomNumber(0, 2);
+
+    // pass
+    if (randomNumberTool == 1) {
+      return "PASS";
+    }
+    // reverse
+    else if (randomNumberTool == 2) {
+      return "U-TURN";
+    }
+    // assign
+    else {
+      return "ASSIGN";
     }
   }
 
