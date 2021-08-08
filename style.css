@@ -478,6 +478,10 @@ And use whitee space to find the child (.nav__menu__icon)
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.809);
 }
 
+.country__img--lose {
+  opacity: 0.1;
+}
+
 .btn__info {
   position: absolute;
   left: 50%;
@@ -590,6 +594,7 @@ And use whitee space to find the child (.nav__menu__icon)
   font-size: 3rem;
   color: var(--white-normal);
   letter-spacing: 5px;
+  text-align: center;
 }
 
 .guess__useTool,
@@ -1167,6 +1172,23 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .popup__cantUseTool--counts h3 {
   font-size: 2.5rem;
+}
+
+/* /////////////////////////// */
+/* *** POPUP GET ONE MORE COUNTS *** */
+/* /////////////////////////// */
+.popup__computerLoseGame h3 {
+  font-size: 4rem;
+  color: var(--blue);
+}
+
+.popup__computerLoseGame h5 {
+  font-size: 2.5rem;
+}
+
+.btn__popup__computerLoseGame {
+  font-size: 2rem;
+  padding: 1rem 2rem;
 }
 
 /* /////////////////////////// */
@@ -1844,5 +1866,69 @@ the base state of our website is built for that value range; there is no need to
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.1);
+  }
+}
+
+.spinner {
+  display: flex;
+  gap: 10px;
+}
+
+.spinner div {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: gray;
+}
+
+.bounce1 {
+  animation: spinner 1.4s -0.6s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s -0.6s ease-in-out infinite;
+}
+
+.bounce2 {
+  animation: spinner 1.4s -0.3s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s -0.3s ease-in-out infinite;
+}
+
+.bounce3 {
+  animation: spinner 1.4s 0s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s 0s ease-in-out infinite;
+}
+
+.spinner--animation1 {
+  animation: spinner 1.4s -0.6s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s -0.6s ease-in-out infinite;
+}
+
+.spinner--animation2 {
+  animation: spinner 1.4s -0.3s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s -0.3s ease-in-out infinite;
+}
+
+.spinner--animation3 {
+  animation: spinner 1.4s 0s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s 0s ease-in-out infinite;
+}
+
+@keyframes spinner {
+  0%,
+  100% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+}
+
+@@-webkit-keyframes spinner {
+  0%,
+  100% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1);
   }
 }
