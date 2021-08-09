@@ -118,11 +118,11 @@
 
       <!-- LEVEL  -->
       <div class="form__container form__level hiddenDisplay">
-        <h3 class="form__level__title text--upper">
+        <h3 class="form__common__title form__level__title text--upper">
           choose <br />
           your game level
         </h3>
-        <p class="form__level__description">
+        <p class="form__common__description">
           You have
           <span class="form__level__description--counts text--upper"
             >THREE</span
@@ -212,12 +212,13 @@
 
       <!-- COUNTRY  -->
       <div class="form__container form__country hiddenDisplay">
-        <h3 class="form__country__title title--small">
-          please select your country
+        <h3 class="form__common__title">
+          select <br />
+          your country
         </h3>
-        <p class="form__country__description">
+        <p class="form__common__description form__country__description">
           In this game <br />
-          using country as your character to against other countries
+          Using country as your character to against other countries
         </p>
         <div class="form__country__user">
           <div class="form__country__user__group">
@@ -275,8 +276,9 @@
 
       <!-- RANGE   -->
       <div class="form__container form__range hiddenDisplay">
-        <h3 class="form__range__title title--small">
-          select the number of range
+        <h3 class="form__common__title">
+          select <br />
+          the number of range
         </h3>
         <div class="form__range__container">
           <label class="form__range__label" for="range"
@@ -293,8 +295,9 @@
             class="form__range__input"
           />
           <div class="form__range__number">
-            <p>0 ~</p>
-            <output class="form__range__output" for="range"></output>
+            <p>0 ~&nbsp;</p>
+
+            <output class="form__range__output" for="range"> </output>
           </div>
         </div>
         <button
@@ -427,7 +430,11 @@
           HARD
         </button>
         <button
-          class="btn btn__nav btn__nav--background hiddenDisplay hiddenOpacity"
+          class="
+            btn btn__nav btn__nav--background btn__nav--background--faq
+            hiddenDisplay
+            hiddenOpacity
+          "
         >
           FAQ
         </button>
@@ -450,22 +457,22 @@
         <span class="test" ></span> -->
 
         <div class="player__overlay player__overlay--main">
-          <button class="btn btn__info">INFO</button>
+          <button data-id="0" class="btn btn__info">INFO</button>
         </div>
       </div>
       <div class="player player--1">
         <div class="player__overlay player__overlay--1">
-          <button class="btn btn__info">INFO</button>
+          <button data-id="1" class="btn btn__info">INFO</button>
         </div>
       </div>
       <div class="player player--2">
         <div class="player__overlay player__overlay--2">
-          <button class="btn btn__info">INFO</button>
+          <button data-id="2" class="btn btn__info">INFO</button>
         </div>
       </div>
       <div class="player player--3">
         <div class="player__overlay player__overlay--3">
-          <button class="btn btn__info">INFO</button>
+          <button data-id="3" class="btn btn__info">INFO</button>
         </div>
       </div>
 
@@ -484,7 +491,7 @@
 
         <p class="guess__item guess__useTool"></p>
 
-        <input class="guess__input" type="number" min="0" max="100" required />
+        <input class="guess__input" type="number" min="0" max="1000" required />
         <button class="btn btn--blue btn__guess__input">check</button>
 
         <!-- <div class="test"></div> -->
@@ -651,17 +658,23 @@
       <button class="btn btn__countryInfo__close">X</button>
       <h6 class="countryInfo__name">Japan</h6>
       <ul class="countryInfo__ul">
-        <li class="countryInfo__item countryInfo__content">content: Asia</li>
-        <li class="countryInfo__item countryInfo__capital">capital: Tokyo</li>
-        <li class="countryInfo__item countryInfo__area">area: 377930</li>
-        <li class="countryInfo__item countryInfo__population">
-          population: 12696000
+        <li class="countryInfo__item">
+          region: <span class="countryInfo__content"></span>
         </li>
-        <li class="countryInfo__item countryInfo__currencies">
-          currencies: JPY ¥
+        <li class="countryInfo__item">
+          capital: <span class="countryInfo__capital"></span>
         </li>
-        <li class="countryInfo__item countryInfo__language">
-          language: Japanese
+        <li class="countryInfo__item">
+          area: <span class="countryInfo__area"></span>
+        </li>
+        <li class="countryInfo__item">
+          population: <span class="countryInfo__population"></span>
+        </li>
+        <li class="countryInfo__item">
+          currencies: <span class="countryInfo__currencies"></span>
+        </li>
+        <li class="countryInfo__item">
+          language: <span class="countryInfo__language"></span>
         </li>
       </ul>
     </aside>
@@ -729,11 +742,6 @@
             →
           </button>
         </div>
-
-        <div class="popup__question__container">
-          <p>Are there any features?</p>
-          <button class="btn btn--blue btn__popup__question">→</button>
-        </div>
       </div>
 
       <!-- //  -->
@@ -742,11 +750,13 @@
         <button class="btn btn__popup__close">x</button>
         <h3>rule</h3>
         <ol>
-          <li class="popup__rule__list">
-            There is a new bomb number in each game
-          </li>
+          <li class="popup__rule__list">There is a bomb number in each game</li>
           <li class="popup__rule__list">
             Any player is only allowed to guess the number in valid range
+          </li>
+          <li class="popup__rule__list">
+            You have to guess the number in 30 second, or it will automatically
+            choose a random number for you
           </li>
           <li class="popup__rule__list">
             Game is over if you guess the bomb number
@@ -755,18 +765,25 @@
             You can use different tools to avoiding guessing the number
           </li>
           <li class="popup__rule__list">
+            Every other players(computer) will have three tool counts for every
+            level
+          </li>
+          <li class="popup__rule__list">
             If one of other players guesses the bomb number
             <ol type="I">
               <li class="popup__rule__nestedList">
-                You can have one more tool to use
+                Other remaining players can have one more tool to use
               </li>
               <li class="popup__rule__nestedList">
                 A new bomb number is re-created
               </li>
               <li class="popup__rule__nestedList">
-                A new number range is re-set
+                A new valid number range is re-set
               </li>
             </ol>
+          </li>
+          <li class="popup__rule__list">
+            You can only win the game if all other players lose the game
           </li>
         </ol>
       </div>
@@ -916,7 +933,7 @@
         <h3>invalid input</h3>
         <p class="popup__invalidInput__description">Your input is invalid</p>
         <p class="popup__invalidInput__description">
-          Only number inside the valud range <br />
+          Only number inside the valid range <br />
           is acceptable
         </p>
         <button class="btn btn--blue btn__invalidInput">again</button>
@@ -956,12 +973,25 @@
       <div class="popup popup__computerLoseGame hiddenDisplay">
         <h3 class="title--small">congratulation</h3>
         <h5 class="popup__computerLoseGame__description">
-          <span class="popup__computerLoseGame__countryName">player</span> guess
-          the bomb number <br />
+          <span class="popup__computerLoseGame__countryName">player</span>
+          <br />guess the bomb number <br />
           so you get one more tool counts
         </h5>
+
+        <p>Bomb Number: <span class="bomb__number--computer"></span></p>
+
         <button class="btn btn--blue text--upper btn__popup__computerLoseGame">
           continue
+        </button>
+      </div>
+
+      <!-- *** POP UP USER LOSE THE GAME  *** -->
+      <div class="popup popup__userLoseGame hiddenDisplay">
+        <h3>sorry</h3>
+        <h5>You lose the game</h5>
+        <p>Bomb Number: <span class="bomb__number--user"></span></p>
+        <button class="btn btn--blue text--upper btn__popup__userLoseGame">
+          restart
         </button>
       </div>
     </div>
