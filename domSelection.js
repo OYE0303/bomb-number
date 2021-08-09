@@ -7,6 +7,9 @@ export class DOM_SELECTION {
     this.userName = document.querySelector(".nav__username");
     this.navBackground = document.querySelector(".nav__background");
     this.btnNavBackground = document.querySelectorAll(".btn__nav--background");
+    this.btnNavBackGroundFaq = document.querySelector(
+      ".btn__nav--background--faq"
+    );
     this.navCheckbox = document.querySelector(".nav__checkbox");
     this.btnNavQuestion = document.querySelector(".btn__nav__question");
 
@@ -53,6 +56,7 @@ export class DOM_SELECTION {
     this.toolItem = document.querySelectorAll(".tool__item");
     this.btnToolUse = document.querySelectorAll(".btn__tool--use");
     this.btnToolQuestion = document.querySelectorAll(".btn__tool--question");
+    this.toolItemName = document.querySelectorAll(".tool__item__name");
 
     ///////////////////////////
     // *** COUNTDOWN ***
@@ -84,8 +88,10 @@ export class DOM_SELECTION {
     this.popupDiffLevel = document.querySelector(".popup__diffLevel");
     this.popupTool = document.querySelector(".popup__tool");
 
+    // level
     this.popupLevelWord = document.querySelector(".popup__level__word");
     this.btnPopupLevelNo = document.querySelector(".btn__popup__level--no");
+    this.btnPopupLevelYes = document.querySelector(".btn__popup__level--yes");
     this.popupLose = document.querySelector(".popup__lose");
     this.popupLoseDescription = document.querySelector(
       ".popup__lose__description"
@@ -128,6 +134,9 @@ export class DOM_SELECTION {
       ".btn__popup__computerLoseGame"
     );
 
+    // invalid input
+    this.btn__invalidInput = document.querySelector(".btn__invalidInput");
+
     ///////////////////////////
     // *** FORM ***
     ///////////////////////////
@@ -138,6 +147,7 @@ export class DOM_SELECTION {
     this.formOverlay = document.querySelector(".form__overlay");
 
     // FORM LEVEL
+    this.formLevel = document.querySelector(".form__level");
     this.formLevelInputGroup = document.querySelector(
       ".form__level__input__group"
     );
@@ -180,5 +190,14 @@ export class DOM_SELECTION {
     this.btnFormRangeNext = document.querySelector(".btn__form--range-next");
     this.btnFormRangeNext = document.querySelector(".btn__form--range-next");
     this.btnFormRangeBack = document.querySelector(".btn__form--range-back");
+
+    // user lose game
+    this.popupUserLoseGame = document.querySelector(".popup__userLoseGame");
+    this.btnPopupUserLoseGame = document.querySelector(
+      ".btn__popup__userLoseGame"
+    );
+
+    this.bombNumberUser = document.querySelector(".bomb__number--user");
+    this.bombNumberComputer = document.querySelector(".bomb__number--computer");
   }
 }
