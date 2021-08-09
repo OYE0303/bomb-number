@@ -7,6 +7,7 @@ const SVG = new SVGIcon();
 
 class APP {
   constructor() {
+    // player info
     this.userCountryInfo = new PLAYER__INFO();
     this.Computer1CountryInfo = new PLAYER__INFO();
     this.Computer2CountryInfo = new PLAYER__INFO();
@@ -36,16 +37,24 @@ class APP {
 
     // player order array
     this.currentOrder = 0;
-    this.computerNameOrderArr;
-    this.allPlayerArr;
-    this.computerPlayerArrNum = [0, 1, 2];
+    this.allPlayerArr = [
+      this.userCountryInfo,
+      this.Computer1CountryInfo,
+      this.Computer2CountryInfo,
+      this.Computer3CountryInfo,
+    ];
+    this.allPlayerArrNoChange = [...this.allPlayerArr];
 
     // reverse & order
     this.reverse = false;
     this.myTurn = true;
 
+    // count down (for clearSettimeInterval)
+    this.countDown;
+
     // init
     this.#addEventListener();
+    // this.#screenSmaller();
     // this.#countdown();
     // this.#createTargetNumber();
     // this.#nextPlayerOrder();
@@ -59,10 +68,24 @@ class APP {
   #addEventListener() {
     // this.#getAllCountryData();
     DOM.btnTool.addEventListener("click", this.#toolBtnToggle.bind(this));
+    DOM.toolItemName.forEach((toolName) =>
+      toolName.addEventListener("click", this.#useToolSmall.bind(this))
+    );
+
     DOM.btnCountryInfoClose.addEventListener(
       "click",
       this.#closeCountryInfo.bind(this)
     );
+
+    DOM.btnNavBackground.forEach((btnNav) =>
+      btnNav.addEventListener("click", this.#showPopupLevelSmall.bind(this))
+    );
+
+    DOM.btnNavBackGroundFaq.addEventListener(
+      "click",
+      this.#showPopupQuestionSmall.bind(this)
+    );
+
     DOM.navCheckbox.addEventListener(
       "click",
       this.#menuCheckboxToggle.bind(this)
@@ -90,6 +113,12 @@ class APP {
       this.#closePopupLevel.bind(this)
     );
 
+    // change level
+    DOM.btnPopupLevelYes.addEventListener(
+      "click",
+      this.#changeLevel.bind(this)
+    );
+
     // show different question(degelation)
     DOM.popupQuestion.addEventListener(
       "click",
@@ -114,6 +143,12 @@ class APP {
 
     DOM.btnToolQuestion.forEach((btn) =>
       btn.addEventListener("click", this.#showDiffToolUI.bind(this))
+    );
+
+    // popup invalid input
+    DOM.btn__invalidInput.addEventListener(
+      "click",
+      this.#closePopupInvalidInput.bind(this)
     );
 
     // can't use tool
@@ -211,22 +246,29 @@ class APP {
   ///////////////////////////////////////
   // *** COUNTDOWN ***
   ///////////////////////////////////////
-  #countdown() {
+  #showCountdown() {
     let i = 30;
-
-    const time = setInterval(() => {
-      if (i >= 10) DOM.countdownTime.textContent = `00:${i}`;
-      else DOM.countdownTime.textContent = `00:0${i}`;
+    DOM.countdownTime.style.color = "var(--white-light)";
+    DOM.countdownTime.textContent = `00:30`;
+    this.countDown = setInterval(() => {
+      if (i >= 10) {
+        DOM.countdownTime.textContent = `00:${i}`;
+      } else {
+        DOM.countdownTime.textContent = `00:0${i}`;
+        DOM.countdownTime.style.color = "var(--pink)";
+      }
       i--;
-
       if (i < 0) {
-        DOM.popupLoseDescription.textContent = `Because time is over`;
-        DOM.popupLose.classList.remove("hiddenDisplay");
-        DOM.popupOverlay.classList.remove("hiddenDisplay");
-        clearInterval(time);
-        DOM.countdownTime.textContent = `00:30`;
+        this.#takeGuessInput(null, true);
+        clearInterval(this.countDown);
+        DOM.countdownTime.textContent = ``;
       }
     }, 1000);
+  }
+
+  #closeCountDown() {
+    clearInterval(this.countDown);
+    DOM.countdownTime.textContent = ``;
   }
 
   ///////////////////////////////////////
@@ -501,18 +543,23 @@ class APP {
     const countryNameArr = [];
     let i = 0;
     while (i < 3) {
-      const randomNum = this.#createRandomNumber(0, data.length);
+      const randomNum = this.#createRandomNumber(0, data.length - 1);
+
+      // note that countryName is an object
       const countryName = data[randomNum];
+
+      // console.log(`User Country ${this.userCountryInfo.countryName}`);
 
       // check random country is not duplicate, and not as same as user's country
       if (
-        !countryNameArr.includes(countryName) &&
-        this.userCountryInfo.countryName !== countryName &&
-        countryName
+        !countryNameArr.includes(countryName.name) &&
+        this.userCountryInfo.countryName !== countryName.name &&
+        countryName.name
       ) {
         countryNameArr.push(countryName.name);
 
         // nice!!!
+        // set this.countryInfo in order
         this.Computer1CountryInfo.countryName
           ? this.Computer2CountryInfo.countryName
             ? (this.Computer3CountryInfo.countryName = countryName.name)
@@ -522,15 +569,6 @@ class APP {
         i++;
       }
     }
-
-    // set country name order array
-    this.computerNameOrderArr = [
-      this.Computer1CountryInfo,
-      this.Computer2CountryInfo,
-      this.Computer3CountryInfo,
-    ];
-
-    this.allPlayerArr = [this.userCountryInfo, ...this.computerNameOrderArr];
 
     return countryNameArr;
   }
@@ -571,6 +609,25 @@ class APP {
   // *** MAIN CONTENT ***
   ///////////////////////////////////////
   #setAllCountentUI() {
+    // SECOND TIME LOG IN
+    // remove img element if there are
+    const imgCollection = document.querySelectorAll(".country__img");
+    if (imgCollection) {
+      imgCollection.forEach((img) => img.remove());
+
+      // also remove country name
+      document
+        .querySelectorAll(".country__name")
+        .forEach((countryName) => countryName.remove());
+
+      // also close countdown
+      this.#closeCountDown();
+
+      this.reverse = false;
+    }
+
+    // FIRST TIME LOG IN
+
     // set userName on UI
     DOM.userName.textContent = this.userName;
 
@@ -592,6 +649,9 @@ class APP {
 
     // set target number
     this.#createTargetNumber();
+
+    // user turn
+    this.#userTurn();
   }
 
   #showContent() {
@@ -632,23 +692,41 @@ class APP {
   ///////////////////////////////////////
   // TODO check how to organize these two functions
   // this is only invoked when user submit input
-  #takeGuessInput(e) {
-    e.preventDefault();
+  #takeGuessInput(e, random = false) {
+    // prevent user accidentally empty string
+    // only use css to pretend there is no button
+    // check css input button
+    if (!random && DOM.guessInput.value === "") return;
+
+    e && e.preventDefault();
+
+    // get input value
+    let guessNumber;
+    if (random) {
+      guessNumber = this.#createComputerGuessingNumber(
+        this.minNumber,
+        this.maxNumber
+      );
+    } else {
+      guessNumber = Number(DOM.guessInput.value);
+      const checked = this.#checkInput(guessNumber);
+
+      if (checked) {
+        // wrong input UI
+        this.#showPopupInvalidInput();
+
+        return;
+      }
+
+      this.#closeCountDown();
+    }
+
+    this.#checkGuessInput(guessNumber);
 
     this.myTurn = false;
 
     // close "Your turn" UI
     this.#closePlayerOrderUI();
-
-    // prevent user accidentally empty string
-    // only use css to pretend there is no button
-    // check css input button
-    if (DOM.guessInput.value === "") return;
-
-    // get input value
-    const guessNumber = Number(DOM.guessInput.value);
-
-    this.#checkGuessInput(guessNumber);
 
     // close guess input
     // have to put here, or we cannot accept the user's input
@@ -696,6 +774,8 @@ class APP {
         if (guessNumber === this.targetNumber) {
           if (userPlayer) {
             // user game over UI
+            this.#showPopupUserLoseGame();
+            console.log("aa");
           } else {
             this.#computerLoseGame();
           }
@@ -724,14 +804,9 @@ class APP {
   }
 
   #computerGuessNumberLogic() {
-    // let currentOrder;
-    // if (this.reverse) currentOrder = this.currentOrder + 1;
-    // else currentOrder = this.currentOrder - 1;
-
     // first check computer out of tool counts
     // if yes, lose game
     // then check computer wants use tool
-    /*
     if (
       this.#checkComputerUseToolCounts(this.allPlayerArr[this.currentOrder]) ||
       this.#checkIfComputerUseTool()
@@ -739,17 +814,14 @@ class APP {
       // lose game
       return true;
     }
-    */
 
     // use tool
-    // return false;
-
-    return true;
+    return false;
   }
 
   #checkIfComputerUseTool() {
     // if remaining one guess number, defenitely use tool
-    if (this.maxNumber - this.minNumber === 2) return true;
+    if (this.maxNumber - this.minNumber === 2) return false;
 
     const randomNum = this.#createRandomNumber(1, 100);
     if (randomNum % 2 === 0) return true;
@@ -778,6 +850,13 @@ class APP {
   #showPopupComputerLoseGame() {
     this.#showPopupOverlay();
     DOM.popupComputerLoseGame.classList.remove("hiddenDisplay");
+
+    document.querySelector(
+      ".popup__computerLoseGame__countryName"
+    ).textContent = this.allPlayerArr[this.currentOrder].countryName;
+
+    // show bomb number
+    DOM.bombNumberComputer.textContent = this.targetNumber;
   }
 
   #closePopupComputerLoseGame() {
@@ -787,6 +866,9 @@ class APP {
     // eliminate player
     this.#eliminatePlayer(this.currentOrder);
     this.#checkOrderAndUpdate();
+
+    // show bomb number
+    DOM.bombNumberComputer.textContent = "";
   }
 
   #eliminatePlayer(playerNumber) {
@@ -869,25 +951,31 @@ class APP {
   #updateOrderUI(order) {
     // it's user's turn
     if (order === 0) {
-      this.#showGuessInput();
-      this.#showPlayerOrderUI("Your turn");
-
-      this.myTurn = true;
+      this.#userTurn();
     }
     // it's computer's turn
     else {
       this.#closePlayerOrderUI();
 
-      // note that this.computerNameOrderArr only has computer data, not include user data
-      // so it has to -1 to access the corret computer data
-      const currentCountryName =
-        this.allPlayerArr[this.currentOrder].countryName;
+      console.log(order);
+
+      const currentCountryName = this.allPlayerArr[order].countryName;
 
       // wait for computer's guessing(pretend computer is thinking(guessing))
       this.#waitComputerGuessingNumber(
         this.#showComputerWaitingUI.bind(this, `${currentCountryName}`)
       );
     }
+  }
+
+  #userTurn() {
+    this.#showGuessInput();
+    this.#showPlayerOrderUI("Your turn");
+
+    this.myTurn = true;
+
+    // show countDown
+    this.#showCountdown();
   }
 
   ///////////////////////////////////////
@@ -897,6 +985,9 @@ class APP {
     this.currentOrder++;
 
     if (this.currentOrder === this.allPlayerArr.length) this.currentOrder = 0;
+
+    console.log(this.reverse);
+    console.log("clockWise" + "" + this.currentOrder);
   }
 
   #updateCounterClockwiseOrder() {
@@ -904,6 +995,9 @@ class APP {
 
     if (this.currentOrder === -1)
       this.currentOrder = this.allPlayerArr.length - 1;
+
+    console.log(this.reverse);
+    console.log("counter clockWise" + "" + this.currentOrder);
   }
 
   ///////////////////////////////////////
@@ -988,6 +1082,8 @@ class APP {
     DOM.popupInvalidInput.classList.add("hiddenDisplay");
 
     DOM.popupInvalidInput.classList.add("hiddenOpacity");
+
+    this.#showPlayerOrderUI("Your turn");
   }
 
   ///////////////////////////////////////
@@ -1098,7 +1194,9 @@ class APP {
   ///////////////////////////////////////
   // *** COUNTRY INFO ***
   ///////////////////////////////////////
-  #showCountryInfo() {
+  #showCountryInfo(e) {
+    this.#chooseCountryInfo(Number(e.target.dataset.id));
+
     DOM.countryInfo.classList.remove("hiddenDisplay");
 
     this.#timeout(0).then(() =>
@@ -1115,14 +1213,56 @@ class APP {
   }
 
   #addEventCountryInfo() {
-    DOM.btnInfo[0].addEventListener("click", this.#showCountryInfo.bind(this));
-    DOM.btnInfo[1].addEventListener("click", this.#showCountryInfo.bind(this));
-    DOM.btnInfo[2].addEventListener("click", this.#showCountryInfo.bind(this));
-    DOM.btnInfo[3].addEventListener("click", this.#showCountryInfo.bind(this));
-    // DOM.btnInfo.forEach(function (btn) {
-    //   console.log(btn);
-    //   btn.addEventListener("click", this.#showCountryInfo.bind(this));
-    // });
+    DOM.btnInfo.forEach((btn) =>
+      btn.addEventListener("click", this.#showCountryInfo.bind(this))
+    );
+  }
+
+  #chooseCountryInfo(order) {
+    const countryName = this.allPlayerArrNoChange[order].countryName;
+    const contryElement = document.querySelector(".countryInfo__name");
+
+    if (countryName.length >= 30) contryElement.style.fontSize = "1rem";
+    else if (countryName.length >= 20 && countryName.length < 30)
+      contryElement.style.fontSize = "2rem";
+    else if (countryName.length >= 10 && countryName.length < 20)
+      contryElement.style.fontSize = "3rem";
+    else contryElement.style.fontSize = "5rem";
+
+    contryElement.textContent = this.allPlayerArrNoChange[order].countryName;
+
+    document.querySelector(".countryInfo__content").textContent =
+      this.allPlayerArrNoChange[order].countryData.region;
+    document.querySelector(".countryInfo__capital").textContent =
+      this.allPlayerArrNoChange[order].countryData.capital;
+    document.querySelector(".countryInfo__area").textContent =
+      this.#convertNumberToString(
+        this.allPlayerArrNoChange[order].countryData.area
+      );
+    document.querySelector(".countryInfo__population").textContent =
+      this.#convertNumberToString(
+        this.allPlayerArrNoChange[order].countryData.population
+      );
+    document.querySelector(".countryInfo__currencies").textContent =
+      this.allPlayerArrNoChange[order].countryData.currencies[0].code;
+
+    document.querySelector(".countryInfo__language").textContent =
+      this.allPlayerArrNoChange[order].countryData.languages[0].name;
+  }
+
+  #convertNumberToString(num) {
+    if (num === undefined) return null;
+
+    let newNum;
+    if (num > 1000000) {
+      newNum = String((num / 1000000).toFixed(1)) + "M";
+      return newNum;
+    } else if (num > 1000) {
+      newNum = String((num / 1000).toFixed(1)) + "K";
+      return newNum;
+    }
+
+    return String(num);
   }
 
   ///////////////////////////////////////
@@ -1255,6 +1395,33 @@ class APP {
     DOM.popupLevel.classList.add("hiddenOpacity");
   }
 
+  #changeLevel() {
+    for (let i = 0; i < DOM.page.length; i++) {
+      DOM.page[i].classList.add("hiddenDisplay");
+      DOM.page[i].classList.add("hiddenOpacity");
+    }
+
+    this.#closePopupLevel();
+
+    this.formOrder = 1;
+    DOM.formLevel.classList.remove("hiddenDisplay");
+    DOM.formOverlay.classList.remove("hiddenDisplay");
+  }
+
+  #showPopupLevelSmall() {
+    this.#showPopupOverlay();
+
+    DOM.popupLevel.classList.remove("hiddenDisplay");
+
+    this.#timeout(0).then(() => {
+      DOM.popupLevel.classList.remove("hiddenOpacity");
+    });
+
+    DOM.navBackground.classList.add("hiddenDisplay");
+    DOM.navBackground.classList.add("hiddenOpacity");
+    DOM.navCheckbox.checked = false;
+  }
+
   ///////////////////////////////////////
   // *** POPUP QUESTION ***
   ///////////////////////////////////////
@@ -1265,6 +1432,19 @@ class APP {
     this.#timeout(0).then(() =>
       DOM.popupQuestion.classList.remove("hiddenOpacity")
     );
+  }
+
+  #showPopupQuestionSmall() {
+    this.#showPopupOverlay();
+    DOM.popupQuestion.classList.remove("hiddenDisplay");
+
+    this.#timeout(0).then(() =>
+      DOM.popupQuestion.classList.remove("hiddenOpacity")
+    );
+
+    DOM.navBackground.classList.add("hiddenDisplay");
+    DOM.navBackground.classList.add("hiddenOpacity");
+    DOM.navCheckbox.checked = false;
   }
 
   ///////////////////////////////////////
@@ -1308,7 +1488,6 @@ class APP {
       result.pop();
     }
 
-    console.log(this.allPlayerArr);
     let html = `
     <h5 class = "popup__assign__subTitle">
       Which player <br />
@@ -1403,11 +1582,14 @@ class APP {
   // *** SHOW USE TOOL UI ***
   ///////////////////////////////////////
   #showUseToolUI(tool, player) {
+    if (player.length >= 20) DOM.guessUseTool.style.top = "70%";
+    else DOM.guessUseTool.style.top = "50%";
     // set simple html
     const useToolHTML = `use ${tool}`;
 
     // show html on UI
     DOM.guessUseToolUserName.textContent = `${player}`;
+
     DOM.guessUseTool.textContent = useToolHTML;
 
     // close popup
@@ -1445,6 +1627,9 @@ class APP {
 
     // not my turn anymore
     this.myTurn = false;
+
+    // close countdown
+    this.#closeCountDown();
 
     // get the used tool
     const tool = e.target
@@ -1487,6 +1672,12 @@ class APP {
     return false;
   }
 
+  #generateToolIcon(tool) {
+    if (tool === "ASSIGN") return SVG.assignImg;
+    if (tool === "PASS") return SVG.passImg;
+    if (tool === "U-TURN") return SVG.uturnImg;
+  }
+
   ///////////////////////////////////////
   // *** WHICH TOOL ***
   ///////////////////////////////////////
@@ -1505,18 +1696,14 @@ class APP {
     // assign
     const assignOrder = document.querySelector(".popup__assign__select");
 
+    // user use assign
     if (assignOrder) this.currentOrder = assignOrder.value;
+    // computer use assign
     else {
-      // let result;
-      // if (this.reverse) result = [1, 2, 3, 4];
-      // else result = [0, 1, 2, 3];
-
       // avoid assign itself
+      let randomNumAssign;
       while (true) {
-        let randomNumAssign = this.#createRandomNumber(
-          0,
-          this.allPlayerArr.length
-        );
+        randomNumAssign = this.#createRandomNumber(0, this.allPlayerArr.length);
 
         // avoid assign itself
         // Logic
@@ -1528,7 +1715,7 @@ class APP {
         } else if (randomNumAssign !== this.currentOrder - 1) break;
       }
 
-      this.currentOrder = assignOrder;
+      this.currentOrder = randomNumAssign;
     }
   }
 
@@ -1587,6 +1774,73 @@ class APP {
     DOM.popupCantUseTool.classList.add("hiddenDisplay");
     DOM.popupCantUseTool.classList.add("hiddenOpacity");
   }
+
+  ///////////////////////////////////////
+  // *** POP UP USER LOSE GAME ***
+  ///////////////////////////////////////
+  #showPopupUserLoseGame() {
+    this.#showPopupOverlay();
+    DOM.popupUserLoseGame.classList.remove("hiddenDisplay");
+    DOM.bombNumberUser.textContent = this.targetNumber;
+
+    // only user lose the game, add eventlistenr on reload btn
+    DOM.btnPopupUserLoseGame.addEventListener("click", function () {
+      location.reload();
+    });
+  }
+
+  ///////////////////////////////////////
+  // *** IF SCREEN GETTING SMALLER ***
+  ///////////////////////////////////////
+  #useToolSmall(e) {
+    if (window.innerWidth <= 1200) {
+      // first check if it's user's turn
+      if (!this.myTurn) {
+        this.#showPopupCantUseTool();
+        return;
+      }
+
+      // then check counts if can use tool
+      if (this.userCountryInfo.toolCounts === 0) {
+        this.#showPopupCantUseTool(true);
+        return;
+      }
+
+      // okay, user can use tool
+      this.#showPopupOverlay();
+      DOM.popupUseTool.classList.remove("hiddenDisplay");
+
+      // assign
+      if (e.target.textContent === "ASSIGN") {
+        DOM.popupUseToolTitle.insertAdjacentHTML(
+          "afterend",
+          this.#showPopupAssignUI()
+        );
+        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.assign);
+
+        // font size of description smaller
+        // because UI of assign is more
+        DOM.popupUseToolDescription.style.fontSize = "1.5rem";
+      }
+
+      // pass
+      if (e.target.textContent === "PASS")
+        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.pass);
+
+      // uturn
+      if (e.target.textContent === "U-TURN")
+        DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
+
+      this.#timeout(0).then(() =>
+        DOM.popupUseTool.classList.remove("hiddenOpacity")
+      );
+    }
+  }
+  // #screenSmaller() {
+  //   if (window.innerWidth <= 1200) {
+  //     console.log("hi");
+  //   }
+  // }
 }
 
 const app = new APP();
