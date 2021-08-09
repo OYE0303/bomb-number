@@ -48,6 +48,8 @@ body {
   display: grid;
   grid-template-columns: 2fr 2fr 6fr 2fr;
   grid-template-rows: 1.2fr 2fr 8fr 2fr;
+
+  overflow-x: hidden;
 }
 
 h3 {
@@ -141,6 +143,10 @@ select {
 
 .page {
   transition: all 2s ease;
+}
+
+.font5 {
+  font-size: 5rem;
 }
 
 .font4 {
@@ -606,6 +612,11 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .guess__useTool__playerName {
   top: 38%;
+  text-align: center;
+}
+
+.guess__useTool {
+  /* top: 70%; */
 }
 
 /* animation  */
@@ -659,7 +670,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .countryInfo__name {
-  font-size: 5rem;
+  /* font-size: 5rem; */
   font-weight: 300;
   letter-spacing: 3px;
   margin-top: 0.5rem;
@@ -926,9 +937,10 @@ And use whitee space to find the child (.nav__menu__icon)
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 3000;
-  height: 50%;
+  height: 60%;
   width: 40%;
-  min-width: 500px;
+  max-width: 800px;
+  padding: 10px 40px;
 
   background-color: rgba(121, 151, 163, 255);
 
@@ -1003,7 +1015,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .popup__question__container p {
-  font-size: 1.9rem;
+  font-size: 2.2rem;
   margin-right: 1.2rem;
 }
 
@@ -1014,12 +1026,10 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** POP UP RULE*** */
 /* /////////////////////////// */
-.popup__rule {
-  font-size: 1.8rem;
-}
 
-.popup__rule > ol {
-  /* transform: translateX(30px); */
+.popup__rule {
+  height: 90%;
+  font-size: 2rem;
 }
 
 .popup__rule li:hover {
@@ -1028,6 +1038,7 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .popup__rule__list {
   list-style: decimal;
+  /* text-align: center; */
 }
 
 .popup__rule__list:not(:last-child) {
@@ -1046,7 +1057,7 @@ And use whitee space to find the child (.nav__menu__icon)
 /* *** POP UP DIFF LEVEL*** */
 /* /////////////////////////// */
 .popup__diffLevel p {
-  font-size: 1.7rem;
+  font-size: 2rem;
 }
 
 .popup__diffLevel span {
@@ -1066,7 +1077,8 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .popup__tool p {
-  font-size: 1.8rem;
+  font-size: 2rem;
+  text-align: center;
 }
 
 .popup__tool__container:hover p {
@@ -1186,8 +1198,33 @@ And use whitee space to find the child (.nav__menu__icon)
   font-size: 2.5rem;
 }
 
+.popup__computerLoseGame p {
+  font-size: 2rem;
+}
+
 .btn__popup__computerLoseGame {
   font-size: 2rem;
+  padding: 1rem 2rem;
+}
+
+/* /////////////////////////// */
+/* *** POP UP USER LOSE THE GAME *** */
+/* /////////////////////////// */
+.popup__userLoseGame h3 {
+  font-size: 5rem;
+  color: var(--pink);
+}
+
+.popup__userLoseGame h5 {
+  font-size: 3.5rem;
+}
+
+.popup__userLoseGame p {
+  font-size: 2.5rem;
+}
+
+.btn__popup__userLoseGame {
+  font-size: 1.5rem;
   padding: 1rem 2rem;
 }
 
@@ -1216,7 +1253,7 @@ And use whitee space to find the child (.nav__menu__icon)
 
   background-color: var(--white-light);
   border-radius: 20px;
-  box-shadow: 10px 10px 10px var(--black);
+  box-shadow: 20px 20px 10px var(--black);
 
   display: flex;
   flex-direction: column;
@@ -1304,15 +1341,12 @@ And use whitee space to find the child (.nav__menu__icon)
   transform: translateY(0);
 }
 
-/* /////////////////////////// */
-/* *** FORM LEVEL *** */
-/* /////////////////////////// */
-.form__level__title {
+.form__common__title {
   font-size: 4rem;
   text-align: center;
 }
 
-.form__level__description {
+.form__common__description {
   font-size: 2.5rem;
   text-align: center;
 
@@ -1320,6 +1354,9 @@ And use whitee space to find the child (.nav__menu__icon)
   width: 90%;
 }
 
+/* /////////////////////////// */
+/* *** FORM LEVEL *** */
+/* /////////////////////////// */
 .form__level__description span {
   font-weight: 600;
   font-style: italic;
@@ -1354,6 +1391,7 @@ And use whitee space to find the child (.nav__menu__icon)
   border: 2px solid var(--pink);
 }
 
+/* hide radio  */
 .form__level__radio--input {
   display: none;
 }
@@ -1388,8 +1426,8 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** FORM COUNTRY *** */
 /* /////////////////////////// */
-.form__country__title {
-  font-size: 2.5rem;
+.form__country__description {
+  margin: 10px 0 20px 0;
 }
 
 .form__country__user {
@@ -1406,14 +1444,14 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .form__country__region__label,
 .form__country__country__label {
-  font-size: 1.5rem;
-  margin-bottom: 5px;
+  font-size: 1.7rem;
 }
 
 .form__country__region__select,
 .form__country__name__select {
   padding: 3px 0;
   border-radius: 5px;
+  font-size: 1.5rem;
 }
 
 .form__country__img__container {
@@ -1433,17 +1471,9 @@ And use whitee space to find the child (.nav__menu__icon)
   opacity: 1;
 }
 
-.form__country__description {
-  font-size: 1.5rem;
-  text-align: center;
-}
-
 /* /////////////////////////// */
 /* *** FORM RANGE *** */
 /* /////////////////////////// */
-.form__range__title {
-  font-size: 2.5rem;
-}
 
 .form__range__container {
   display: flex;
@@ -1456,7 +1486,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .form__range__label {
-  font-size: 2rem;
+  font-size: 2.5rem;
 }
 
 .form__range__number {
@@ -1467,8 +1497,7 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .form__range__number,
 .form__range__output {
-  font-size: 2rem;
-  text-align: center;
+  font-size: 2.5rem;
 }
 
 /* /////////////////////////// */
@@ -1599,6 +1628,17 @@ the base state of our website is built for that value range; there is no need to
   .btn__info {
     display: none;
   }
+
+  .popup {
+    width: 45%;
+  }
+
+  .form__container {
+    width: 40%;
+  }
+  .guess__input {
+    margin-bottom: -30px;
+  }
 }
 
 /* /////////////////////////// */
@@ -1629,6 +1669,14 @@ the base state of our website is built for that value range; there is no need to
     position: relative;
     z-index: 10;
   }
+
+  .popup {
+    width: 50%;
+  }
+
+  .form__container {
+    width: 50%;
+  }
 }
 
 /* /////////////////////////// */
@@ -1655,6 +1703,18 @@ the base state of our website is built for that value range; there is no need to
   }
 
   .input {
+    margin-bottom: -20px;
+  }
+
+  .popup {
+    width: 55%;
+  }
+
+  .form__container {
+    width: 55%;
+  }
+
+  .guess__input {
     margin-bottom: -20px;
   }
 }
@@ -1716,6 +1776,22 @@ the base state of our website is built for that value range; there is no need to
     align-self: start;
     margin: 0;
   }
+
+  .popup {
+    width: 60%;
+  }
+
+  .form__container {
+    width: 70%;
+  }
+
+  .guess__input {
+    margin-bottom: -15px;
+  }
+
+  .square {
+    transform: translateY(-10px);
+  }
 }
 
 /* /////////////////////////// */
@@ -1725,6 +1801,14 @@ the base state of our website is built for that value range; there is no need to
   html {
     font-size: 35%;
   }
+
+  .popup {
+    width: 65%;
+  }
+
+  .form__container {
+    width: 80%;
+  }
 }
 
 /* /////////////////////////// */
@@ -1733,6 +1817,13 @@ the base state of our website is built for that value range; there is no need to
 @media screen and (max-width: 300px) {
   html {
     font-size: 30%;
+  }
+  .form__container {
+    width: 90%;
+  }
+
+  .popup {
+    width: 70%;
   }
 }
 
@@ -1855,17 +1946,14 @@ the base state of our website is built for that value range; there is no need to
 @keyframes useTool {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.1);
   }
 
   50% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.5);
   }
 
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.1);
   }
 }
 
@@ -1931,4 +2019,8 @@ the base state of our website is built for that value range; there is no need to
   50% {
     transform: scale(1);
   }
+}
+
+.popup__computerLoseGame__countryName {
+  color: var(--white-light);
 }
