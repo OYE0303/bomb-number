@@ -1975,3 +1975,10 @@ the base state of our website is built for that value range; there is no need to
     transform: scale(1);
   }
 }
+
+.btn__popup__yesNO {
+  font-size: 2rem;
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  margin-right: 1rem;
+}
