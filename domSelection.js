@@ -1,4 +1,4 @@
-export class DOM_SELECTION {
+export class DOM__SELECTION {
   constructor() {
     this.remaingCounts = document.querySelectorAll(".remaing__counts");
     ///////////////////////////
@@ -47,6 +47,8 @@ export class DOM_SELECTION {
     this.bounce1 = document.querySelector(".bounce1");
     this.bounce2 = document.querySelector(".bounce2");
     this.bounce3 = document.querySelector(".bounce3");
+
+    this.waiting = document.querySelectorAll(".waiting");
 
     ///////////////////////////
     // *** TOOL ***
@@ -191,13 +193,17 @@ export class DOM_SELECTION {
     this.btnFormRangeNext = document.querySelector(".btn__form--range-next");
     this.btnFormRangeBack = document.querySelector(".btn__form--range-back");
 
+    this.btnFormCheckRule = document.querySelector(".btn__form__checkRule");
+    this.formRange = document.querySelector(".form__range");
+
     // user lose game
     this.popupUserLoseGame = document.querySelector(".popup__userLoseGame");
-    this.btnPopupUserLoseGame = document.querySelector(
-      ".btn__popup__userLoseGame"
-    );
+    this.btnPopupRestart = document.querySelector(".btn__popup__restart");
 
     this.bombNumberUser = document.querySelector(".bomb__number--user");
     this.bombNumberComputer = document.querySelector(".bomb__number--computer");
+
+    // user win game
+    this.popupUserWinGame = document.querySelector(".popup__userWinGame");
   }
 }
