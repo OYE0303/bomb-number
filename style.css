@@ -408,15 +408,6 @@ And use whitee space to find the child (.nav__menu__icon)
 
   /* for overlay, country name and btn  */
   position: relative;
-
-  /* not sure??  */
-  /* top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 100; 
-
-  box-sizing: border-box;
-  overflow: hidden; */
 }
 
 .player--main {
@@ -560,7 +551,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .guess__input:focus:invalid {
-  border: 3px solid #f65164;
+  border: 3px solid var(--pink);
 }
 
 .btn__guess__input {
@@ -585,7 +576,7 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .guess__item {
   position: absolute;
-  top: 50%;
+
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -601,6 +592,8 @@ And use whitee space to find the child (.nav__menu__icon)
   color: var(--white-normal);
   letter-spacing: 5px;
   text-align: center;
+
+  top: 50%;
 }
 
 .guess__useTool,
@@ -616,7 +609,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .guess__useTool {
-  /* top: 70%; */
+  top: 50%;
 }
 
 /* animation  */
@@ -652,11 +645,11 @@ And use whitee space to find the child (.nav__menu__icon)
   border: 5px solid rgba(252, 252, 252, 0.329);
   border-radius: 30px;
   background-color: #2d325a8f;
-  box-shadow: -5px -5px 10px rgba(252, 252, 252, 0.1);
+  /* box-shadow: -5px -5px 10px rgba(252, 252, 252, 0.1); */
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 
   transition: 0.5s ease;
@@ -675,6 +668,9 @@ And use whitee space to find the child (.nav__menu__icon)
   letter-spacing: 3px;
   margin-top: 0.5rem;
   font-weight: 500;
+  display: inline-block;
+  width: 80%;
+  text-align: center;
 }
 
 .countryInfo__ul {
@@ -682,8 +678,8 @@ And use whitee space to find the child (.nav__menu__icon)
   list-style: none;
   flex-wrap: wrap;
 
-  margin-top: -5rem;
-  padding-bottom: 1rem;
+  /* margin-top: -5rem;
+  padding-bottom: 1rem; */
 }
 
 .countryInfo__item {
@@ -766,7 +762,7 @@ And use whitee space to find the child (.nav__menu__icon)
   align-items: center;
 
   cursor: pointer;
-  margin-left: 50px;
+  margin-left: 5rem;
 
   width: 100%;
   height: 30%;
@@ -901,17 +897,6 @@ And use whitee space to find the child (.nav__menu__icon)
   margin-bottom: 10px;
 }
 
-/* .btn__showLevel:hover {
-  box-shadow: 0 0 10px var(--purple--normal) inset,
-    0 0 10px 4px var(--purple--normal);
-}
-
-.btn__showLevel:active {
-  box-shadow: 0 0 40px var(--purple--normal) inset,
-    0 0 0 0 var(--purple--normal);
-} */
-
-/* TODO (REMOVE) */
 .hiddenDisplay {
   display: none;
 }
@@ -954,18 +939,35 @@ And use whitee space to find the child (.nav__menu__icon)
   transition: all 0.6s ease;
 }
 
-.popup h3 {
-  font-size: 3rem;
+.popup__title {
+  font-size: 4rem;
+  /* font-size: 4.5rem; */
   text-transform: uppercase;
   text-align: center;
 }
 
-.popup h5 {
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 2rem;
+.popup__subTitle {
+  font-size: 3rem;
+  /* font-size: 3.5rem; */
   text-align: center;
-  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.popup__description {
+  font-size: 2rem;
+  /* font-size: 2.5rem; */
+  text-align: center;
+}
+
+.popup__btn {
+  font-size: 2rem;
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+}
+
+.popup__btn__container {
+  display: flex;
+  gap: 30px;
 }
 
 .btn__popup__close {
@@ -983,24 +985,14 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** POP UP LEVEL*** */
 /* /////////////////////////// */
+.popup__level__word {
+  font-weight: 700;
+  font-style: italic;
+  margin-right: 10px;
+}
+
 .popup__level__word:hover {
   color: var(--white-light);
-}
-
-.popup__level__title {
-  text-align: center;
-}
-
-.popup__level__description {
-  font-size: 2rem;
-}
-
-.btn__popup__yesno {
-  font-size: 2rem;
-  padding: 0.5rem 2rem;
-  margin-right: 10px;
-
-  text-transform: uppercase;
 }
 
 /* /////////////////////////// */
@@ -1015,7 +1007,6 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .popup__question__container p {
-  font-size: 2.2rem;
   margin-right: 1.2rem;
 }
 
@@ -1026,10 +1017,13 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** POP UP RULE*** */
 /* /////////////////////////// */
-
 .popup__rule {
   height: 90%;
-  font-size: 2rem;
+  padding: 0 7rem;
+}
+
+.popup__rule__list__container {
+  /* height: 60%; */
 }
 
 .popup__rule li:hover {
@@ -1038,7 +1032,7 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .popup__rule__list {
   list-style: decimal;
-  /* text-align: center; */
+  text-align: start;
 }
 
 .popup__rule__list:not(:last-child) {
@@ -1056,16 +1050,25 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** POP UP DIFF LEVEL*** */
 /* /////////////////////////// */
-.popup__diffLevel p {
-  font-size: 2rem;
-}
-
 .popup__diffLevel span {
   font-weight: 600;
+  font-style: italic;
+  margin-right: 3px;
 }
 
 .popup__diffLevel__container:hover p {
   color: var(--white-normal);
+}
+
+.popup__tool__icon {
+  width: 3rem;
+  height: 3rem;
+  margin-right: 10px;
+}
+
+.popup__tool__container h5 {
+  display: flex;
+  align-items: baseline;
 }
 
 /* /////////////////////////// */
@@ -1086,49 +1089,21 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 /* /////////////////////////// */
-/* *** POP UP LOSE*** */
-/* /////////////////////////// */
-.popup__lose h3 {
-  font-size: 4rem;
-  color: var(--pink);
-}
-
-.popup__lose p {
-  font-size: 2.5rem;
-}
-
-.btn__lose {
-  font-size: 2rem;
-  padding: 1rem 2rem;
-}
-
-/* /////////////////////////// */
 /* *** POP UP INVALID INPUT *** */
 /* /////////////////////////// */
 .popup__invalidInput {
   transition: all 0.5s ease;
 }
+
 .popup__invalidInput h3 {
-  font-size: 5rem;
   color: var(--pink);
-}
-
-.popup__invalidInput p {
-  font-size: 2.5rem;
-  text-align: center;
-}
-
-.btn__invalidInput {
-  font-size: 2rem;
-  padding: 1rem 2rem;
-  text-transform: uppercase;
 }
 
 /* /////////////////////////// */
 /* *** POP UP USE TOOL *** */
 /* /////////////////////////// */
-.popup__useTool p {
-  font-size: 2rem;
+.popup__useTool {
+  transition: all 0.5s ease;
 }
 
 /* have to be more specificity to select the word */
@@ -1145,6 +1120,11 @@ And use whitee space to find the child (.nav__menu__icon)
   width: 4rem;
   height: 4rem;
   margin-top: 5px;
+}
+
+.popup__subTitle--assign {
+  font-size: 2.5rem;
+  text-align: center;
 }
 
 /* /////////////////////////// */
@@ -1173,59 +1153,41 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 .popup__cantUseTool h3:first-child {
   color: var(--pink);
-  font-size: 4.5rem;
-}
-
-.btn__popup__cantUseTool {
-  font-size: 1.5rem;
-  text-transform: uppercase;
-  padding: 1rem 2rem;
-}
-
-.popup__cantUseTool--counts h3 {
-  font-size: 2.5rem;
 }
 
 /* /////////////////////////// */
 /* *** POPUP GET ONE MORE COUNTS *** */
 /* /////////////////////////// */
 .popup__computerLoseGame h3 {
-  font-size: 4rem;
   color: var(--blue);
 }
 
-.popup__computerLoseGame h5 {
-  font-size: 2.5rem;
+.popup__computerLoseGame__countryName {
 }
 
-.popup__computerLoseGame p {
-  font-size: 2rem;
+.popup__computerLoseGame--subTitle {
+  font-size: 2.8rem;
 }
 
-.btn__popup__computerLoseGame {
-  font-size: 2rem;
-  padding: 1rem 2rem;
+.popup__computerLoseGame__countryName {
+  font-size: 3.5rem;
+  color: var(--white-light);
+  font-weight: 700;
+  letter-spacing: 3px;
 }
 
 /* /////////////////////////// */
 /* *** POP UP USER LOSE THE GAME *** */
 /* /////////////////////////// */
 .popup__userLoseGame h3 {
-  font-size: 5rem;
   color: var(--pink);
 }
 
-.popup__userLoseGame h5 {
-  font-size: 3.5rem;
-}
-
-.popup__userLoseGame p {
-  font-size: 2.5rem;
-}
-
-.btn__popup__userLoseGame {
-  font-size: 1.5rem;
-  padding: 1rem 2rem;
+/* /////////////////////////// */
+/* *** POP UP USER WIN THE GAME *** */
+/* /////////////////////////// */
+.popup__userWinGame h3 {
+  color: var(--blue);
 }
 
 /* /////////////////////////// */
@@ -1277,7 +1239,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .form__title {
-  font-size: 6rem;
+  font-size: 5.5rem;
 }
 
 .form__icon {
@@ -1474,7 +1436,6 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** FORM RANGE *** */
 /* /////////////////////////// */
-
 .form__range__container {
   display: flex;
   flex-direction: column;
@@ -1500,43 +1461,53 @@ And use whitee space to find the child (.nav__menu__icon)
   font-size: 2.5rem;
 }
 
+.btn__form__checkRule {
+  padding: 1rem 1.5rem;
+}
+
 /* /////////////////////////// */
-/* *** ANIMATION *** */
+/* *** SPINNER *** */
 /* /////////////////////////// */
-.player span {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  width: 100%;
-  height: 100%;
-  display: block;
-  box-sizing: border-box;
+.spinner {
+  display: flex;
+  gap: 10px;
 }
 
-.player span:nth-child(1) {
-  transform: rotate(0deg);
+.spinner div {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: gray;
 }
 
-.player span:nth-child(2) {
-  transform: translateX(33px) rotate(90deg);
+.bounce1 {
+  animation: spinner 1.4s -0.6s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s -0.6s ease-in-out infinite;
 }
 
-.player span:nth-child(3) {
-  transform: rotate(180deg);
+.bounce2 {
+  animation: spinner 1.4s -0.3s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s -0.3s ease-in-out infinite;
 }
 
-.player span:nth-child(4) {
-  transform: translateX(-33px) rotate(270deg);
+.bounce3 {
+  animation: spinner 1.4s 0s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s 0s ease-in-out infinite;
 }
 
-.player span:before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 3px;
-  background: #50dfdb;
-  /* animation: animate 4s linear infinite; */
+.spinner--animation1 {
+  animation: spinner 1.4s -0.6s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s -0.6s ease-in-out infinite;
+}
+
+.spinner--animation2 {
+  animation: spinner 1.4s -0.3s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s -0.3s ease-in-out infinite;
+}
+
+.spinner--animation3 {
+  animation: spinner 1.4s 0s ease-in-out infinite;
+  -webkit-animation: spinner 1.4s 0s ease-in-out infinite;
 }
 
 @keyframes animate {
@@ -1582,6 +1553,23 @@ the base state of our website is built for that value range; there is no need to
     because 1rem is 16px by default
     */
     font-size: 80%;
+  }
+}
+
+/* /////////////////////////// */
+/* *** 1800px *** */
+/* /////////////////////////// */
+@media screen and (min-width: 1800px) {
+  .popup__title {
+    font-size: 4.5rem;
+  }
+
+  .popup__subTitle {
+    font-size: 3.5rem;
+  }
+
+  .popup__description {
+    font-size: 2.5rem;
   }
 }
 
@@ -1639,6 +1627,10 @@ the base state of our website is built for that value range; there is no need to
   .guess__input {
     margin-bottom: -30px;
   }
+
+  .countryInfo {
+    display: none;
+  }
 }
 
 /* /////////////////////////// */
@@ -1676,6 +1668,10 @@ the base state of our website is built for that value range; there is no need to
 
   .form__container {
     width: 50%;
+  }
+
+  .range {
+    transform: translateY(-50px);
   }
 }
 
@@ -1768,6 +1764,7 @@ the base state of our website is built for that value range; there is no need to
     grid-column: 1/3;
     grid-row: 3/4;
     margin-top: -10px;
+    transform: translateY(-60px);
   }
 
   .countdown {
@@ -1957,48 +1954,6 @@ the base state of our website is built for that value range; there is no need to
   }
 }
 
-.spinner {
-  display: flex;
-  gap: 10px;
-}
-
-.spinner div {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: gray;
-}
-
-.bounce1 {
-  animation: spinner 1.4s -0.6s ease-in-out infinite;
-  -webkit-animation: spinner 1.4s -0.6s ease-in-out infinite;
-}
-
-.bounce2 {
-  animation: spinner 1.4s -0.3s ease-in-out infinite;
-  -webkit-animation: spinner 1.4s -0.3s ease-in-out infinite;
-}
-
-.bounce3 {
-  animation: spinner 1.4s 0s ease-in-out infinite;
-  -webkit-animation: spinner 1.4s 0s ease-in-out infinite;
-}
-
-.spinner--animation1 {
-  animation: spinner 1.4s -0.6s ease-in-out infinite;
-  -webkit-animation: spinner 1.4s -0.6s ease-in-out infinite;
-}
-
-.spinner--animation2 {
-  animation: spinner 1.4s -0.3s ease-in-out infinite;
-  -webkit-animation: spinner 1.4s -0.3s ease-in-out infinite;
-}
-
-.spinner--animation3 {
-  animation: spinner 1.4s 0s ease-in-out infinite;
-  -webkit-animation: spinner 1.4s 0s ease-in-out infinite;
-}
-
 @keyframes spinner {
   0%,
   100% {
@@ -2019,8 +1974,4 @@ the base state of our website is built for that value range; there is no need to
   50% {
     transform: scale(1);
   }
-}
-
-.popup__computerLoseGame__countryName {
-  color: var(--white-light);
 }
