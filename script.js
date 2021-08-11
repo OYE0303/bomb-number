@@ -1690,7 +1690,6 @@ class APP {
   }
 
   #whichToolComputer() {
-    return "ASSIGN";
     const randomNumberTool = this.#createRandomNumber(0, 2);
 
     // pass
