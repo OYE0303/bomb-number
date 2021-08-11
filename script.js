@@ -223,7 +223,6 @@ class APP {
   ///////////////////////////////////////
   #createTargetNumber() {
     this.targetNumber = this.#createRandomNumber(1, this.maxNumber - 1);
-    console.log(this.targetNumber);
   }
 
   ///////////////////////////////////////
@@ -1680,11 +1679,9 @@ class APP {
         */
         if (this.reverse) {
           if (randomNumAssign !== this.currentOrder + 1) break;
-        }
-        if (randomNumAssign !== this.currentOrder - 1) break;
+        } else if (randomNumAssign !== this.currentOrder - 1) break;
       }
 
-      console.log(randomNumAssign);
       this.currentOrder = randomNumAssign;
     }
   }
