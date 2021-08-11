@@ -585,6 +585,7 @@ And use whitee space to find the child (.nav__menu__icon)
   font-size: 8rem;
   color: var(--white-normal);
   letter-spacing: 3px;
+  top: 50%;
 }
 
 .guess__order {
