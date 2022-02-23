@@ -403,11 +403,15 @@ class APP {
 
   async #showFormCountryImg(country) {
     const countryFlag = await fetch(
-      `https://restcountries.eu/rest/v2/name/${country}?fields=flag`
+      `https://restcountries.com/v3.1/name/${country}`
     );
 
     // nice
-    const [{ flag: data }] = await countryFlag.json();
+    const [
+      {
+        flags: { svg: data },
+      },
+    ] = await countryFlag.json();
 
     DOM.formCountryImg.src = data;
     DOM.formCountryImg.classList.add("form__country__img--animation");
@@ -508,20 +512,18 @@ class APP {
   // *** GET API DATA ***
   ///////////////////////////////////////
   async getRegionCountryData(region) {
-    const res = await fetch(
-      `https://restcountries.eu/rest/v2/region/${region}?fields=name`
-    );
+    const res = await fetch(`https://restcountries.com/v3.1/region/${region}`);
 
     const data = await res.json();
 
     // data is an array containing many object having name property(get rid of object)
-    const countryNameArr = data.map(({ name }) => name);
+    const countryNameArr = data.map(({ name: { official } }) => official);
     return countryNameArr;
   }
 
   async #getOneCountryData(countryName) {
     const res = await fetch(
-      `https://restcountries.eu/rest/v2/name/${countryName}`
+      `https://restcountries.com/v3.1/name/${countryName}`
     );
 
     const [data] = await res.json();
@@ -530,7 +532,7 @@ class APP {
   }
 
   async #randomlyChooseCountryName() {
-    const res = await fetch("https://restcountries.eu/rest/v2/all?fields=name");
+    const res = await fetch("https://restcountries.com/v2/all");
     const data = await res.json();
 
     const countryNameArr = [];
@@ -565,7 +567,7 @@ class APP {
   }
 
   async #randomlyChooseUserCountryName() {
-    const res = await fetch("https://restcountries.eu/rest/v2/all?fields=name");
+    const res = await fetch("https://restcountries.com/v2/all");
     const data = await res.json();
     const randomNum = this.#createRandomNumber(0, data.length);
 
