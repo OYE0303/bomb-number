@@ -460,6 +460,7 @@ class APP {
 
     for (let i = 0; i < countryNameArr.length; i++) {
       const countryData = await this.#getOneCountryData(countryNameArr[i]);
+      console.log(countryData);
 
       // set computer country data, and show img UI
       if (i == 0) {
@@ -532,8 +533,13 @@ class APP {
   }
 
   async #randomlyChooseCountryName() {
-    const res = await fetch("https://restcountries.com/v2/all");
-    const data = await res.json();
+    let data;
+    try {
+      const res = await fetch("https://restcountries.com/v2/all");
+      data = await res.json();
+    } catch (err) {
+      console.log(err);
+    }
 
     const countryNameArr = [];
     let i = 0;
@@ -567,8 +573,13 @@ class APP {
   }
 
   async #randomlyChooseUserCountryName() {
-    const res = await fetch("https://restcountries.com/v2/all");
-    const data = await res.json();
+    let data;
+    try {
+      const res = await fetch("https://restcountries.com/v2/all");
+      data = await res.json();
+    } catch (err) {
+      console.log(err);
+    }
     const randomNum = this.#createRandomNumber(0, data.length);
 
     return data[randomNum].name;
@@ -578,7 +589,8 @@ class APP {
   // *** CREATE COUNTRY HTML ***
   ///////////////////////////////////////
   #createCountryHTMLAndShowUI(data, player, playerOverlay) {
-    const countryName = data.name;
+    const countryName = data.name.common;
+
     let htmlCountryName;
 
     // resize the name of country
@@ -592,7 +604,7 @@ class APP {
       htmlCountryName = `<p class = "country__name font4">${countryName}</p>`;
 
     const htmlImg = `        
-          <img class="country__img" src="${data.flag}" />`;
+          <img class="country__img" src="${data.flags.svg}" />`;
 
     playerOverlay.insertAdjacentHTML("afterbegin", htmlCountryName);
     player.insertAdjacentHTML("beforeend", htmlImg);
@@ -1206,11 +1218,49 @@ class APP {
     else contryElement.style.fontSize = "5rem";
     contryElement.textContent = this.allPlayerArrNoChange[order].countryName;
 
+    console.log(this.allPlayerArrNoChange[order].countryData);
+    /*
+    altSpellings: (4) ['MG', 'Republic of Madagascar', "Repoblikan'i Madagasikara", 'République de Madagascar']
+area: 587041
+capital: ['Antananarivo']
+capitalInfo: {latlng: Array(2)}
+car: {signs: Array(1), side: 'right'}
+cca2: "MG"
+cca3: "MDG"
+ccn3: "450"
+cioc: "MAD"
+coatOfArms: {png: 'https://mainfacts.com/media/images/coats_of_arms/mg.png', svg: 'https://mainfacts.com/media/images/coats_of_arms/mg.svg'}
+continents: ['Africa']
+currencies: {MGA: {…}}
+demonyms: {eng: {…}, fra: {…}}
+fifa: "MAD"
+flag: "🇲🇬"
+flags: {png: 'https://flagcdn.com/w320/mg.png', svg: 'https://flagcdn.com/mg.svg'}
+gini: {2012: 42.6}
+idd: {root: '+2', suffixes: Array(1)}
+independent: true
+landlocked: false
+languages: {fra: 'French', mlg: 'Malagasy'}
+latlng: (2) [-20, 47]
+maps: {googleMaps: 'https://goo.gl/maps/AHQh2ABBaFW6Ngj26', openStreetMaps: 'https://www.openstreetmap.org/relation/447325'}
+name: {common: 'Madagascar', official: 'Republic of Madagascar', nativeName: {…}}
+population: 27691019
+postalCode: {format: '###', regex: '^(\\d{3})$'}
+region: "Africa"
+startOfWeek: "monday"
+status: "officially-assigned"
+subregion: "Eastern Africa"
+timezones: ['UTC+03:00']
+tld: ['.mg']
+translations: {ara: {…}, ces: {…}, cym: {…}, deu: {…}, est: {…}, …}
+unMember: true
+    */
+
     // manually set country info
     document.querySelector(".countryInfo__content").textContent =
       this.allPlayerArrNoChange[order].countryData.region || "NO PROVIDED";
     document.querySelector(".countryInfo__capital").textContent =
-      this.allPlayerArrNoChange[order].countryData.capital || "NO PROVIDED";
+      this.allPlayerArrNoChange[order].countryData.capital[0] || "NO PROVIDED";
     document.querySelector(".countryInfo__area").textContent =
       this.#convertNumberToString(
         this.allPlayerArrNoChange[order].countryData.area
@@ -1219,13 +1269,14 @@ class APP {
       this.#convertNumberToString(
         this.allPlayerArrNoChange[order].countryData.population
       ) || "NO PROVIDED";
-    document.querySelector(".countryInfo__currencies").textContent =
-      this.allPlayerArrNoChange[order].countryData.currencies[0].code ||
-      "NO PROVIDED";
+    // document.querySelector(".countryInfo__currencies").textContent =
+    //   this.allPlayerArrNoChange[order].countryData.currencies[0].code ||
+    //   "NO PROVIDED";
 
     document.querySelector(".countryInfo__language").textContent =
-      this.allPlayerArrNoChange[order].countryData.languages[0].name ||
-      "NO PROVIDED";
+      Object.values(
+        this.allPlayerArrNoChange[order].countryData.languages
+      )[0] || "NO PROVIDED";
   }
 
   #convertNumberToString(num) {
