@@ -209,6 +209,8 @@ class APP {
       "click",
       this.#showCheckRule.bind(this)
     );
+
+    this.#showComputerWaitingUI();
   }
 
   ///////////////////////////////////////
@@ -311,8 +313,9 @@ class APP {
   #showFormDiffLevel(e) {
     // note that e.target will select two element at the same time(input & level)
     // (1) find the elemet has data-id attribute
-    const level = e.target.closest(".form__level__radio--input");
+    const level = e.target.closest(".form__level__input");
 
+    console.log(level);
     // (2) filter any possible outcome is null
     if (level) {
       DOM.formLevelDescriptionCounts.textContent = level.dataset.id;
@@ -398,13 +401,29 @@ class APP {
 
   #showFormCountryName(countryNameArr) {
     const html = this.#generateFormCountryNameOptionHtml(countryNameArr);
+    console.log(html);
     DOM.formCountryNameSelect.insertAdjacentHTML("beforeend", html);
   }
 
   async #showFormCountryImg(country) {
+    // hidden the image
+    DOM.formCountryImg.classList.add("hidden");
+
+    // show the loading
+    DOM.formCountryRegion.insertAdjacentHTML(
+      "beforeend",
+      `<div class="form__country__loading" ></div>`
+    );
+
     const countryFlag = await fetch(
       `https://restcountries.com/v3.1/name/${country}`
     );
+
+    // remove the loading
+    document.querySelector(".form__country__loading").remove();
+
+    // remove the hidden of hidden
+    DOM.formCountryImg.classList.remove("hidden");
 
     // nice
     const [

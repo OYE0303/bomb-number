@@ -143,9 +143,7 @@ export class DOM__SELECTION {
     // *** FORM ***
     ///////////////////////////
     this.formInput = document.querySelector(".form__input");
-    this.btnFormUserNameNext = document.querySelector(
-      ".btn__form--username--next"
-    );
+    this.btnFormUserNameNext = document.querySelector(".form__btn--name");
     this.formOverlay = document.querySelector(".form__overlay");
 
     // FORM LEVEL
@@ -162,36 +160,30 @@ export class DOM__SELECTION {
     this.formLevelInput = document.querySelectorAll(
       ".form__level__radio--input"
     );
-    this.btnFormLevelNext = document.querySelector(".btn__form--level--next");
-    this.btnFormLevelBack = document.querySelector(".btn__form--level--back");
+    this.btnFormLevelNext = document.querySelector(".form__btn--level-next");
+    this.btnFormLevelBack = document.querySelector(".form__btn--level-back");
 
     // form country
+    this.formCountryRegion = document.querySelector(".form__country__region");
     this.formCountryRegionSelect = document.querySelector(
       ".form__country__region__select"
     );
     this.formCountryNameSelect = document.querySelector(
       ".form__country__name__select"
     );
-    this.formCountryImgContainer = document.querySelector(
-      ".form__country__img__container"
-    );
     this.formCountryImg = document.querySelector(".form__country__img");
-    this.formCountryNameSelect = document.querySelector(
-      ".form__country__name__select"
-    );
     this.btnFormCountryNext = document.querySelector(
-      ".btn__form--country--next"
+      ".form__btn--country--next"
     );
     this.btnFormCountryBack = document.querySelector(
-      ".btn__form--country--back"
+      ".form__btn--country--back"
     );
 
     // form range
     this.formRangeInput = document.querySelector(".form__range__input");
     this.formRangeOutput = document.querySelector(".form__range__output");
-    this.btnFormRangeNext = document.querySelector(".btn__form--range-next");
-    this.btnFormRangeNext = document.querySelector(".btn__form--range-next");
-    this.btnFormRangeBack = document.querySelector(".btn__form--range-back");
+    this.btnFormRangeNext = document.querySelector(".form__btn--range-next");
+    this.btnFormRangeBack = document.querySelector(".form__btn--range-back");
 
     this.btnFormCheckRule = document.querySelector(".btn__form__checkRule");
     this.formRange = document.querySelector(".form__range");
