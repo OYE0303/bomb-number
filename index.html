@@ -16,7 +16,7 @@
     <!-- *** FORM *** -->
     <div class="form__overlay">
       <!-- welcome  -->
-      <div class="form__container center">
+      <div class="form__container center hiddenDisplay">
         <div class="form__title__container">
           <h3 class="form__welcome">welcome</h3>
           <h4>to</h4>
@@ -119,7 +119,7 @@
       </div>
 
       <!-- COUNTRY  -->
-      <div class="form__container center hiddenDisplay">
+      <div class="form__container center">
         <h3 class="form__title">select country</h3>
         <p class="form__description form__country__description">
           In this game <br />
@@ -144,7 +144,9 @@
               >select country</label
             >
             <select class="form__country__name__select" id="country">
-              <option value="Random">Random</option>
+              <option class="form__country__option" value="Random">
+                Random
+              </option>
             </select>
           </div>
 

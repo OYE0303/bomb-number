@@ -168,6 +168,7 @@ export class DOM__SELECTION {
     this.formCountryRegionSelect = document.querySelector(
       ".form__country__region__select"
     );
+    this.formCountryOption = document.querySelector(".form__country__option");
     this.formCountryNameSelect = document.querySelector(
       ".form__country__name__select"
     );

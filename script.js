@@ -54,6 +54,9 @@ class APP {
 
     // EVENT LISTENER
     this.#addEventListener();
+
+    // cache (region) (select)
+    this.cacheRegion = [];
   }
 
   ///////////////////////////////////////
@@ -343,13 +346,13 @@ class APP {
     const region = DOM.formCountryRegionSelect.value;
 
     // convert children to array
-    const CountryNameChildren = Array.from(DOM.formCountryNameSelect.children);
+    const countryNameChildren = Array.from(DOM.formCountryNameSelect.children);
 
     // if selected before, delete original one
-    this.#deleteFormCountryName(CountryNameChildren);
+    this.#deleteFormCountryName(countryNameChildren);
 
     // if slected before, and select random again, then set random back
-    if (region === "Random" && CountryNameChildren.length !== 1) {
+    if (region === "Random" && countryNameChildren.length !== 1) {
       DOM.formCountryNameSelect.insertAdjacentHTML(
         "beforeend",
         `<option value="Random">(Random)</option>`
@@ -359,11 +362,36 @@ class APP {
       return;
     }
 
+    if (this.cacheRegion[region]) {
+      this.#showFormCountryName(this.cacheRegion[region]);
+
+      this.#showFormCountryImg(this.cacheRegion[region][0]);
+      return;
+    }
+
+    // hidden image
+    DOM.formCountryImg.classList.add("hidden--opacity");
+    DOM.formCountryNameSelect.insertAdjacentHTML(
+      "beforeend",
+      `<option class="form__country__option form__country__option--loading text-cap" value = "loading">
+      loading...
+      </option>`
+    );
+
     const countryData = await this.getRegionCountryData(region);
+    this.cacheRegion[region] = countryData;
+
+    // remove the random(loading) select
+    DOM.formCountryNameSelect.remove(
+      document.querySelector(".form__country__option--loading")
+    );
 
     this.#showFormCountryName(countryData);
 
     this.#showFormCountryImg(countryData[0]);
+
+    // remove the hidden
+    DOM.formCountryImg.classList.remove("hidden--opacity");
   }
 
   async #takeFormCountryNameSelect() {
@@ -401,7 +429,6 @@ class APP {
 
   #showFormCountryName(countryNameArr) {
     const html = this.#generateFormCountryNameOptionHtml(countryNameArr);
-    console.log(html);
     DOM.formCountryNameSelect.insertAdjacentHTML("beforeend", html);
   }
 
@@ -422,9 +449,6 @@ class APP {
     // remove the loading
     document.querySelector(".form__country__loading").remove();
 
-    // remove the hidden of hidden
-    DOM.formCountryImg.classList.remove("hidden");
-
     // nice
     const [
       {
@@ -432,7 +456,12 @@ class APP {
       },
     ] = await countryFlag.json();
 
+    // change the image
     DOM.formCountryImg.src = data;
+
+    // remove the hidden
+    DOM.formCountryImg.classList.remove("hidden");
+
     DOM.formCountryImg.classList.add("form__country__img--animation");
   }
 
@@ -479,7 +508,6 @@ class APP {
 
     for (let i = 0; i < countryNameArr.length; i++) {
       const countryData = await this.#getOneCountryData(countryNameArr[i]);
-      console.log(countryData);
 
       // set computer country data, and show img UI
       if (i == 0) {
@@ -1812,7 +1840,7 @@ unMember: true
   }
 
   ///////////////////////////////////////
-  // *** POP UP USER LOSE GAME ***
+  // *** POP UP USER LOSE GAME ***
   ///////////////////////////////////////
   #showPopupUserLoseGame() {
     this.#showPopupOverlay();

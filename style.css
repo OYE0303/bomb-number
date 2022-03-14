@@ -175,6 +175,10 @@ select {
   display: none;
 }
 
+.hidden--opacity {
+  opacity: 0;
+}
+
 .center {
   position: absolute;
   top: 50%;
@@ -1503,6 +1507,11 @@ And use whitee space to find the child (.nav__menu__icon)
   height: 2rem;
   border-radius: 50%;
   background-color: gray;
+}
+
+.spinner--small div {
+  width: 1rem;
+  height: 1rem;
 }
 
 .bounce1 {
