@@ -56,7 +56,10 @@ class APP {
     this.#addEventListener();
 
     // cache (region) (select)
-    this.cacheRegion = [];
+    this.cacheRandom = null;
+    this.cacheRegion = {};
+
+    this.test = false;
   }
 
   ///////////////////////////////////////
@@ -195,6 +198,10 @@ class APP {
     DOM.btnFormCountryBack.addEventListener(
       "click",
       this.#backFormPage.bind(this)
+    );
+    DOM.formBtnCountryRandom.addEventListener(
+      "click",
+      this.#btnRandomHandler.bind(this)
     );
 
     // form range
@@ -345,60 +352,44 @@ class APP {
     // get input value(which region)
     const region = DOM.formCountryRegionSelect.value;
 
-    // convert children to array
-    const countryNameChildren = Array.from(DOM.formCountryNameSelect.children);
+    this.#showSelectCountry(region);
 
-    // if selected before, delete original one
-    this.#deleteFormCountryName(countryNameChildren);
+    // // if slected before, and select random again, then set random back
+    // if (region === "Random" && countryNameChildren.length !== 1) {
+    //   DOM.formCountryNameSelect.insertAdjacentHTML(
+    //     "beforeend",
+    //     `<option value="Random">(Random)</option>`
+    //   );
 
-    // if slected before, and select random again, then set random back
-    if (region === "Random" && countryNameChildren.length !== 1) {
-      DOM.formCountryNameSelect.insertAdjacentHTML(
-        "beforeend",
-        `<option value="Random">(Random)</option>`
-      );
-
-      DOM.formCountryImg.classList.remove("form__country__img--animation");
-      return;
-    }
-
-    if (this.cacheRegion[region]) {
-      this.#showFormCountryName(this.cacheRegion[region]);
-
-      this.#showFormCountryImg(this.cacheRegion[region][0]);
-      return;
-    }
-
-    // hidden image
-    DOM.formCountryImg.classList.add("hidden--opacity");
-    DOM.formCountryNameSelect.insertAdjacentHTML(
-      "beforeend",
-      `<option class="form__country__option form__country__option--loading text-cap" value = "loading">
-      loading...
-      </option>`
-    );
-
-    const countryData = await this.getRegionCountryData(region);
-    this.cacheRegion[region] = countryData;
-
-    // remove the random(loading) select
-    DOM.formCountryNameSelect.remove(
-      document.querySelector(".form__country__option--loading")
-    );
-
-    this.#showFormCountryName(countryData);
-
-    this.#showFormCountryImg(countryData[0]);
-
-    // remove the hidden
-    DOM.formCountryImg.classList.remove("hidden--opacity");
+    //   DOM.formCountryImg.classList.remove("form__country__img--animation");
+    //   return;
+    // }
   }
 
   async #takeFormCountryNameSelect() {
     // if user randomly choose country
     if (DOM.formCountryNameSelect.value === "Random") {
+      // hide formCountryRegion, btnFormCountryNext, btnFormCountryBack
+      DOM.formCountryRegion.classList.add("hidden--display");
+      DOM.btnFormCountryNext.classList.add("hidden--display");
+      DOM.btnFormCountryBack.classList.add("hidden--display");
+
+      // show loading
+      DOM.formContainerCountry.insertAdjacentHTML(
+        "beforeend",
+        `<div class="form__country__loading" ></div>
+         <p class="text--cap font2 font__country__loading__text" >randomly choosing country...</p>`
+      );
+
       const countryName = await this.#randomlyChooseUserCountryName();
       this.userCountryInfo.countryName = countryName;
+
+      // hide loading
+      document.querySelector(".form__country__loading").remove();
+      document.querySelector(".font__country__loading__text").remove();
+      DOM.formCountryRegion.classList.remove("hidden--display");
+      DOM.btnFormCountryNext.classList.remove("hidden--display");
+      DOM.btnFormCountryBack.classList.remove("hidden--display");
     }
     // set country info (name)
     else this.userCountryInfo.countryName = DOM.formCountryNameSelect.value;
@@ -410,7 +401,7 @@ class APP {
   }
 
   #setCountryName() {
-    const countryName = DOM.formCountryNameSelect.value;
+    const countryName = DOM.formCountryNameSelect.value.split("-").join(" ");
     this.#showFormCountryImg(countryName);
   }
 
@@ -420,9 +411,11 @@ class APP {
 
   #generateFormCountryNameOptionHtml(countryNameArr) {
     let html = ``;
-    countryNameArr.forEach(
-      (country) => (html += `<option>${country}</option>`)
-    );
+    countryNameArr.forEach((country) => {
+      html += `<option value=${country
+        .split(" ")
+        .join("-")}>${country}</option>`;
+    });
 
     return html;
   }
@@ -433,6 +426,7 @@ class APP {
   }
 
   async #showFormCountryImg(country) {
+    // console.log(country);
     // hidden the image
     DOM.formCountryImg.classList.add("hidden");
 
@@ -441,13 +435,10 @@ class APP {
       "beforeend",
       `<div class="form__country__loading" ></div>`
     );
-
+    // solomon islands
     const countryFlag = await fetch(
       `https://restcountries.com/v3.1/name/${country}`
     );
-
-    // remove the loading
-    document.querySelector(".form__country__loading").remove();
 
     // nice
     const [
@@ -459,14 +450,101 @@ class APP {
     // change the image
     DOM.formCountryImg.src = data;
 
+    // remove the loading
+    document.querySelector(".form__country__loading").remove();
+
     // remove the hidden
     DOM.formCountryImg.classList.remove("hidden");
 
-    DOM.formCountryImg.classList.add("form__country__img--animation");
+    // DOM.formCountryImg.classList.add("form__country__img--animation");
+  }
+
+  async #btnRandomHandler() {
+    if (!this.cacheRandom) {
+      try {
+        const res = await fetch("https://restcountries.com/v2/all");
+        this.cacheRandom = await res.json();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    const randomNum = this.#createRandomNumber(0, this.cacheRandom.length);
+    const randomCountry = this.cacheRandom[randomNum];
+    const region = randomCountry.region;
+
+    // show the region
+    DOM.formCountryRegionSelect.value = randomCountry.region;
+
+    console.log(randomCountry);
+    // handle the process after seleting the region
+    this.#showSelectCountry(region, randomCountry);
+  }
+
+  async #showSelectCountry(region, randomCountry = null) {
+    // convert children to array
+    const countryNameChildren = Array.from(DOM.formCountryNameSelect.children);
+
+    // if selected before, delete original one
+    this.#deleteFormCountryName(countryNameChildren);
+
+    if (this.cacheRegion[region]) {
+      this.#showFormCountryName(this.cacheRegion[region]);
+
+      if (randomCountry) {
+        // console.log(randomCountry);
+        // show the name
+        DOM.formCountryNameSelect.value = randomCountry.name;
+        this.#showFormCountryImg(randomCountry.name);
+      } else {
+        this.#showFormCountryImg(this.cacheRegion[region][0]);
+      }
+
+      return;
+    }
+
+    // hidden image, setting loading text
+    // DOM.formCountryImg.classList.remove("form__country__img--animation");
+    DOM.formCountryImg.classList.add("hidden--opacity");
+    DOM.formCountryNameSelect.insertAdjacentHTML(
+      "beforeend",
+      `<option class="form__country__option form__country__option--loading text-cap" value = "loading">
+          loading...
+          </option>`
+    );
+
+    const countryData = await this.getRegionCountryData(region);
+    this.cacheRegion[region] = countryData;
+
+    // remove the loading text
+    DOM.formCountryNameSelect.remove(
+      document.querySelector(".form__country__option--loading")
+    );
+
+    // show the next button
+    DOM.btnFormCountryNext.classList.remove("hidden--display");
+
+    this.#showFormCountryName(countryData);
+
+    if (randomCountry) {
+      // show the name
+      console.log(randomCountry.name);
+      DOM.formCountryNameSelect.value = randomCountry.name.split(" ").join("-");
+
+      console.log(randomCountry.name.split(" ").join("-"));
+      console.log(DOM.formCountryNameSelect.value);
+
+      this.#showFormCountryImg(randomCountry.name);
+    } else {
+      this.#showFormCountryImg(countryData[0]);
+    }
+
+    // remove the hidden
+    DOM.formCountryImg.classList.remove("hidden--opacity");
   }
 
   ///////////////////////////////////////
-  // *** FORM RANGE***
+  // *** FORM RANGE ***
   ///////////////////////////////////////
   #takeFormRange() {
     this.maxNumber = Number(DOM.formRangeInput.value);
@@ -624,6 +702,7 @@ class APP {
     try {
       const res = await fetch("https://restcountries.com/v2/all");
       data = await res.json();
+      console.log(data);
     } catch (err) {
       console.log(err);
     }

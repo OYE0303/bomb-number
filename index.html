@@ -16,7 +16,7 @@
     <!-- *** FORM *** -->
     <div class="form__overlay">
       <!-- welcome  -->
-      <div class="form__container center hiddenDisplay">
+      <div class="form__container hiddenDisplay center">
         <div class="form__title__container">
           <h3 class="form__welcome">welcome</h3>
           <h4>to</h4>
@@ -119,7 +119,7 @@
       </div>
 
       <!-- COUNTRY  -->
-      <div class="form__container center">
+      <div class="form__container form__container__country center">
         <h3 class="form__title">select country</h3>
         <p class="form__description form__country__description">
           In this game <br />
@@ -131,12 +131,12 @@
               >select region</label
             >
             <select class="form__country__region__select" id="region">
-              <option value="Random">(Random)</option>
-              <option>Asia</option>
-              <option>Europe</option>
-              <option>Africa</option>
-              <option>Oceania</option>
-              <option>Americas</option>
+              <option value="" disabled selected>Select Region</option>
+              <option value="Asia">Asia</option>
+              <option value="Europe">Europe</option>
+              <option value="Africa">Africa</option>
+              <option value="Oceania">Oceania</option>
+              <option value="Americas">Americas</option>
             </select>
           </div>
           <div class="form__country__region__group">
@@ -144,21 +144,27 @@
               >select country</label
             >
             <select class="form__country__name__select" id="country">
-              <option class="form__country__option" value="Random">
+              <option value="" disabled selected>Select Country</option>
+              <!-- <option class="form__country__option" value="Random">
                 Random
-              </option>
+              </option> -->
             </select>
           </div>
 
-          <img class="form__country__img" src="" alt="country flag" />
+          <img
+            class="form__country__img hidden--opacity"
+            src=""
+            alt="country flag"
+          />
         </div>
 
-        <!-- for space of next and back button -->
-        <div></div>
         <button
-          class="btn btn--blue form__btn form__btn--next text--cap form__btn--country--next"
+          class="btn btn--blue form__btn form__btn--next text--cap form__btn--country--next hidden--display"
         >
           next
+        </button>
+        <button class="btn form__btn form__btn--country--random">
+          randomly choose
         </button>
         <button
           class="btn btn--pink form__btn form__btn--back text--cap form__btn--country--back"
@@ -168,7 +174,7 @@
       </div>
 
       <!-- RANGE   -->
-      <div class="form__container form__range hiddenDisplay">
+      <div class="form__container form__range center hiddenDisplay">
         <h3 class="form__title">
           select <br />
           the number of range

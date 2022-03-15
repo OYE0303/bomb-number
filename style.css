@@ -171,6 +171,12 @@ select {
   font-size: 1rem;
 }
 
+.font__country__loading__text {
+  color: var(--blue);
+  font-weight: 500;
+  margin-top: -4rem;
+}
+
 .hidden {
   display: none;
 }
@@ -379,6 +385,7 @@ select {
   display: flex;
   flex-direction: column;
   width: 60%;
+  margin-bottom: 5rem;
 }
 
 .form__country__region__group {
@@ -398,20 +405,12 @@ select {
   font-size: 1.7rem;
 }
 
-.form__country__img__container {
-  margin-top: -2rem;
-  height: 8rem;
-}
-
 .form__country__img {
   width: 8rem;
   height: 8rem;
   margin-top: -3rem;
-  transform: translateY(-50px);
   object-fit: contain;
-  opacity: 0;
-
-  transition: all 1s ease;
+  /* opacity: 0; */
 }
 
 .form__country__img--animation {
@@ -420,22 +419,17 @@ select {
 }
 
 .form__country__loading {
-  border: 5px solid #f3f3f3; /* Light grey */
-  border-top: 5px solid black; /* Blue */
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid black;
   border-radius: 50%;
   width: 5rem;
   height: 5rem;
-  animation: spin 2s linear;
+  animation: spin 2s linear infinite;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.form__btn--country--random {
 }
+
 /* /////////////////////////// */
 /* *** FORM RANGE *** */
 /* /////////////////////////// */
@@ -1202,6 +1196,10 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .hiddenDisplay {
+  display: none;
+}
+
+.hidden--display {
   display: none;
 }
 
@@ -2007,6 +2005,15 @@ the base state of our website is built for that value range; there is no need to
 
   50% {
     transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

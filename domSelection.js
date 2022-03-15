@@ -164,6 +164,9 @@ export class DOM__SELECTION {
     this.btnFormLevelBack = document.querySelector(".form__btn--level-back");
 
     // form country
+    this.formContainerCountry = document.querySelector(
+      ".form__container__country"
+    );
     this.formCountryRegion = document.querySelector(".form__country__region");
     this.formCountryRegionSelect = document.querySelector(
       ".form__country__region__select"
@@ -178,6 +181,9 @@ export class DOM__SELECTION {
     );
     this.btnFormCountryBack = document.querySelector(
       ".form__btn--country--back"
+    );
+    this.formBtnCountryRandom = document.querySelector(
+      ".form__btn--country--random"
     );
 
     // form range
