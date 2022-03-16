@@ -14,13 +14,14 @@ export class DOM__SELECTION {
     this.btnNavQuestion = document.querySelector(".btn__nav__question");
 
     // event degelation
-    this.navSecond = document.querySelector(".nav__second");
+    this.navRight = document.querySelector(".nav__right");
 
     ///////////////////////////
     // *** MAIN CONTENT ***
     ///////////////////////////
     this.player = document.querySelectorAll(".player");
     this.playerMain = document.querySelector(".player--main");
+    this.playerComputer = document.querySelectorAll(".player--computer");
     this.player1 = document.querySelector(".player--1");
     this.player2 = document.querySelector(".player--2");
     this.player3 = document.querySelector(".player--3");
@@ -185,6 +186,7 @@ export class DOM__SELECTION {
     this.formBtnCountryRandom = document.querySelector(
       ".form__btn--country--random"
     );
+    this.formCountryDefault = document.querySelector(".form__country__default");
 
     // form range
     this.formRangeInput = document.querySelector(".form__range__input");
@@ -192,7 +194,7 @@ export class DOM__SELECTION {
     this.btnFormRangeNext = document.querySelector(".form__btn--range-next");
     this.btnFormRangeBack = document.querySelector(".form__btn--range-back");
 
-    this.btnFormCheckRule = document.querySelector(".btn__form__checkRule");
+    this.btnFormCheckRule = document.querySelector(".btn__form__rule");
     this.formRange = document.querySelector(".form__range");
 
     // user lose game

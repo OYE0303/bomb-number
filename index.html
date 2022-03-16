@@ -14,9 +14,9 @@
 
   <body>
     <!-- *** FORM *** -->
-    <div class="form__overlay">
+    <div class="form__overlay hidden--display">
       <!-- welcome  -->
-      <div class="form__container hiddenDisplay center">
+      <div class="form__container center hidden--display">
         <div class="form__title__container">
           <h3 class="form__welcome">welcome</h3>
           <h4>to</h4>
@@ -44,7 +44,7 @@
       </div>
 
       <!-- LEVEL  -->
-      <div class="form__container form__level center hiddenDisplay">
+      <div class="form__container form__level center hidden--display">
         <h3 class="form__title">
           choose <br />
           your game level
@@ -119,7 +119,9 @@
       </div>
 
       <!-- COUNTRY  -->
-      <div class="form__container form__container__country center">
+      <div
+        class="form__container form__container__country center hidden--display"
+      >
         <h3 class="form__title">select country</h3>
         <p class="form__description form__country__description">
           In this game <br />
@@ -131,12 +133,15 @@
               >select region</label
             >
             <select class="form__country__region__select" id="region">
-              <option value="" disabled selected>Select Region</option>
+              <option class="form__country__default" disabled selected>
+                Select Region
+              </option>
               <option value="Asia">Asia</option>
               <option value="Europe">Europe</option>
               <option value="Africa">Africa</option>
               <option value="Oceania">Oceania</option>
               <option value="Americas">Americas</option>
+              <option value="Antarctic">Antarctic</option>
             </select>
           </div>
           <div class="form__country__region__group">
@@ -144,10 +149,7 @@
               >select country</label
             >
             <select class="form__country__name__select" id="country">
-              <option value="" disabled selected>Select Country</option>
-              <!-- <option class="form__country__option" value="Random">
-                Random
-              </option> -->
+              <option disabled selected>Select Country</option>
             </select>
           </div>
 
@@ -163,8 +165,11 @@
         >
           next
         </button>
-        <button class="btn form__btn form__btn--country--random">
-          randomly choose
+        <button
+          type="button"
+          class="text--cap btn form__btn form__btn--country--random btn--purple"
+        >
+          randomly select
         </button>
         <button
           class="btn btn--pink form__btn form__btn--back text--cap form__btn--country--back"
@@ -174,7 +179,7 @@
       </div>
 
       <!-- RANGE   -->
-      <div class="form__container form__range center hiddenDisplay">
+      <div class="form__container form__range center hidden--display">
         <h3 class="form__title">
           select <br />
           the number of range
@@ -196,36 +201,36 @@
           <div class="form__range__number">
             <p>0 ~&nbsp;</p>
 
-            <output class="form__range__output" for="range"> </output>
+            <output class="form__range__output" for="range">100</output>
           </div>
         </div>
 
-        <button class="btn btn--purple btn__form__checkRule">
+        <button class="btn btn--purple btn__form__rule text--cap">
           check game rule
         </button>
         <button
-          class="btn btn--blue btn__form form__btn--next text--upper form__btn--range-next"
+          class="btn btn--blue form__btn form__btn--next text--upper form__btn--range-next"
         >
           start game
         </button>
         <button
-          class="btn btn--pink btn__form form__btn--back text--upper form__btn--range-back"
+          class="btn btn--pink form__btn form__btn--back text--upper form__btn--range-back"
         >
           back
         </button>
       </div>
     </div>
 
-    <!-- *** NAV BAR *** -->
-    <nav class="nav page hiddenDisplay hiddenOpacity">
-      <div class="nav__first">
+    <!-- *** NAV BAR *** hidden--display hidden--opacity -->
+    <nav class="nav page">
+      <div class="nav__left">
         <img class="nav__logo" src="./icon/bomb.svg" />
         <h6 class="nav__username"></h6>
       </div>
-      <div class="nav__second">
-        <button class="btn btn__nav btn__nav__level btn__level">EASY</button>
-        <button class="btn btn__nav btn__nav__level btn__level">MEDIUM</button>
-        <button class="btn btn__nav btn__nav__level btn__level">HARD</button>
+      <div class="nav__right">
+        <button class="btn btn__nav btn__level">EASY</button>
+        <button class="btn btn__nav btn__level">MEDIUM</button>
+        <button class="btn btn__nav btn__level">HARD</button>
         <button class="btn btn__nav btn__nav__question">FAQ</button>
       </div>
 
@@ -235,24 +240,24 @@
         <span class="nav__menu__icon"></span>
       </label>
 
-      <div class="nav__background hiddenDisplay hiddenOpacity">
+      <div class="nav__background hidden--display hidden--opacity">
         <button
-          class="btn btn__nav btn__nav--background hiddenDisplay hiddenOpacity"
+          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
         >
           EASY
         </button>
         <button
-          class="btn btn__nav btn__nav--background hiddenDisplay hiddenOpacity"
+          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
         >
           MEDIUM
         </button>
         <button
-          class="btn btn__nav btn__nav--background hiddenDisplay hiddenOpacity"
+          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
         >
           HARD
         </button>
         <button
-          class="btn btn__nav btn__nav--background btn__nav--background--faq hiddenDisplay hiddenOpacity"
+          class="btn btn__nav btn__nav--background btn__nav--background--faq hidden--display hidden--opacity"
         >
           FAQ
         </button>
@@ -260,7 +265,7 @@
     </nav>
 
     <!-- *** MAIN CONTENT *** -->
-    <main class="content page hiddenDisplay hiddenOpacity">
+    <main class="content page hidden--display hidden--opacity">
       <div class="range">
         <p class="range__number">
           <span class="range__number__min">0</span> ~
@@ -273,17 +278,17 @@
           <button data-id="0" class="btn btn__info">INFO</button>
         </div>
       </div>
-      <div class="player player--1">
+      <div class="player player--1 player--computer">
         <div class="player__overlay player__overlay--1">
           <button data-id="1" class="btn btn__info">INFO</button>
         </div>
       </div>
-      <div class="player player--2">
+      <div class="player player--2 player--computer">
         <div class="player__overlay player__overlay--2">
           <button data-id="2" class="btn btn__info">INFO</button>
         </div>
       </div>
-      <div class="player player--3">
+      <div class="player player--3 player--computer">
         <div class="player__overlay player__overlay--3">
           <button data-id="3" class="btn btn__info">INFO</button>
         </div>
@@ -294,25 +299,31 @@
         <p class="guess__item guess__number"></p>
 
         <p class="guess__item guess__order"></p>
-        <div class="waiting spinner hiddenDisplay">
-          <div class="waiting bounce1 hiddenDisplay"></div>
-          <div class="waiting bounce2 hiddenDisplay"></div>
-          <div class="waiting bounce3 hiddenDisplay"></div>
+        <div class="waiting spinner hidden--display">
+          <div class="waiting bounce1 hidden--display"></div>
+          <div class="waiting bounce2 hidden--display"></div>
+          <div class="waiting bounce3 hidden--display"></div>
         </div>
 
         <p class="guess__item guess__useTool__playerName"></p>
 
         <p class="guess__item guess__useTool"></p>
 
-        <input class="guess__input" type="number" min="0" max="1000" required />
+        <input
+          class="guess__input hidden--display"
+          type="number"
+          min="0"
+          max="1000"
+          required
+        />
         <button class="btn btn--blue btn__guess__input">check</button>
       </div>
     </main>
 
     <!-- *** TOOL *** -->
-    <aside class="tool page hiddenDisplay hiddenOpacity">
-      <ul class="tool__container hiddenOpacity hiddenDisplay">
-        <li class="tool__item hiddenOpacity hiddenDisplay">
+    <aside class="tool page hidden--display hidden--opacity">
+      <ul class="tool__container hidden--opacity hidden--display">
+        <li class="tool__item hidden--opacity hidden--display">
           <img class="tool__icon" src="./icon/add-contact.svg" />
           <p class="tool__item__name">ASSIGN</p>
           <div class="tool__item__extension">
@@ -332,7 +343,7 @@
           </div>
         </li>
         <hr class="tool__line" />
-        <li class="tool__item hiddenOpacity hiddenDisplay">
+        <li class="tool__item hidden--opacity hidden--display">
           <img class="tool__icon" src="./icon/id-card.svg" />
           <p class="tool__item__name">PASS</p>
           <div class="tool__item__extension">
@@ -352,7 +363,7 @@
           </div>
         </li>
         <hr class="tool__line" />
-        <li class="tool__item hiddenOpacity hiddenDisplay">
+        <li class="tool__item hidden--opacity hidden--display">
           <img class="tool__icon" src="./icon/u-turn.svg" />
           <p class="tool__item__name">U-TURN</p>
           <div class="tool__item__extension">
@@ -376,19 +387,19 @@
     </aside>
 
     <!-- *** COUNTDOWN *** -->
-    <aside class="countdown page hiddenDisplay hiddenOpacity">
+    <aside class="countdown page hidden--display hidden--opacity">
       <h6 class="countdown__time">00:30</h6>
     </aside>
 
     <!-- *** SHOWLEVEL *** -->
-    <aside class="showLevel page hiddenDisplay hiddenOpacity">
+    <aside class="showLevel page hidden--display hidden--opacity">
       <button class="btn btn--purple btn__showLevel btn__level text--upper">
         EASY
       </button>
     </aside>
 
     <!-- *** COUNTRY INFO *** -->
-    <aside class="countryInfo hiddenDisplay">
+    <aside class="countryInfo hidden--display">
       <button class="btn btn__countryInfo__close">X</button>
       <h6 class="countryInfo__name">Japan</h6>
       <ul class="countryInfo__ul">
@@ -414,10 +425,10 @@
     </aside>
 
     <!-- *** POP UP *** -->
-    <div class="popup__overlay hiddenDisplay">
+    <div class="popup__overlay hidden--display">
       <!-- //  -->
       <!-- *** POP UP LEVEL *** -->
-      <div class="popup popup__level hiddenDisplay hiddenOpacity">
+      <div class="popup popup__level hidden--display hidden--opacity">
         <div>
           <h3 class="popup__title">YOU'RE CURRENTLY IN</h3>
           <h3 class="popup__title">
@@ -442,7 +453,7 @@
 
       <!-- //  -->
       <!-- *** POP UP QUESTION *** -->
-      <div class="popup popup__question hiddenDisplay">
+      <div class="popup popup__question hidden--display">
         <button class="btn btn__popup__close">x</button>
         <h3 class="popup__title">question</h3>
 
@@ -480,7 +491,7 @@
 
       <!-- //  -->
       <!-- *** POP UP RULE *** -->
-      <div class="popup popup__rule hiddenDisplay">
+      <div class="popup popup__rule hidden--display">
         <button class="btn btn__popup__close">x</button>
         <h3 class="popup__title">rule</h3>
         <ol class="popup__rule__list__container">
@@ -526,7 +537,7 @@
 
       <!-- //  -->
       <!-- *** POP UP DIFF LEVEL *** -->
-      <div class="popup popup__diffLevel hiddenDisplay">
+      <div class="popup popup__diffLevel hidden--display">
         <button class="btn btn__popup__close">x</button>
         <h3 class="popup__title">different level</h3>
         <div class="popup__diffLevel__container">
@@ -554,7 +565,7 @@
       </div>
 
       <!-- *** POP UP TOOL *** -->
-      <div class="popup popup__tool hiddenDisplay">
+      <div class="popup popup__tool hidden--display">
         <button class="btn btn__popup__close">x</button>
         <h3 class="popup__title">tool</h3>
         <div class="popup__tool__container">
@@ -581,7 +592,7 @@
       </div>
 
       <!-- *** POP UP INVALID INPUT *** -->
-      <div class="popup popup__invalidInput hiddenDisplay hiddenOpacity">
+      <div class="popup popup__invalidInput hidden--display hidden--opacity">
         <h3 class="popup__title">invalid input</h3>
         <h5 class="popup__subTitle">Your input is invalid</h5>
         <p class="popup__description">
@@ -594,7 +605,7 @@
       </div>
 
       <!-- *** POP UP USE TOOL *** -->
-      <div class="popup popup__useTool hiddenDisplay">
+      <div class="popup popup__useTool hidden--display">
         <h3 class="popup__title popup__useTool__title">
           Are you sure to use this tool?
         </h3>
@@ -619,7 +630,7 @@
       </div>
 
       <!-- *** POP UP CAN'T USE TOOL ***  -->
-      <div class="popup popup__cantUseTool hiddenDisplay hiddenOpacity">
+      <div class="popup popup__cantUseTool hidden--display hidden--opacity">
         <h3 class="popup__title">sorry</h3>
         <h3 class="popup__subTitle popup__cantUseTool__description"></h3>
         <button class="btn btn--blue popup__btn btn__popup__cantUseTool">
@@ -628,7 +639,7 @@
       </div>
 
       <!-- *** POP UP COMPUTER LOSE THE GAME  *** -->
-      <div class="popup popup__computerLoseGame hiddenDisplay">
+      <div class="popup popup__computerLoseGame hidden--display">
         <h3 class="popup__title">congratulation</h3>
         <h5 class="popup__subTitle popup__computerLoseGame--subTitle">
           <span class="popup__computerLoseGame__countryName">TAIWAN</span>
@@ -646,7 +657,7 @@
       </div>
 
       <!-- *** POP UP USER LOSE THE GAME  *** -->
-      <div class="popup popup__userLoseGame hiddenDisplay">
+      <div class="popup popup__userLoseGame hidden--display">
         <h3 class="popup__title">sorry</h3>
         <h5 class="popup__subTitle">You lose the game</h5>
         <p class="popup__description">
@@ -660,7 +671,7 @@
       </div>
 
       <!-- *** POP UP USER WIN THE GAME  *** -->
-      <div class="popup popup__userWinGame hiddenDisplay">
+      <div class="popup popup__userWinGame hidden--display">
         <h3 class="popup__title">congratulation</h3>
         <h5 class="popup__subTitle">
           You win the game <br />

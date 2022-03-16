@@ -107,7 +107,7 @@ class APP {
 
     // POPUP CURRENT LEVEL
     DOM.btnShowLevel.addEventListener("click", this.#showPopupLevel.bind(this));
-    DOM.navSecond.addEventListener("click", this.#showPopupLevel.bind(this));
+    DOM.navRight.addEventListener("click", this.#showPopupLevel.bind(this));
     DOM.btnPopupLevelNo.addEventListener(
       "click",
       this.#closePopupLevel.bind(this)
@@ -214,13 +214,16 @@ class APP {
       this.#backFormPage.bind(this)
     );
 
+    DOM.formRangeInput.addEventListener(
+      "input",
+      this.#showFormRange.bind(this)
+    );
+
     // CHECK RULE
     DOM.btnFormCheckRule.addEventListener(
       "click",
       this.#showCheckRule.bind(this)
     );
-
-    this.#showComputerWaitingUI();
   }
 
   ///////////////////////////////////////
@@ -295,17 +298,17 @@ class APP {
   // *** FORM ORDER***
   ///////////////////////////////////////
   #nextFormPage() {
-    this.formCollection[this.formOrder].classList.add("hiddenDisplay");
+    this.formCollection[this.formOrder].classList.add("hidden--display");
 
     this.formOrder++;
-    this.formCollection[this.formOrder].classList.remove("hiddenDisplay");
+    this.formCollection[this.formOrder].classList.remove("hidden--display");
   }
 
   #backFormPage() {
-    this.formCollection[this.formOrder].classList.add("hiddenDisplay");
+    this.formCollection[this.formOrder].classList.add("hidden--display");
 
     this.formOrder--;
-    this.formCollection[this.formOrder].classList.remove("hiddenDisplay");
+    this.formCollection[this.formOrder].classList.remove("hidden--display");
   }
 
   ///////////////////////////////////////
@@ -352,47 +355,13 @@ class APP {
     // get input value(which region)
     const region = DOM.formCountryRegionSelect.value;
 
-    this.#showSelectCountry(region);
-
-    // // if slected before, and select random again, then set random back
-    // if (region === "Random" && countryNameChildren.length !== 1) {
-    //   DOM.formCountryNameSelect.insertAdjacentHTML(
-    //     "beforeend",
-    //     `<option value="Random">(Random)</option>`
-    //   );
-
-    //   DOM.formCountryImg.classList.remove("form__country__img--animation");
-    //   return;
-    // }
+    this.#disabledCountryBtn();
+    await this.#showSelectCountry(region);
+    this.#activeCountryBtn();
   }
 
   async #takeFormCountryNameSelect() {
-    // if user randomly choose country
-    if (DOM.formCountryNameSelect.value === "Random") {
-      // hide formCountryRegion, btnFormCountryNext, btnFormCountryBack
-      DOM.formCountryRegion.classList.add("hidden--display");
-      DOM.btnFormCountryNext.classList.add("hidden--display");
-      DOM.btnFormCountryBack.classList.add("hidden--display");
-
-      // show loading
-      DOM.formContainerCountry.insertAdjacentHTML(
-        "beforeend",
-        `<div class="form__country__loading" ></div>
-         <p class="text--cap font2 font__country__loading__text" >randomly choosing country...</p>`
-      );
-
-      const countryName = await this.#randomlyChooseUserCountryName();
-      this.userCountryInfo.countryName = countryName;
-
-      // hide loading
-      document.querySelector(".form__country__loading").remove();
-      document.querySelector(".font__country__loading__text").remove();
-      DOM.formCountryRegion.classList.remove("hidden--display");
-      DOM.btnFormCountryNext.classList.remove("hidden--display");
-      DOM.btnFormCountryBack.classList.remove("hidden--display");
-    }
-    // set country info (name)
-    else this.userCountryInfo.countryName = DOM.formCountryNameSelect.value;
+    this.userCountryInfo.countryName = DOM.formCountryNameSelect.value;
 
     this.#nextFormPage();
 
@@ -400,9 +369,12 @@ class APP {
     this.#showFormRange();
   }
 
-  #setCountryName() {
-    const countryName = DOM.formCountryNameSelect.value.split("-").join(" ");
-    this.#showFormCountryImg(countryName);
+  async #setCountryName() {
+    const countryName = DOM.formCountryNameSelect.value;
+
+    this.#disabledCountryBtn();
+    await this.#showFormCountryImg(countryName);
+    this.#activeCountryBtn();
   }
 
   #deleteFormCountryName(childrenArr) {
@@ -412,9 +384,7 @@ class APP {
   #generateFormCountryNameOptionHtml(countryNameArr) {
     let html = ``;
     countryNameArr.forEach((country) => {
-      html += `<option value=${country
-        .split(" ")
-        .join("-")}>${country}</option>`;
+      html += `<option value="${country}">${country}</option>`;
     });
 
     return html;
@@ -426,16 +396,8 @@ class APP {
   }
 
   async #showFormCountryImg(country) {
-    // console.log(country);
-    // hidden the image
-    DOM.formCountryImg.classList.add("hidden");
+    this.#showImgLoading();
 
-    // show the loading
-    DOM.formCountryRegion.insertAdjacentHTML(
-      "beforeend",
-      `<div class="form__country__loading" ></div>`
-    );
-    // solomon islands
     const countryFlag = await fetch(
       `https://restcountries.com/v3.1/name/${country}`
     );
@@ -449,98 +411,208 @@ class APP {
 
     // change the image
     DOM.formCountryImg.src = data;
-
-    // remove the loading
-    document.querySelector(".form__country__loading").remove();
-
-    // remove the hidden
-    DOM.formCountryImg.classList.remove("hidden");
-
-    // DOM.formCountryImg.classList.add("form__country__img--animation");
+    this.#removeImgLoading();
   }
 
   async #btnRandomHandler() {
+    this.#disabledCountryBtn();
+
     if (!this.cacheRandom) {
       try {
-        const res = await fetch("https://restcountries.com/v2/all");
+        this.#showRandomlySelectLoading();
+        const res = await fetch("https://restcountries.com/v3.1/all");
         this.cacheRandom = await res.json();
+
+        this.#removeRandomlySelectLoading();
       } catch (err) {
         console.error(err);
       }
     }
 
-    const randomNum = this.#createRandomNumber(0, this.cacheRandom.length);
+    const randomNum = this.#createRandomNumber(0, this.cacheRandom.length - 1);
     const randomCountry = this.cacheRandom[randomNum];
     const region = randomCountry.region;
 
     // show the region
     DOM.formCountryRegionSelect.value = randomCountry.region;
 
-    console.log(randomCountry);
     // handle the process after seleting the region
-    this.#showSelectCountry(region, randomCountry);
+    await this.#showSelectCountry(region, randomCountry.name.official);
+
+    this.#activeCountryBtn();
   }
 
   async #showSelectCountry(region, randomCountry = null) {
-    // convert children to array
-    const countryNameChildren = Array.from(DOM.formCountryNameSelect.children);
-
-    // if selected before, delete original one
-    this.#deleteFormCountryName(countryNameChildren);
+    this.#removePreCountrySelect();
 
     if (this.cacheRegion[region]) {
       this.#showFormCountryName(this.cacheRegion[region]);
 
-      if (randomCountry) {
-        // console.log(randomCountry);
-        // show the name
-        DOM.formCountryNameSelect.value = randomCountry.name;
-        this.#showFormCountryImg(randomCountry.name);
-      } else {
-        this.#showFormCountryImg(this.cacheRegion[region][0]);
-      }
+      await this.#hasRandomCountry(randomCountry, this.cacheRegion[region][0]);
 
       return;
     }
 
-    // hidden image, setting loading text
-    // DOM.formCountryImg.classList.remove("form__country__img--animation");
-    DOM.formCountryImg.classList.add("hidden--opacity");
-    DOM.formCountryNameSelect.insertAdjacentHTML(
-      "beforeend",
-      `<option class="form__country__option form__country__option--loading text-cap" value = "loading">
-          loading...
-          </option>`
-    );
+    this.#showCountrySelectLoading();
 
     const countryData = await this.getRegionCountryData(region);
     this.cacheRegion[region] = countryData;
 
-    // remove the loading text
-    DOM.formCountryNameSelect.remove(
-      document.querySelector(".form__country__option--loading")
-    );
+    this.#removeCountrySelectLoading();
 
     // show the next button
     DOM.btnFormCountryNext.classList.remove("hidden--display");
 
     this.#showFormCountryName(countryData);
 
+    await this.#hasRandomCountry(randomCountry, countryData[0]);
+  }
+
+  #removePreCountrySelect() {
+    // convert children to array
+    const countryNameChildren = Array.from(DOM.formCountryNameSelect.children);
+
+    // if selected before, delete original one
+    this.#deleteFormCountryName(countryNameChildren);
+  }
+
+  async #hasRandomCountry(randomCountry, countryData) {
     if (randomCountry) {
       // show the name
-      console.log(randomCountry.name);
-      DOM.formCountryNameSelect.value = randomCountry.name.split(" ").join("-");
+      DOM.formCountryNameSelect.value = randomCountry;
 
-      console.log(randomCountry.name.split(" ").join("-"));
-      console.log(DOM.formCountryNameSelect.value);
-
-      this.#showFormCountryImg(randomCountry.name);
+      await this.#showFormCountryImg(randomCountry);
     } else {
-      this.#showFormCountryImg(countryData[0]);
+      await this.#showFormCountryImg(countryData);
     }
+  }
 
+  #showCountrySelectLoading() {
+    // hidden image, setting loading text
+    // DOM.formCountryImg.classList.remove("form__country__img--animation");
+    DOM.formCountryImg.classList.add("hidden--opacity");
+    DOM.formCountryNameSelect.insertAdjacentHTML(
+      "beforeend",
+      `<option selected disabled class="form__country__option form__country__option--loading text-cap" value = "loading">
+          loading...
+          </option>`
+    );
+    DOM.formCountryNameSelect.classList.add("form__country__select--disabled");
+    DOM.formCountryNameSelect.disabled = true;
+  }
+
+  #removeCountrySelectLoading() {
+    // remove the loading text
+    DOM.formCountryNameSelect.remove(
+      document.querySelector(".form__country__option--loading")
+    );
     // remove the hidden
     DOM.formCountryImg.classList.remove("hidden--opacity");
+    DOM.formCountryNameSelect.classList.remove(
+      "form__country__select--disabled"
+    );
+    DOM.formCountryNameSelect.disabled = false;
+  }
+
+  #showRandomlySelectLoading() {
+    // hide image
+    DOM.formCountryImg.classList.add("hidden--opacity");
+
+    // add loading text
+    DOM.formCountryRegionSelect.insertAdjacentHTML(
+      "beforeend",
+      `<option disabled selected class="form__country__option form__country__option--loading form__country__option--loading--region text-cap" value = "loading">
+          loading...
+       </option>`
+    );
+    DOM.formCountryNameSelect.insertAdjacentHTML(
+      "beforeend",
+      `<option selected disabled class="form__country__option form__country__option--loading form__country__option--loading--country text-cap" value = "loading">
+      loading...
+      </option>`
+    );
+
+    // add disabled style
+    DOM.formCountryRegionSelect.classList.add(
+      "form__country__select--disabled"
+    );
+    DOM.formCountryNameSelect.classList.add("form__country__select--disabled");
+
+    // set disabled true
+    DOM.formCountryRegionSelect.disabled = true;
+    DOM.formCountryNameSelect.disabled = true;
+  }
+
+  #removeRandomlySelectLoading() {
+    // remove the hidden image
+    DOM.formCountryImg.classList.remove("hidden--opacity");
+
+    // remove loading text
+    DOM.formCountryRegionSelect.removeChild(
+      document.querySelector(".form__country__option--loading--region")
+    );
+    DOM.formCountryNameSelect.remove(
+      document.querySelector(".form__country__option--loading--country")
+    );
+
+    // remove disabled style
+    DOM.formCountryRegionSelect.classList.remove(
+      "form__country__select--disabled"
+    );
+    DOM.formCountryNameSelect.classList.remove(
+      "form__country__select--disabled"
+    );
+
+    // set disabled false
+    DOM.formCountryRegionSelect.disabled = false;
+    DOM.formCountryNameSelect.disabled = false;
+  }
+
+  #disabledCountryBtn() {
+    DOM.btnFormCountryNext.disabled = true;
+    DOM.btnFormCountryBack.disabled = true;
+    DOM.formBtnCountryRandom.disabled = true;
+
+    DOM.btnFormCountryNext.classList.add("form__btn--country--disabled");
+    DOM.btnFormCountryBack.classList.add("form__btn--country--disabled");
+    DOM.formBtnCountryRandom.classList.add("form__btn--country--disabled");
+
+    DOM.btnFormCountryNext.classList.remove("btn--blue");
+    DOM.btnFormCountryBack.classList.remove("btn--pink");
+    DOM.formBtnCountryRandom.classList.remove("btn--purple");
+  }
+
+  #activeCountryBtn() {
+    DOM.btnFormCountryNext.disabled = false;
+    DOM.btnFormCountryBack.disabled = false;
+    DOM.formBtnCountryRandom.disabled = false;
+
+    DOM.btnFormCountryNext.classList.remove("form__btn--country--disabled");
+    DOM.btnFormCountryBack.classList.remove("form__btn--country--disabled");
+    DOM.formBtnCountryRandom.classList.remove("form__btn--country--disabled");
+
+    DOM.btnFormCountryNext.classList.add("btn--blue");
+    DOM.btnFormCountryBack.classList.add("btn--pink");
+    DOM.formBtnCountryRandom.classList.add("btn--purple");
+  }
+
+  #showImgLoading() {
+    // hidden the image
+    DOM.formCountryImg.classList.add("hidden--display");
+
+    // show the loading
+    DOM.formCountryRegion.insertAdjacentHTML(
+      "beforeend",
+      `<div class="form__country__loading" ></div>`
+    );
+  }
+
+  #removeImgLoading() {
+    // remove the hidden
+    DOM.formCountryImg.classList.remove("hidden--display");
+
+    // remove the loading
+    document.querySelector(".form__country__loading").remove();
   }
 
   ///////////////////////////////////////
@@ -557,16 +629,64 @@ class APP {
 
   #showFormRange() {
     DOM.formRangeOutput.textContent = DOM.formRangeInput.value;
-
-    DOM.formRangeInput.addEventListener("input", function () {
-      DOM.formRangeOutput.textContent = DOM.formRangeInput.value;
-    });
   }
 
   ///////////////////////////////////////
-  // *** COUNTRY DATA (USER & COMPUTER)***
+  // *** MAIN CONTENT ***
+  ///////////////////////////////////////
+  async #setAllCountentDataAndUI() {
+    // set userName on UI
+    DOM.userName.textContent = this.userName;
+
+    // set level on UI
+    DOM.btnShowLevel.textContent = this.level;
+    DOM.popupLevelWord.textContent = this.level;
+
+    // set max number on UI
+    DOM.rangeNumberMax.textContent = this.maxNumber;
+
+    // show country image and name on UI
+    await this.#showUserCountryImg();
+    await this.#showComputerCountryImg();
+
+    // show remaining counts of tool
+    DOM.remaingCounts.forEach(
+      (count) => (count.textContent = this.userCountryInfo.toolCounts)
+    );
+
+    // set target number
+    this.#createTargetNumber();
+
+    // user turn
+    this.#userTurn();
+
+    // show guess input
+    DOM.guessInput.classList.remove("hidden--display");
+  }
+
+  #showContent() {
+    this.#setAllCountentDataAndUI();
+
+    // show all content
+    DOM.page.forEach((page) => page.classList.remove("hidden--display"));
+    this.#timeout(0).then(() => {
+      DOM.page.forEach((page) => page.classList.remove("hidden--opacity"));
+    });
+  }
+
+  #hideForm() {
+    DOM.formOverlay.classList.add("hidden--display");
+    this.formCollection.forEach((form) =>
+      form.classList.add("hidden--display")
+    );
+  }
+
+  ///////////////////////////////////////
+  // *** COUNTRY DATA (USER & COMPUTER) ***
   ///////////////////////////////////////
   async #showUserCountryImg() {
+    this.#showMainContentLoading(DOM.playerMain, "main");
+
     const countryName = this.userCountryInfo.countryName;
     const countryData = await this.#getOneCountryData(countryName);
 
@@ -579,59 +699,128 @@ class APP {
       DOM.playerMain,
       DOM.playerOverlayMain
     );
+
+    this.#removeMainContentLoading(DOM.playerMain, "main");
   }
 
   async #showComputerCountryImg() {
+    this.#showMainContentLoading(null, null, true);
+
     const countryNameArr = await this.#randomlyChooseCountryName();
 
     for (let i = 0; i < countryNameArr.length; i++) {
       const countryData = await this.#getOneCountryData(countryNameArr[i]);
 
       // set computer country data, and show img UI
-      if (i == 0) {
-        this.#setCountryInfo(
-          this.Computer1CountryInfo,
-          1,
-          3,
-          countryData,
-          "left"
-        );
+      switch (i) {
+        case 0:
+          {
+            this.#setCountryInfo(
+              this.Computer1CountryInfo,
+              1,
+              3,
+              countryData,
+              "left"
+            );
 
-        this.#createCountryHTMLAndShowUI(
-          countryData,
-          DOM.player1,
-          DOM.playerOverlay1
-        );
-      } else if (i == 1) {
-        this.#setCountryInfo(
-          this.Computer2CountryInfo,
-          2,
-          3,
-          countryData,
-          "top"
-        );
+            this.#createCountryHTMLAndShowUI(
+              countryData,
+              DOM.player1,
+              DOM.playerOverlay1
+            );
 
-        this.#createCountryHTMLAndShowUI(
-          countryData,
-          DOM.player2,
-          DOM.playerOverlay2
-        );
-      } else {
-        this.#setCountryInfo(
-          this.Computer3CountryInfo,
-          3,
-          3,
-          countryData,
-          "right"
-        );
+            this.#removeMainContentLoading(DOM.player1, i);
+          }
+          break;
 
-        this.#createCountryHTMLAndShowUI(
-          countryData,
-          DOM.player3,
-          DOM.playerOverlay3
-        );
+        case 1:
+          {
+            this.#setCountryInfo(
+              this.Computer2CountryInfo,
+              2,
+              3,
+              countryData,
+              "top"
+            );
+
+            this.#createCountryHTMLAndShowUI(
+              countryData,
+              DOM.player2,
+              DOM.playerOverlay2
+            );
+
+            this.#removeMainContentLoading(DOM.player2, i);
+          }
+          break;
+
+        case 2:
+          {
+            this.#setCountryInfo(
+              this.Computer3CountryInfo,
+              3,
+              3,
+              countryData,
+              "right"
+            );
+
+            this.#createCountryHTMLAndShowUI(
+              countryData,
+              DOM.player3,
+              DOM.playerOverlay3
+            );
+
+            this.#removeMainContentLoading(DOM.player3, i);
+          }
+          break;
+
+        default:
+          break;
       }
     }
+  }
+
+  #showMainContentLoading(player, argIndex, computer = false) {
+    if (computer) {
+      DOM.playerComputer.forEach((computer, index) =>
+        computer.insertAdjacentHTML(
+          "beforeend",
+          `<div class="content__loading content__loading--${index}"></div>`
+        )
+      );
+    } else
+      player.insertAdjacentHTML(
+        "beforeend",
+        `<div class="content__loading content__loading--${argIndex}"></div>`
+      );
+  }
+
+  #removeMainContentLoading(player, index) {
+    player.removeChild(document.querySelector(`.content__loading--${index}`));
+  }
+
+  ///////////////////////////////////////
+  // *** CREATE COUNTRY HTML ***
+  ///////////////////////////////////////
+  #createCountryHTMLAndShowUI(data, player, playerOverlay) {
+    const countryName = data.name.common;
+
+    let htmlCountryName;
+
+    // resize the name of country
+    if (countryName.length >= 30)
+      htmlCountryName = `<p class = "country__name font1">${countryName}</p>`;
+    else if (countryName.length >= 20 && countryName.length < 30)
+      htmlCountryName = `<p class = "country__name font2">${countryName}</p>`;
+    else if (countryName.length >= 10 && countryName.length < 20)
+      htmlCountryName = `<p class = "country__name font3">${countryName}</p>`;
+    else
+      htmlCountryName = `<p class = "country__name font4">${countryName}</p>`;
+
+    const htmlImg = `        
+          <img class="country__img" src="${data.flags.svg}" alt="${countryName} flag" />`;
+
+    playerOverlay.insertAdjacentHTML("afterbegin", htmlCountryName);
+    player.insertAdjacentHTML("beforeend", htmlImg);
   }
 
   ///////////////////////////////////////
@@ -660,7 +849,7 @@ class APP {
   async #randomlyChooseCountryName() {
     let data;
     try {
-      const res = await fetch("https://restcountries.com/v2/all");
+      const res = await fetch("https://restcountries.com/v3.1/all");
       data = await res.json();
     } catch (err) {
       console.log(err);
@@ -672,23 +861,25 @@ class APP {
       const randomNum = this.#createRandomNumber(0, data.length - 1);
 
       // note that countryName is an object
-      const countryName = data[randomNum];
+      const {
+        name: { official: countryName },
+      } = data[randomNum];
 
       // check random country is not duplicate, and not as same as user's country
       if (
-        !countryNameArr.includes(countryName.name) &&
-        this.userCountryInfo.countryName !== countryName.name &&
-        countryName.name
+        !countryNameArr.includes(countryName) &&
+        this.userCountryInfo.countryName !== countryName &&
+        countryName
       ) {
-        countryNameArr.push(countryName.name);
+        countryNameArr.push(countryName);
 
         // nice!!!
         // set this.countryInfo in order
         this.Computer1CountryInfo.countryName
           ? this.Computer2CountryInfo.countryName
-            ? (this.Computer3CountryInfo.countryName = countryName.name)
-            : (this.Computer2CountryInfo.countryName = countryName.name)
-          : (this.Computer1CountryInfo.countryName = countryName.name);
+            ? (this.Computer3CountryInfo.countryName = countryName)
+            : (this.Computer2CountryInfo.countryName = countryName)
+          : (this.Computer1CountryInfo.countryName = countryName);
 
         i++;
       }
@@ -700,7 +891,7 @@ class APP {
   async #randomlyChooseUserCountryName() {
     let data;
     try {
-      const res = await fetch("https://restcountries.com/v2/all");
+      const res = await fetch("https://restcountries.com/v3.1/all");
       data = await res.json();
       console.log(data);
     } catch (err) {
@@ -708,77 +899,7 @@ class APP {
     }
     const randomNum = this.#createRandomNumber(0, data.length);
 
-    return data[randomNum].name;
-  }
-
-  ///////////////////////////////////////
-  // *** CREATE COUNTRY HTML ***
-  ///////////////////////////////////////
-  #createCountryHTMLAndShowUI(data, player, playerOverlay) {
-    const countryName = data.name.common;
-
-    let htmlCountryName;
-
-    // resize the name of country
-    if (countryName.length >= 30)
-      htmlCountryName = `<p class = "country__name font1">${countryName}</p>`;
-    else if (countryName.length >= 20 && countryName.length < 30)
-      htmlCountryName = `<p class = "country__name font2">${countryName}</p>`;
-    else if (countryName.length >= 10 && countryName.length < 20)
-      htmlCountryName = `<p class = "country__name font3">${countryName}</p>`;
-    else
-      htmlCountryName = `<p class = "country__name font4">${countryName}</p>`;
-
-    const htmlImg = `        
-          <img class="country__img" src="${data.flags.svg}" />`;
-
-    playerOverlay.insertAdjacentHTML("afterbegin", htmlCountryName);
-    player.insertAdjacentHTML("beforeend", htmlImg);
-  }
-
-  ///////////////////////////////////////
-  // *** MAIN CONTENT ***
-  ///////////////////////////////////////
-  #setAllCountentDataAndUI() {
-    // set userName on UI
-    DOM.userName.textContent = this.userName;
-
-    // set level on UI
-    DOM.btnShowLevel.textContent = this.level;
-    DOM.popupLevelWord.textContent = this.level;
-
-    // set max number on UI
-    DOM.rangeNumberMax.textContent = this.maxNumber;
-
-    // show country image and name on UI
-    this.#showUserCountryImg();
-    this.#showComputerCountryImg();
-
-    // show remaining counts of tool
-    DOM.remaingCounts.forEach(
-      (count) => (count.textContent = this.userCountryInfo.toolCounts)
-    );
-
-    // set target number
-    this.#createTargetNumber();
-
-    // user turn
-    this.#userTurn();
-  }
-
-  #showContent() {
-    this.#setAllCountentDataAndUI();
-
-    // show all content
-    DOM.page.forEach((page) => page.classList.remove("hiddenDisplay"));
-    this.#timeout(0).then(() => {
-      DOM.page.forEach((page) => page.classList.remove("hiddenOpacity"));
-    });
-  }
-
-  #hideForm() {
-    DOM.formOverlay.classList.add("hiddenDisplay");
-    this.formCollection.forEach((form) => form.classList.add("hiddenDisplay"));
+    return data[randomNum].name.official;
   }
 
   ///////////////////////////////////////
@@ -974,7 +1095,7 @@ class APP {
 
   #showPopupComputerLoseGame() {
     this.#showPopupOverlay();
-    DOM.popupComputerLoseGame.classList.remove("hiddenDisplay");
+    DOM.popupComputerLoseGame.classList.remove("hidden--display");
 
     // show which conutry(player) lose the game
     document.querySelector(
@@ -987,7 +1108,7 @@ class APP {
 
   #closePopupComputerLoseGame() {
     this.#closePopupOverlay();
-    DOM.popupComputerLoseGame.classList.add("hiddenDisplay");
+    DOM.popupComputerLoseGame.classList.add("hidden--display");
 
     // hide bomb number
     DOM.bombNumberComputer.textContent = "";
@@ -1151,13 +1272,13 @@ class APP {
   ///////////////////////////////////////
   #showGuessNumberUI(number) {
     DOM.guessNumber.textContent = number;
-    DOM.guessNumber.classList.remove("hiddenOpacity");
+    DOM.guessNumber.classList.remove("hidden--opacity");
     DOM.guessNumber.classList.add("guess__number--animation");
   }
 
   #closeGuessNumberUI() {
     DOM.guessNumber.textContent = "";
-    DOM.guessNumber.classList.add("hiddenOpacity");
+    DOM.guessNumber.classList.add("hidden--opacity");
     DOM.guessNumber.classList.remove("guess__number--animation");
   }
 
@@ -1199,18 +1320,18 @@ class APP {
   ///////////////////////////////////////
   #showPopupInvalidInput() {
     this.#showPopupOverlay();
-    DOM.popupInvalidInput.classList.remove("hiddenDisplay");
+    DOM.popupInvalidInput.classList.remove("hidden--display");
 
     this.#timeout(0).then(() =>
-      DOM.popupInvalidInput.classList.remove("hiddenOpacity")
+      DOM.popupInvalidInput.classList.remove("hidden--opacity")
     );
   }
 
   #closePopupInvalidInput() {
     this.#closePopupOverlay();
-    DOM.popupInvalidInput.classList.add("hiddenDisplay");
+    DOM.popupInvalidInput.classList.add("hidden--display");
 
-    DOM.popupInvalidInput.classList.add("hiddenOpacity");
+    DOM.popupInvalidInput.classList.add("hidden--opacity");
 
     this.#showPlayerOrderUI("Your turn");
   }
@@ -1219,11 +1340,11 @@ class APP {
   // *** SHOW GUESS INPUT ***
   ///////////////////////////////////////
   #showGuessInput() {
-    DOM.guessInput.classList.remove("hiddenDisplay");
+    DOM.guessInput.classList.remove("hidden--display");
   }
 
   #closeGuessInput() {
-    DOM.guessInput.classList.add("hiddenDisplay");
+    DOM.guessInput.classList.add("hidden--display");
   }
 
   ///////////////////////////////////////
@@ -1245,7 +1366,7 @@ class APP {
   #showComputerWaitingUI(playerCountry) {
     DOM.guessOrder.textContent = playerCountry;
 
-    DOM.waiting.forEach((wait) => wait.classList.remove("hiddenDisplay"));
+    DOM.waiting.forEach((wait) => wait.classList.remove("hidden--display"));
     DOM.bounce1.classList.add("spinner--animation1");
     DOM.bounce2.classList.add("spinner--animation2");
     DOM.bounce3.classList.add("spinner--animation3");
@@ -1254,7 +1375,7 @@ class APP {
   #closeComputerWaitingUI() {
     DOM.guessOrder.textContent = "";
 
-    DOM.waiting.forEach((wait) => wait.classList.add("hiddenDisplay"));
+    DOM.waiting.forEach((wait) => wait.classList.add("hidden--display"));
     DOM.bounce1.classList.remove("spinner--animation1");
     DOM.bounce2.classList.remove("spinner--animation2");
     DOM.bounce3.classList.remove("spinner--animation3");
@@ -1271,21 +1392,21 @@ class APP {
   // *** TOOL ***
   ///////////////////////////////////////
   #showTool() {
-    DOM.toolContainer.classList.remove("hiddenDisplay");
+    DOM.toolContainer.classList.remove("hidden--display");
 
     DOM.toolItem.forEach(function rmToolItemHidden(element) {
-      element.classList.remove("hiddenDisplay");
+      element.classList.remove("hidden--display");
     });
 
     this.#timeout(0)
       .then(() => {
         document.querySelector(".tool__container").style.height = "20rem";
 
-        DOM.toolContainer.classList.remove("hiddenOpacity");
+        DOM.toolContainer.classList.remove("hidden--opacity");
       })
       .then(() => {
         DOM.toolItem.forEach(function rmToolItemHidden(element) {
-          element.classList.remove("hiddenOpacity");
+          element.classList.remove("hidden--opacity");
         });
       });
   }
@@ -1293,10 +1414,10 @@ class APP {
   #closeTool() {
     DOM.toolContainer.style.height = "0";
 
-    DOM.toolContainer.classList.add("hiddenOpacity");
+    DOM.toolContainer.classList.add("hidden--opacity");
 
     DOM.toolItem.forEach(function rmToolItemHidden(element) {
-      element.classList.add("hiddenOpacity");
+      element.classList.add("hidden--opacity");
     });
   }
 
@@ -1316,18 +1437,18 @@ class APP {
   #showCountryInfo(e) {
     this.#chooseCountryInfo(Number(e.target.dataset.id));
 
-    DOM.countryInfo.classList.remove("hiddenDisplay");
+    DOM.countryInfo.classList.remove("hidden--display");
 
     this.#timeout(0).then(() =>
-      DOM.countryInfo.classList.remove("hiddenOpacity")
+      DOM.countryInfo.classList.remove("hidden--opacity")
     );
   }
 
   #closeCountryInfo() {
-    document.querySelector(".countryInfo").classList.add("hiddenDisplay");
+    document.querySelector(".countryInfo").classList.add("hidden--display");
 
     this.#timeout(0).then(() =>
-      document.querySelector(".countryInfo").classList.add("hiddenOpacity")
+      document.querySelector(".countryInfo").classList.add("hidden--opacity")
     );
   }
 
@@ -1424,21 +1545,21 @@ unMember: true
   // *** MENU BACKGROUND ***
   ///////////////////////////////////////
   #showMenuBackground() {
-    DOM.navBackground.classList.remove("hiddenDisplay");
+    DOM.navBackground.classList.remove("hidden--display");
 
     DOM.btnNavBackground.forEach(function rmToolItemHidden(element) {
-      element.classList.remove("hiddenDisplay");
+      element.classList.remove("hidden--display");
     });
 
     this.#timeout(0)
       .then(() => {
         DOM.navBackground.style.height = "100vh";
 
-        DOM.navBackground.classList.remove("hiddenOpacity");
+        DOM.navBackground.classList.remove("hidden--opacity");
       })
       .then(() =>
         DOM.btnNavBackground.forEach(function rmToolItemHidden(element) {
-          element.classList.remove("hiddenOpacity");
+          element.classList.remove("hidden--opacity");
         })
       );
   }
@@ -1446,19 +1567,19 @@ unMember: true
   #closeMenuBackground() {
     DOM.navBackground.style.height = "1vh";
 
-    DOM.navBackground.classList.add("hiddenOpacity");
+    DOM.navBackground.classList.add("hidden--opacity");
 
     this.#timeout(0)
       .then(() =>
         DOM.btnNavBackground.forEach(function rmToolItemHidden(element) {
-          element.classList.add("hiddenOpacity");
+          element.classList.add("hidden--opacity");
         })
       )
       .then(() => {
-        DOM.navBackground.classList.add("hiddenDisplay");
+        DOM.navBackground.classList.add("hidden--display");
 
         DOM.btnNavBackground.forEach(function rmToolItemHidden(element) {
-          element.classList.add("hiddenDisplay");
+          element.classList.add("hidden--display");
         });
       });
   }
@@ -1477,11 +1598,11 @@ unMember: true
   // *** POPUP OVERLAY ***
   ///////////////////////////////////////
   #showPopupOverlay() {
-    DOM.popupOverlay.classList.remove("hiddenDisplay");
+    DOM.popupOverlay.classList.remove("hidden--display");
   }
 
   #closePopupOverlay() {
-    DOM.popupOverlay.classList.add("hiddenDisplay");
+    DOM.popupOverlay.classList.add("hidden--display");
   }
 
   ///////////////////////////////////////
@@ -1498,7 +1619,7 @@ unMember: true
     if (targetElement.closest(".popup__question")) {
       targetElement
         .closest(".popup__question")
-        .classList.toggle("hiddenDisplay");
+        .classList.toggle("hidden--display");
     }
 
     // rule
@@ -1507,19 +1628,21 @@ unMember: true
       if (!this.targetNumber) {
         this.#closeCheckRule();
       } else
-        targetElement.closest(".popup__rule").classList.toggle("hiddenDisplay");
+        targetElement
+          .closest(".popup__rule")
+          .classList.toggle("hidden--display");
     }
 
     // diff level
     if (targetElement.closest(".popup__diffLevel")) {
       targetElement
         .closest(".popup__diffLevel")
-        .classList.toggle("hiddenDisplay");
+        .classList.toggle("hidden--display");
     }
 
     // tool
     if (targetElement.closest(".popup__tool")) {
-      targetElement.closest(".popup__tool").classList.toggle("hiddenDisplay");
+      targetElement.closest(".popup__tool").classList.toggle("hidden--display");
     }
   }
 
@@ -1532,10 +1655,10 @@ unMember: true
     if (e.target.classList.contains("btn__level")) {
       this.#showPopupOverlay();
 
-      DOM.popupLevel.classList.remove("hiddenDisplay");
+      DOM.popupLevel.classList.remove("hidden--display");
 
       this.#timeout(0).then(() => {
-        DOM.popupLevel.classList.remove("hiddenOpacity");
+        DOM.popupLevel.classList.remove("hidden--opacity");
       });
     }
   }
@@ -1543,8 +1666,8 @@ unMember: true
   #closePopupLevel() {
     this.#closePopupOverlay();
 
-    DOM.popupLevel.classList.add("hiddenDisplay");
-    DOM.popupLevel.classList.add("hiddenOpacity");
+    DOM.popupLevel.classList.add("hidden--display");
+    DOM.popupLevel.classList.add("hidden--opacity");
   }
 
   #changeLevel() {
@@ -1554,10 +1677,10 @@ unMember: true
   #showPopupLevelSmall() {
     this.#showPopupOverlay();
 
-    DOM.popupLevel.classList.remove("hiddenDisplay");
+    DOM.popupLevel.classList.remove("hidden--display");
 
     this.#timeout(0).then(() => {
-      DOM.popupLevel.classList.remove("hiddenOpacity");
+      DOM.popupLevel.classList.remove("hidden--opacity");
     });
 
     this.#menuCheckboxToggle();
@@ -1569,19 +1692,19 @@ unMember: true
   ///////////////////////////////////////
   #showPopupQuestion() {
     this.#showPopupOverlay();
-    DOM.popupQuestion.classList.remove("hiddenDisplay");
+    DOM.popupQuestion.classList.remove("hidden--display");
 
     this.#timeout(0).then(() =>
-      DOM.popupQuestion.classList.remove("hiddenOpacity")
+      DOM.popupQuestion.classList.remove("hidden--opacity")
     );
   }
 
   #showPopupQuestionSmall() {
     this.#showPopupOverlay();
-    DOM.popupQuestion.classList.remove("hiddenDisplay");
+    DOM.popupQuestion.classList.remove("hidden--display");
 
     this.#timeout(0).then(() =>
-      DOM.popupQuestion.classList.remove("hiddenOpacity")
+      DOM.popupQuestion.classList.remove("hidden--opacity")
     );
 
     // close menu background, and set the state back to unchecked
@@ -1598,18 +1721,18 @@ unMember: true
     const targetElement = e.target;
 
     if (targetElement.classList.contains("btn__popup__question")) {
-      DOM.popupQuestion.classList.add("hiddenDisplay");
+      DOM.popupQuestion.classList.add("hidden--display");
 
       if (targetElement.classList.contains("btn__popup__question__rule")) {
-        DOM.popupRule.classList.remove("hiddenDisplay");
+        DOM.popupRule.classList.remove("hidden--display");
       }
 
       if (targetElement.classList.contains("btn__popup__question__diffLevel")) {
-        DOM.popupDiffLevel.classList.remove("hiddenDisplay");
+        DOM.popupDiffLevel.classList.remove("hidden--display");
       }
 
       if (targetElement.classList.contains("btn__popup__question__tool")) {
-        DOM.popupTool.classList.remove("hiddenDisplay");
+        DOM.popupTool.classList.remove("hidden--display");
       }
     }
   }
@@ -1668,18 +1791,18 @@ unMember: true
 
     // okay, user can use tool
     this.#showPopupOverlay();
-    DOM.popupUseTool.classList.remove("hiddenDisplay");
+    DOM.popupUseTool.classList.remove("hidden--display");
 
     this.#popupUseToolUI(e.target.closest(".btn__tool--use").dataset.id);
   }
 
   #closePopupUseTool() {
-    DOM.popupUseTool.classList.add("hiddenOpacity");
+    DOM.popupUseTool.classList.add("hidden--opacity");
     DOM.popupUseToolDescription.style.fontSize = "2.5rem";
 
     this.#timeout(0).then(() => {
       this.#closePopupOverlay();
-      DOM.popupUseTool.classList.add("hiddenDisplay");
+      DOM.popupUseTool.classList.add("hidden--display");
     });
 
     // remove the svg icon in every time closing
@@ -1719,7 +1842,7 @@ unMember: true
       DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
 
     this.#timeout(0).then(() =>
-      DOM.popupUseTool.classList.remove("hiddenOpacity")
+      DOM.popupUseTool.classList.remove("hidden--opacity")
     );
   }
 
@@ -1887,7 +2010,7 @@ unMember: true
   ///////////////////////////////////////
   #showDiffToolUI() {
     this.#showPopupOverlay();
-    DOM.popupTool.classList.remove("hiddenDisplay");
+    DOM.popupTool.classList.remove("hidden--display");
   }
 
   ///////////////////////////////////////
@@ -1905,17 +2028,17 @@ unMember: true
         "can't use tool during other player's round";
     }
 
-    DOM.popupCantUseTool.classList.remove("hiddenDisplay");
+    DOM.popupCantUseTool.classList.remove("hidden--display");
 
     this.#timeout(0).then(() =>
-      DOM.popupCantUseTool.classList.remove("hiddenOpacity")
+      DOM.popupCantUseTool.classList.remove("hidden--opacity")
     );
   }
 
   #closePopupCantUseTool() {
     this.#closePopupOverlay();
-    DOM.popupCantUseTool.classList.add("hiddenDisplay");
-    DOM.popupCantUseTool.classList.add("hiddenOpacity");
+    DOM.popupCantUseTool.classList.add("hidden--display");
+    DOM.popupCantUseTool.classList.add("hidden--opacity");
   }
 
   ///////////////////////////////////////
@@ -1923,7 +2046,7 @@ unMember: true
   ///////////////////////////////////////
   #showPopupUserLoseGame() {
     this.#showPopupOverlay();
-    DOM.popupUserLoseGame.classList.remove("hiddenDisplay");
+    DOM.popupUserLoseGame.classList.remove("hidden--display");
     DOM.bombNumberUser.textContent = this.targetNumber;
 
     // only user lose the game, add eventlistenr on reload btn
@@ -1953,7 +2076,7 @@ unMember: true
 
       // okay, user can use tool
       this.#showPopupOverlay();
-      DOM.popupUseTool.classList.remove("hiddenDisplay");
+      DOM.popupUseTool.classList.remove("hidden--display");
 
       this.#popupUseToolUI(e.target.textContent);
     }
@@ -1964,7 +2087,7 @@ unMember: true
   ///////////////////////////////////////
   #userWinGame() {
     this.#showPopupOverlay();
-    DOM.popupUserWinGame.classList.remove("hiddenDisplay");
+    DOM.popupUserWinGame.classList.remove("hidden--display");
     document.querySelector(".popup__userWinGame__currentLevel").textContent =
       this.level;
 
@@ -1980,18 +2103,18 @@ unMember: true
   ///////////////////////////////////////
   #showCheckRule() {
     this.#showPopupOverlay();
-    DOM.popupRule.classList.remove("hiddenDisplay");
+    DOM.popupRule.classList.remove("hidden--display");
 
-    DOM.formRange.classList.add("hiddenDisplay");
-    DOM.formOverlay.classList.add("hiddenDisplay");
+    DOM.formRange.classList.add("hidden--display");
+    DOM.formOverlay.classList.add("hidden--display");
   }
 
   #closeCheckRule() {
     this.#closePopupOverlay();
-    DOM.popupRule.classList.add("hiddenDisplay");
+    DOM.popupRule.classList.add("hidden--display");
 
-    DOM.formRange.classList.remove("hiddenDisplay");
-    DOM.formOverlay.classList.remove("hiddenDisplay");
+    DOM.formRange.classList.remove("hidden--display");
+    DOM.formOverlay.classList.remove("hidden--display");
   }
 }
 
