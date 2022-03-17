@@ -1,7 +1,7 @@
 export class SVG__ICON {
   constructor() {
     this.assign = `  
-    <h3 data-id="ASSIGN" class="popup__useTool__icon">
+    <h3 data-id="ASSIGN" class="popup__tool__use__icon">
     <svg
     class="tool__icon"
     height="512pt"
@@ -16,7 +16,7 @@ export class SVG__ICON {
     ASSIGN
     </h3>`;
     this.pass = ` 
-    <h3 data-id="PASS" class="popup__useTool__icon">
+    <h3 data-id="PASS" class="popup__tool__use__icon">
     <svg
     class="tool__icon"
     version="1.1"
@@ -75,7 +75,7 @@ export class SVG__ICON {
   PASS
     </h3>`;
     this.uturn = `     
-    <h3 data-id="U-TURN" class="popup__useTool__icon">     
+    <h3 data-id="U-TURN" class="popup__tool__use__icon">     
     <svg
     class="tool__icon"
     height="384pt"

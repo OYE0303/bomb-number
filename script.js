@@ -58,8 +58,6 @@ class APP {
     // cache (region) (select)
     this.cacheRandom = null;
     this.cacheRegion = {};
-
-    this.test = false;
   }
 
   ///////////////////////////////////////
@@ -129,6 +127,10 @@ class APP {
     DOM.btnGuessInput.addEventListener(
       "click",
       this.#checkGuessInput.bind(this)
+    );
+    DOM.guessInput.addEventListener(
+      "input",
+      this.#inputChangeHandler.bind(this)
     );
 
     // USE TOOL
@@ -224,6 +226,22 @@ class APP {
       "click",
       this.#showCheckRule.bind(this)
     );
+  }
+
+  #inputChangeHandler(e) {
+    const value = Number(e.target.value);
+
+    if (this.#checkInput(value)) {
+      DOM.guessInput.classList.add("guess__input--invalid");
+      DOM.btnGuessInput.classList.add("hidden--display");
+      DOM.guessOrder.textContent = "Invalid Number";
+      DOM.guessOrder.classList.add("guess__number--invalid");
+    } else {
+      DOM.guessInput.classList.remove("guess__input--invalid");
+      DOM.btnGuessInput.classList.remove("hidden--display");
+      DOM.guessOrder.textContent = "Your Turn";
+      DOM.guessOrder.classList.remove("guess__number--invalid");
+    }
   }
 
   ///////////////////////////////////////
@@ -621,6 +639,7 @@ class APP {
   #takeFormRange() {
     this.maxNumber = Number(DOM.formRangeInput.value);
     this.maxNumberNoChange = this.maxNumber;
+    DOM.guessInput.setAttribute("max", String(this.maxNumberNoChange - 1));
 
     // start the game
     this.#hideForm();
@@ -658,10 +677,13 @@ class APP {
     this.#createTargetNumber();
 
     // user turn
-    this.#userTurn();
+    this.#userTurn(true);
 
     // show guess input
     DOM.guessInput.classList.remove("hidden--display");
+
+    // show info button
+    DOM.btnInfo.forEach((btn) => btn.classList.remove("hidden--display"));
   }
 
   #showContent() {
@@ -940,13 +962,13 @@ class APP {
     // manually guess number
     else {
       guessNumber = Number(DOM.guessInput.value);
-      const checked = this.#checkInput(guessNumber);
+      // const checked = this.#checkInput(guessNumber);
 
-      if (checked) {
-        // wrong input UI (stop keeping executing)
-        this.#showPopupInvalidInput();
-        return;
-      }
+      // if (checked) {
+      //   // wrong input UI (stop keeping executing)
+      //   this.#showPopupInvalidInput();
+      //   return;
+      // }
 
       this.#closeCountDown();
     }
@@ -962,6 +984,9 @@ class APP {
     // have to put here, or we cannot accept the user's input
     this.#closeGuessInput();
     DOM.guessInput.value = "";
+
+    // hide submit btn
+    DOM.btnGuessInput.classList.add("hidden--display");
   }
 
   #takeComputerGuessInput() {
@@ -996,6 +1021,8 @@ class APP {
       this.#useToolComputer();
       return;
     }
+
+    DOM.guessOrder.classList.remove("guess__number--invalid");
 
     this.#timeout(0)
       .then(() => {
@@ -1224,7 +1251,9 @@ class APP {
     }
   }
 
-  #userTurn() {
+  #userTurn(firstTime = false) {
+    if (!firstTime) DOM.btnGuessInput.classList.remove("hidden--display");
+
     this.#showGuessInput();
     this.#showPlayerOrderUI("Your turn");
 
@@ -1445,16 +1474,16 @@ class APP {
   }
 
   #closeCountryInfo() {
-    document.querySelector(".countryInfo").classList.add("hidden--display");
+    document.querySelector(".info").classList.add("hidden--display");
 
     this.#timeout(0).then(() =>
-      document.querySelector(".countryInfo").classList.add("hidden--opacity")
+      document.querySelector(".info").classList.add("hidden--opacity")
     );
   }
 
   #chooseCountryInfo(order) {
     const countryName = this.allPlayerArrNoChange[order].countryName;
-    const contryElement = document.querySelector(".countryInfo__name");
+    const contryElement = document.querySelector(".info__name");
 
     // resize font size
     if (countryName.length >= 30) contryElement.style.fontSize = "2rem";
@@ -1466,61 +1495,25 @@ class APP {
     contryElement.textContent = this.allPlayerArrNoChange[order].countryName;
 
     console.log(this.allPlayerArrNoChange[order].countryData);
-    /*
-    altSpellings: (4) ['MG', 'Republic of Madagascar', "Repoblikan'i Madagasikara", 'République de Madagascar']
-area: 587041
-capital: ['Antananarivo']
-capitalInfo: {latlng: Array(2)}
-car: {signs: Array(1), side: 'right'}
-cca2: "MG"
-cca3: "MDG"
-ccn3: "450"
-cioc: "MAD"
-coatOfArms: {png: 'https://mainfacts.com/media/images/coats_of_arms/mg.png', svg: 'https://mainfacts.com/media/images/coats_of_arms/mg.svg'}
-continents: ['Africa']
-currencies: {MGA: {…}}
-demonyms: {eng: {…}, fra: {…}}
-fifa: "MAD"
-flag: "🇲🇬"
-flags: {png: 'https://flagcdn.com/w320/mg.png', svg: 'https://flagcdn.com/mg.svg'}
-gini: {2012: 42.6}
-idd: {root: '+2', suffixes: Array(1)}
-independent: true
-landlocked: false
-languages: {fra: 'French', mlg: 'Malagasy'}
-latlng: (2) [-20, 47]
-maps: {googleMaps: 'https://goo.gl/maps/AHQh2ABBaFW6Ngj26', openStreetMaps: 'https://www.openstreetmap.org/relation/447325'}
-name: {common: 'Madagascar', official: 'Republic of Madagascar', nativeName: {…}}
-population: 27691019
-postalCode: {format: '###', regex: '^(\\d{3})$'}
-region: "Africa"
-startOfWeek: "monday"
-status: "officially-assigned"
-subregion: "Eastern Africa"
-timezones: ['UTC+03:00']
-tld: ['.mg']
-translations: {ara: {…}, ces: {…}, cym: {…}, deu: {…}, est: {…}, …}
-unMember: true
-    */
 
     // manually set country info
-    document.querySelector(".countryInfo__content").textContent =
+    document.querySelector(".info__region").textContent =
       this.allPlayerArrNoChange[order].countryData.region || "NO PROVIDED";
-    document.querySelector(".countryInfo__capital").textContent =
+    document.querySelector(".info__capital").textContent =
       this.allPlayerArrNoChange[order].countryData.capital[0] || "NO PROVIDED";
-    document.querySelector(".countryInfo__area").textContent =
+    document.querySelector(".info__area").textContent =
       this.#convertNumberToString(
         this.allPlayerArrNoChange[order].countryData.area
       ) || "NO PROVIDED";
-    document.querySelector(".countryInfo__population").textContent =
+    document.querySelector(".info__population").textContent =
       this.#convertNumberToString(
         this.allPlayerArrNoChange[order].countryData.population
       ) || "NO PROVIDED";
-    // document.querySelector(".countryInfo__currencies").textContent =
+    // document.querySelector(".info__currencies").textContent =
     //   this.allPlayerArrNoChange[order].countryData.currencies[0].code ||
     //   "NO PROVIDED";
 
-    document.querySelector(".countryInfo__language").textContent =
+    document.querySelector(".info__language").textContent =
       Object.values(
         this.allPlayerArrNoChange[order].countryData.languages
       )[0] || "NO PROVIDED";
@@ -1634,9 +1627,9 @@ unMember: true
     }
 
     // diff level
-    if (targetElement.closest(".popup__diffLevel")) {
+    if (targetElement.closest(".popup__level")) {
       targetElement
-        .closest(".popup__diffLevel")
+        .closest(".popup__level")
         .classList.toggle("hidden--display");
     }
 
@@ -1727,7 +1720,7 @@ unMember: true
         DOM.popupRule.classList.remove("hidden--display");
       }
 
-      if (targetElement.classList.contains("btn__popup__question__diffLevel")) {
+      if (targetElement.classList.contains("btn__popup__question__level")) {
         DOM.popupDiffLevel.classList.remove("hidden--display");
       }
 
@@ -1754,11 +1747,11 @@ unMember: true
     }
 
     let html = `
-    <h5 class = "popup__subTitle--assign">
+    <h5 class = "popup__subtitle--assign">
       Which player <br />
       do you want to assign?
     </h5>
-    <select class="popup__assign__select" id="assign">
+    <select class="popup__assign__select text--cap" id="assign">
     `;
 
     for (let i = 0; i < result.length; i++) {
@@ -1809,7 +1802,7 @@ unMember: true
     // can't use DOM.popupUseToolIcon
     // because there is no html element at the time we invoking the DOM__SELECTION
     // so DOM.popupUseToolIcon === null
-    document.querySelector(".popup__useTool__icon").remove();
+    document.querySelector(".popup__tool__use__icon").remove();
 
     // also remove assign UI
     // have to first check if element exist
@@ -1867,15 +1860,15 @@ unMember: true
     if (player === this.userCountryInfo.countryName) this.#closePopupUseTool();
 
     // add class for animation
-    DOM.guessUseToolUserName.classList.add("guess__useTool--animation");
-    DOM.guessUseTool.classList.add("guess__useTool--animation");
+    DOM.guessUseToolUserName.classList.add("guess__tool--animation");
+    DOM.guessUseTool.classList.add("guess__tool--animation");
   }
 
   #closeUseToolUI() {
     DOM.guessUseToolUserName.textContent = "";
     DOM.guessUseTool.textContent = "";
-    DOM.guessUseToolUserName.classList.remove("guess__useTool--animation");
-    DOM.guessUseTool.classList.remove("guess__useTool--animation");
+    DOM.guessUseToolUserName.classList.remove("guess__tool--animation");
+    DOM.guessUseTool.classList.remove("guess__tool--animation");
   }
 
   #useTool(e) {
@@ -1904,8 +1897,8 @@ unMember: true
 
     // get the used tool
     const tool = e.target
-      .closest(".popup__useTool")
-      .querySelector(".popup__useTool__icon").dataset.id;
+      .closest(".popup__tool__use")
+      .querySelector(".popup__tool__use__icon").dataset.id;
 
     this.#useToolLogic(tool, this.userCountryInfo.countryName);
   }

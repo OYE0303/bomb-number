@@ -52,10 +52,6 @@ body {
   overflow-x: hidden;
 }
 
-h3 {
-  text-transform: uppercase;
-}
-
 li {
   /* list-style: none; */
   margin: 0;
@@ -400,6 +396,7 @@ select {
   background-color: transparent;
   outline: 1px solid gray;
   color: gray;
+  cursor: not-allowed;
 }
 
 .form__country__img {
@@ -641,7 +638,6 @@ And use whitee space to find the child (.nav__menu__icon)
   grid-template-columns: 2fr 4fr 2fr;
   grid-template-rows: repeat(4, 2fr);
 
-  /* not sure  */
   position: relative;
 }
 
@@ -649,23 +645,6 @@ And use whitee space to find the child (.nav__menu__icon)
 .content > .range {
   justify-self: center;
   align-self: center;
-}
-
-.square {
-  grid-column: 2/3;
-  grid-row: 2/4;
-
-  background-color: var(--purple--dark);
-  transform: scale(0.9);
-  border-radius: 30px;
-  padding: 5rem;
-
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-
-  /* position: relative;
-  z-index: -100; */
 }
 
 .range {
@@ -676,7 +655,7 @@ And use whitee space to find the child (.nav__menu__icon)
   /* 
   it overlay with square
   use z-index to show
-   */
+  */
   position: relative;
   z-index: 10;
 }
@@ -699,7 +678,6 @@ And use whitee space to find the child (.nav__menu__icon)
 
   /* make sure all player has same width  */
   width: 23rem;
-  /* border-radius: 30px; */
 
   /* for overlay, country name and btn  */
   position: relative;
@@ -708,7 +686,6 @@ And use whitee space to find the child (.nav__menu__icon)
 .player--main {
   grid-column: 2/3;
   grid-row: 4/-1;
-
   width: 25rem;
   margin-top: -10px;
 }
@@ -721,13 +698,26 @@ And use whitee space to find the child (.nav__menu__icon)
 .player--2 {
   grid-column: 2/3;
   grid-row: 1/2;
-
   transform: translateY(10px);
 }
 
 .player--3 {
   grid-column: 3/4;
   grid-row: 2/4;
+}
+
+.square {
+  grid-column: 2/3;
+  grid-row: 2/4;
+
+  background-color: var(--purple--dark);
+  transform: scale(0.9);
+  border-radius: 30px;
+  padding: 5rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .country__img {
@@ -761,10 +751,8 @@ And use whitee space to find the child (.nav__menu__icon)
   position: absolute;
   left: 0;
   top: 0;
-
   height: 100%;
   width: 100%;
-
   opacity: 0;
   transition: 0.1s ease;
 }
@@ -816,15 +804,6 @@ And use whitee space to find the child (.nav__menu__icon)
 
   color: var(--black);
   text-align: center;
-  /* font-size: 4rem; */
-}
-
-.player:hover .test,
-.player:hover .test:before {
-  opacity: 0;
-  display: none;
-  animation: none;
-  width: 0;
 }
 
 /* /////////////////////////// */
@@ -840,7 +819,7 @@ And use whitee space to find the child (.nav__menu__icon)
   font-size: 3rem;
   color: var(--white-normal);
 
-  border: 3px solid var(--white-light--mid);
+  outline: 3px solid var(--white-light--mid);
   border-radius: 30px;
 
   transition: 0.5s ease;
@@ -851,11 +830,10 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .guess__input:focus {
   width: 50%;
-  outline: none;
 }
 
-.guess__input:focus:invalid {
-  border: 3px solid var(--pink);
+.guess__input--invalid {
+  outline: 3px solid var(--pink);
 }
 
 .btn__guess__input {
@@ -863,19 +841,16 @@ And use whitee space to find the child (.nav__menu__icon)
   bottom: 20px;
   right: 20px;
 
-  font-size: 1.5rem;
-  padding: 1rem 2rem;
+  font-size: 1.8rem;
+  padding: 1rem 1.5rem;
   letter-spacing: 1px;
-  text-transform: uppercase;
 
-  /* do not confuse to user with cursor pointer before input is valid */
-  opacity: 0;
-  cursor: unset;
+  cursor: pointer;
 }
 
-.guess__input:focus:valid + .btn__guess__input {
-  opacity: 1;
-  cursor: pointer;
+/* remain white color after hover  */
+.btn__guess__input:hover {
+  color: var(--white-light);
 }
 
 .guess__item {
@@ -897,23 +872,26 @@ And use whitee space to find the child (.nav__menu__icon)
   color: var(--white-normal);
   letter-spacing: 5px;
   text-align: center;
-
   top: 50%;
 }
 
-.guess__useTool,
-.guess__useTool__playerName {
+.guess__number--invalid {
+  color: var(--pink);
+}
+
+.guess__tool,
+.guess__tool__name {
   font-size: 3.2rem;
   color: var(--white-normal);
   text-align: center;
 }
 
-.guess__useTool__playerName {
+.guess__tool__name {
   top: 38%;
   text-align: center;
 }
 
-.guess__useTool {
+.guess__tool {
   top: 50%;
 }
 
@@ -934,88 +912,8 @@ And use whitee space to find the child (.nav__menu__icon)
   animation: showComputerTurn 3s ease infinite;
 }
 
-.guess__useTool--animation {
+.guess__tool--animation {
   animation: useTool 3s ease;
-}
-
-/* /////////////////////////// */
-/* *** COUNTRY INFO *** */
-/* /////////////////////////// */
-.countryInfo {
-  grid-column: 1/3;
-  grid-row: 2/4;
-  height: 35%;
-  margin: 1rem 0 0 2rem;
-
-  border: 5px solid rgba(252, 252, 252, 0.329);
-  border-radius: 30px;
-  background-color: #2d325a8f;
-  /* box-shadow: -5px -5px 10px rgba(252, 252, 252, 0.1); */
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-
-  transition: 0.5s ease;
-  color: #a3a3a3;
-
-  /* for close button  */
-  position: relative;
-
-  /* not sure  */
-  /* z-index: 10; */
-}
-
-.countryInfo__name {
-  /* font-size: 5rem; */
-  font-weight: 300;
-  letter-spacing: 3px;
-  margin-top: 0.5rem;
-  font-weight: 500;
-  display: inline-block;
-  width: 80%;
-  text-align: center;
-}
-
-.countryInfo__ul {
-  display: flex;
-  list-style: none;
-  flex-wrap: wrap;
-
-  /* margin-top: -5rem;
-  padding-bottom: 1rem; */
-}
-
-.countryInfo__item {
-  padding: 0.5rem;
-  font-size: 1.7rem;
-  text-align: center;
-
-  /* not sure  */
-  /* justify-self: flex-end;
-  text-align: left; */
-}
-
-/* TODO */
-.countryInfo__ul > * {
-  flex: 1 1 20rem;
-}
-
-.btn__countryInfo__close {
-  position: absolute;
-  top: 5%;
-  right: 3%;
-  font-size: 2rem;
-  padding: 0.3rem 1rem;
-  border-radius: 30px;
-  color: inherit;
-}
-
-.btn__countryInfo__close:hover,
-.countryInfo__item:hover {
-  font-weight: 700;
-  color: var(--white-normal);
 }
 
 /* /////////////////////////// */
@@ -1024,9 +922,7 @@ And use whitee space to find the child (.nav__menu__icon)
 .tool {
   grid-column: 1/2;
   grid-row: 3/-1;
-
   align-self: end;
-
   margin-left: 10px;
   margin-bottom: 10px;
 }
@@ -1041,16 +937,19 @@ And use whitee space to find the child (.nav__menu__icon)
   z-index: 10;
 }
 
+.btn__tool:hover {
+  color: var(--white-light);
+}
+
 .tool__container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  /* don't want to squeeze the item */
+  /* don't squeeze the item */
   box-sizing: content-box;
 
-  /* height: 20rem; */
   width: 15.7rem;
   background-color: var(--blue);
   border-radius: 20px;
@@ -1078,7 +977,6 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .tool__item:hover {
   color: var(--white-light--mid);
-  fill: var(--white-light--mid);
 }
 
 .tool__icon {
@@ -1089,8 +987,8 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .tool__item:hover .tool__item__extension {
   opacity: 1;
-  transform: translateX(0);
-  width: 18rem;
+  transform: translateX(-30px);
+  width: 15rem;
 }
 
 .tool__item__name {
@@ -1113,7 +1011,6 @@ And use whitee space to find the child (.nav__menu__icon)
   /* animation  */
   opacity: 0;
   transform: translateX(-200px);
-  width: 10rem;
   transition: 0.3s ease;
 }
 
@@ -1140,30 +1037,15 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .btn__tool--use {
-  width: 9rem;
-  padding: 0.5rem 0;
+  padding: 0.5rem 1.5rem;
 }
 
 .btn__tool--question {
   padding: 0.5rem 1rem;
 }
 
-.btn__tool__usename,
-.btn__tool__arrow {
-  display: inline-block;
-  transition: 0.3s ease;
-}
-
-.btn__tool--use:hover .btn__tool__usename {
-  transform: translateX(-8px);
-}
-
-.btn__tool--use:hover .btn__tool__arrow {
-  transform: translateX(5px);
-}
-
 .tool__line {
-  border: 0.5px solid var(--white-dark);
+  border: 1px solid var(--white-dark);
   width: 70%;
 }
 
@@ -1187,7 +1069,7 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** SHOW LEVEL *** */
 /* /////////////////////////// */
-.showLevel {
+.level {
   grid-column: 4/-1;
   grid-row: 4/-1;
   justify-self: end;
@@ -1196,18 +1078,74 @@ And use whitee space to find the child (.nav__menu__icon)
   margin-right: 10px;
 }
 
-.btn__showLevel {
+.btn__level--main {
   font-size: 3rem;
   padding: 1rem 5rem;
   margin-bottom: 10px;
 }
 
-.hiddenDisplay {
-  display: none;
+/* /////////////////////////// */
+/* *** COUNTRY INFO *** */
+/* /////////////////////////// */
+.info {
+  grid-column: 1/3;
+  grid-row: 2/4;
+  height: 35%;
+  margin: 2rem 0 0 2rem;
+  border-radius: 15px;
+  background-color: var(--purple--normal);
+  box-shadow: 0px 0px 2rem rgba(0, 0, 0, 0.548),
+    0px 0px 2rem rgba(0, 0, 0, 0.548);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  transition: 0.5s ease;
+  color: #161616;
+
+  /* for close button  */
+  position: relative;
 }
 
-.hidden--display {
-  display: none;
+.info__name {
+  font-weight: 300;
+  letter-spacing: 1px;
+  font-weight: 500;
+  display: inline-block;
+  width: 80%;
+  text-align: center;
+}
+
+.info__ul {
+  display: flex;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.info__item {
+  padding: 0.5rem;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+/* REVIEW */
+.info__ul > * {
+  flex: 1 1 20rem;
+}
+
+.btn__info__close {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  font-size: 2rem;
+  padding: 0.3rem 1rem;
+  border-radius: 30px;
+  color: inherit;
+}
+
+.btn__info__close:hover {
+  font-weight: 700;
+  color: var(--white-normal);
 }
 
 /* /////////////////////////// */
@@ -1226,36 +1164,26 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .popup {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 3000;
   height: 60%;
   width: 40%;
   max-width: 800px;
   padding: 10px 40px;
-
   background-color: rgba(121, 151, 163, 255);
-
   border-radius: 10px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-
   transition: all 0.6s ease;
 }
 
 .popup__title {
   font-size: 4rem;
-  /* font-size: 4.5rem; */
-  text-transform: uppercase;
   text-align: center;
 }
 
-.popup__subTitle {
+.popup__subtitle {
   font-size: 3rem;
   /* font-size: 3.5rem; */
   text-align: center;
@@ -1263,8 +1191,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .popup__description {
-  font-size: 2rem;
-  /* font-size: 2.5rem; */
+  font-size: 2.5rem;
   text-align: center;
 }
 
@@ -1272,11 +1199,20 @@ And use whitee space to find the child (.nav__menu__icon)
   font-size: 2rem;
   padding: 1rem 2rem;
   text-transform: uppercase;
+  margin-right: 1rem;
 }
 
 .popup__btn__container {
   display: flex;
-  gap: 30px;
+}
+
+/* fix gap supported  */
+.popup__btn__yes {
+  margin-right: -2rem;
+}
+.popup__btn__no {
+  margin-right: 5rem;
+  margin-left: -2rem;
 }
 
 .btn__popup__close {
@@ -1292,21 +1228,22 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 /* /////////////////////////// */
-/* *** POP UP LEVEL*** */
+/* *** POP UP LEVEL *** */
 /* /////////////////////////// */
 .popup__level__word {
-  font-weight: 700;
+  font-weight: 800;
   font-style: italic;
   margin-right: 10px;
-}
-
-.popup__level__word:hover {
-  color: var(--white-light);
+  font-size: 5.5rem;
 }
 
 /* /////////////////////////// */
 /* *** POP UP QUESTION*** */
 /* /////////////////////////// */
+.popup__question {
+  width: 50%;
+}
+
 .popup__question__container {
   display: flex;
 }
@@ -1316,7 +1253,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .popup__question__container p {
-  margin-right: 1.2rem;
+  margin-right: 1.5rem;
 }
 
 .btn__popup__question {
@@ -1327,12 +1264,12 @@ And use whitee space to find the child (.nav__menu__icon)
 /* *** POP UP RULE*** */
 /* /////////////////////////// */
 .popup__rule {
-  height: 90%;
+  height: 95%;
   padding: 0 7rem;
 }
 
-.popup__rule__list__container {
-  /* height: 60%; */
+.popup__rule__list__container > li {
+  font-size: 2rem;
 }
 
 .popup__rule li:hover {
@@ -1348,31 +1285,25 @@ And use whitee space to find the child (.nav__menu__icon)
   margin-bottom: 15px;
 }
 
-.popup__rule__nestedList {
+.popup__rule__nested {
   margin-left: 10px;
 }
 
-.popup__rule__nestedList:not(:last-child) {
+.popup__rule__nested:not(:last-child) {
   margin-bottom: 5px;
 }
 
 /* /////////////////////////// */
-/* *** POP UP DIFF LEVEL*** */
+/* *** POP UP DIFF LEVEL ***/
 /* /////////////////////////// */
-.popup__diffLevel span {
+.popup__level {
+  height: 70%;
+}
+
+.popup__level span {
   font-weight: 600;
   font-style: italic;
   margin-right: 3px;
-}
-
-.popup__diffLevel__container:hover p {
-  color: var(--white-normal);
-}
-
-.popup__tool__icon {
-  width: 3rem;
-  height: 3rem;
-  margin-right: 10px;
 }
 
 .popup__tool__container h5 {
@@ -1383,6 +1314,10 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** POP UP TOOL*** */
 /* /////////////////////////// */
+.popup__tool {
+  height: 65%;
+}
+
 .popup__tool h5 {
   display: flex;
   justify-content: center;
@@ -1391,10 +1326,6 @@ And use whitee space to find the child (.nav__menu__icon)
 .popup__tool p {
   font-size: 2rem;
   text-align: center;
-}
-
-.popup__tool__container:hover p {
-  color: var(--white-normal);
 }
 
 /* /////////////////////////// */
@@ -1411,12 +1342,13 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** POP UP USE TOOL *** */
 /* /////////////////////////// */
-.popup__useTool {
+.popup__tool__use {
+  height: 70%;
   transition: all 0.5s ease;
 }
 
 /* have to be more specificity to select the word */
-.popup__useTool .popup__useTool__icon {
+.popup__tool__use .popup__tool__use__icon {
   font-size: 4rem;
   font-weight: 400;
   margin-top: -30px;
@@ -1425,43 +1357,42 @@ And use whitee space to find the child (.nav__menu__icon)
   justify-content: end;
 }
 
-.popup__useTool__icon svg {
+.popup__tool__use__icon svg {
   width: 4rem;
   height: 4rem;
   margin-top: 5px;
 }
 
-.popup__subTitle--assign {
+.popup__subtitle--assign {
   font-size: 2.5rem;
   text-align: center;
+}
+
+.popup__tool__use__select {
+  font-size: 2rem;
 }
 
 /* /////////////////////////// */
 /* *** POP UP ASSIGN *** */
 /* /////////////////////////// */
 .popup__assign__select {
-  padding: 0.3rem 0.5rem;
+  padding: 0.3rem 1rem 0.3rem 0.5rem;
   outline: none;
   background-color: var(--white-light);
-  font-size: 1.2rem;
-  border-radius: 10px;
-}
-
-.popup__assign__select:hover {
+  font-size: 1.8rem;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.btn__popup__assign {
-  text-transform: uppercase;
-  font-size: 2rem;
-  padding: 1rem 2rem;
-}
-
 /* /////////////////////////// */
-/* *** POP UP CAN'T USE TOOL *** */
+/* *** POP UP CAN'T USE TOOL *** */
 /* /////////////////////////// */
 .popup__cantUseTool h3:first-child {
   color: var(--pink);
+}
+
+.popup__cantUseTool__description {
+  text-transform: none;
 }
 
 /* /////////////////////////// */
@@ -1471,11 +1402,9 @@ And use whitee space to find the child (.nav__menu__icon)
   color: var(--blue);
 }
 
-.popup__computerLoseGame__countryName {
-}
-
 .popup__computerLoseGame--subTitle {
   font-size: 2.8rem;
+  text-align: center;
 }
 
 .popup__computerLoseGame__countryName {
@@ -2030,11 +1959,4 @@ the base state of our website is built for that value range; there is no need to
   100% {
     transform: rotate(360deg);
   }
-}
-
-.btn__popup__yesNO {
-  font-size: 2rem;
-  padding: 1rem 2rem;
-  text-transform: uppercase;
-  margin-right: 1rem;
 }

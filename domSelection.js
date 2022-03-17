@@ -36,10 +36,8 @@ export class DOM__SELECTION {
     this.btnGuessInput = document.querySelector(".btn__guess__input");
     this.guessNumber = document.querySelector(".guess__number");
     this.guessOrder = document.querySelector(".guess__order");
-    this.guessUseTool = document.querySelector(".guess__useTool");
-    this.guessUseToolUserName = document.querySelector(
-      ".guess__useTool__playerName"
-    );
+    this.guessUseTool = document.querySelector(".guess__tool");
+    this.guessUseToolUserName = document.querySelector(".guess__tool__name");
 
     this.rangeNumberMin = document.querySelector(".range__number__min");
     this.rangeNumberMax = document.querySelector(".range__number__max");
@@ -69,15 +67,13 @@ export class DOM__SELECTION {
     ///////////////////////////
     // *** SHOW LEVEL ***
     ///////////////////////////
-    this.btnShowLevel = document.querySelector(".btn__showLevel");
+    this.btnShowLevel = document.querySelector(".btn__level--main");
 
     ///////////////////////////
     // *** COUNTRY INFO ***
     ///////////////////////////
-    this.countryInfo = document.querySelector(".countryInfo");
-    this.btnCountryInfoClose = document.querySelector(
-      ".btn__countryInfo__close"
-    );
+    this.countryInfo = document.querySelector(".info");
+    this.btnCountryInfoClose = document.querySelector(".btn__info__close");
 
     ///////////////////////////
     // *** POPUP ***
@@ -88,7 +84,7 @@ export class DOM__SELECTION {
     this.popupLevel = document.querySelector(".popup__level");
     this.popupRule = document.querySelector(".popup__rule");
     this.popupQuestion = document.querySelector(".popup__question");
-    this.popupDiffLevel = document.querySelector(".popup__diffLevel");
+    this.popupDiffLevel = document.querySelector(".popup__level");
     this.popupTool = document.querySelector(".popup__tool");
 
     // level
@@ -103,20 +99,21 @@ export class DOM__SELECTION {
     this.popupInvalidInput = document.querySelector(".popup__invalidInput");
 
     // use tool
-    this.popupUseTool = document.querySelector(".popup__useTool");
-    this.popupUseToolTitle = document.querySelector(".popup__useTool__title");
-    this.popupUseToolIcon = document.querySelector(".popup__useTool__icon");
-    this.btnPopupUseToolNo = document.querySelector(".btn__popup__useTool__no");
+    this.popupUseTool = document.querySelector(".popup__tool__use");
+    this.popupUseToolTitle = document.querySelector(".popup__tool__use__title");
+    this.popupUseToolIcon = document.querySelector(".popup__tool__use__icon");
+    this.btnPopupUseToolNo = document.querySelector(
+      ".btn__popup__tool__use__no"
+    );
     this.btnPopupUseToolYes = document.querySelector(
-      ".btn__popup__useTool__yes"
+      ".btn__popup__tool__use__yes"
     );
 
     // use assign
     this.popupAssign = document.querySelector(".popup__assign");
     this.popupAssignSelect = document.querySelector(".popup__assign__select");
-    this.btnPopupAssign = document.querySelector(".btn__popup__assign");
     this.popupUseToolDescription = document.querySelector(
-      ".popup__useTool__description"
+      ".popup__tool__use__description"
     );
 
     // CANT USE TOOL

@@ -221,8 +221,8 @@
       </div>
     </div>
 
-    <!-- *** NAV BAR *** hidden--display hidden--opacity -->
-    <nav class="nav page">
+    <!-- *** NAV BAR *** -->
+    <nav class="nav page hidden--display hidden--opacity">
       <div class="nav__left">
         <img class="nav__logo" src="./icon/bomb.svg" />
         <h6 class="nav__username"></h6>
@@ -275,57 +275,72 @@
 
       <div class="player player--main">
         <div class="player__overlay player__overlay--main">
-          <button data-id="0" class="btn btn__info">INFO</button>
+          <button data-id="0" class="btn btn__info hidden--display">
+            INFO
+          </button>
         </div>
       </div>
       <div class="player player--1 player--computer">
         <div class="player__overlay player__overlay--1">
-          <button data-id="1" class="btn btn__info">INFO</button>
+          <button data-id="1" class="btn btn__info hidden--display">
+            INFO
+          </button>
         </div>
       </div>
       <div class="player player--2 player--computer">
         <div class="player__overlay player__overlay--2">
-          <button data-id="2" class="btn btn__info">INFO</button>
+          <button data-id="2" class="btn btn__info hidden--display">
+            INFO
+          </button>
         </div>
       </div>
       <div class="player player--3 player--computer">
         <div class="player__overlay player__overlay--3">
-          <button data-id="3" class="btn btn__info">INFO</button>
+          <button data-id="3" class="btn btn__info hidden--display">
+            INFO
+          </button>
         </div>
       </div>
 
-      <!-- !!! class name (get rid of square)  !!!-->
       <div class="square guess__square">
         <p class="guess__item guess__number"></p>
-
         <p class="guess__item guess__order"></p>
+
         <div class="waiting spinner hidden--display">
           <div class="waiting bounce1 hidden--display"></div>
           <div class="waiting bounce2 hidden--display"></div>
           <div class="waiting bounce3 hidden--display"></div>
         </div>
 
-        <p class="guess__item guess__useTool__playerName"></p>
+        <p class="guess__item guess__tool__name"></p>
 
-        <p class="guess__item guess__useTool"></p>
+        <p class="guess__item guess__tool"></p>
 
         <input
           class="guess__input hidden--display"
           type="number"
-          min="0"
+          min="1"
           max="1000"
           required
         />
-        <button class="btn btn--blue btn__guess__input">check</button>
+        <button
+          class="btn btn--blue btn__guess__input text--cap hidden--display"
+        >
+          check
+        </button>
       </div>
     </main>
 
-    <!-- *** TOOL *** -->
+    <!-- *** TOOL ***  -->
     <aside class="tool page hidden--display hidden--opacity">
       <ul class="tool__container hidden--opacity hidden--display">
         <li class="tool__item hidden--opacity hidden--display">
-          <img class="tool__icon" src="./icon/add-contact.svg" />
-          <p class="tool__item__name">ASSIGN</p>
+          <img
+            class="tool__icon"
+            src="./icon/add-contact.svg"
+            alt="assign icon"
+          />
+          <p class="tool__item__name text--upper">assign</p>
           <div class="tool__item__extension">
             <p class="tool__item__reamaining">
               x<span class="remaing__counts"></span>
@@ -334,8 +349,7 @@
               data-id="ASSIGN"
               class="btn btn__tool__extension btn__tool--use"
             >
-              <span class="btn__tool__usename">USE</span>
-              <span class="btn__tool__arrow">→</span>
+              use
             </button>
             <button class="btn btn__tool__extension btn__tool--question">
               ?
@@ -344,8 +358,8 @@
         </li>
         <hr class="tool__line" />
         <li class="tool__item hidden--opacity hidden--display">
-          <img class="tool__icon" src="./icon/id-card.svg" />
-          <p class="tool__item__name">PASS</p>
+          <img class="tool__icon" src="./icon/id-card.svg" alt="pass icon" />
+          <p class="tool__item__name text--upper">pass</p>
           <div class="tool__item__extension">
             <p class="tool__item__reamaining">
               x<span class="remaing__counts"></span>
@@ -354,8 +368,7 @@
               data-id="PASS"
               class="btn btn__tool__extension btn__tool--use"
             >
-              <span class="btn__tool__usename">USE</span>
-              <span class="btn__tool__arrow">→</span>
+              use
             </button>
             <button class="btn btn__tool__extension btn__tool--question">
               ?
@@ -364,8 +377,8 @@
         </li>
         <hr class="tool__line" />
         <li class="tool__item hidden--opacity hidden--display">
-          <img class="tool__icon" src="./icon/u-turn.svg" />
-          <p class="tool__item__name">U-TURN</p>
+          <img class="tool__icon" src="./icon/u-turn.svg" alt="u-turn icon" />
+          <p class="tool__item__name text--upper">u-turn</p>
           <div class="tool__item__extension">
             <p class="tool__item__reamaining">
               x<span class="remaing__counts"></span>
@@ -374,8 +387,7 @@
               data-id="U-TURN"
               class="btn btn__tool__extension btn__tool--use"
             >
-              <span class="btn__tool__usename">USE</span>
-              <span class="btn__tool__arrow">→</span>
+              use
             </button>
             <button class="btn btn__tool__extension btn__tool--question">
               ?
@@ -391,71 +403,70 @@
       <h6 class="countdown__time">00:30</h6>
     </aside>
 
-    <!-- *** SHOWLEVEL *** -->
-    <aside class="showLevel page hidden--display hidden--opacity">
-      <button class="btn btn--purple btn__showLevel btn__level text--upper">
-        EASY
+    <!-- *** SHOW LEVEL *** -->
+    <aside class="level page hidden--display hidden--opacity">
+      <button class="btn btn--purple btn__level--main btn__level text--upper">
+        easy
       </button>
     </aside>
 
     <!-- *** COUNTRY INFO *** -->
-    <aside class="countryInfo hidden--display">
-      <button class="btn btn__countryInfo__close">X</button>
-      <h6 class="countryInfo__name">Japan</h6>
-      <ul class="countryInfo__ul">
-        <li class="countryInfo__item">
-          region: <span class="countryInfo__content">ERFER</span>
+    <aside class="info hidden--display">
+      <button class="btn btn__info__close">X</button>
+      <h6 class="info__name text--cap">Japan</h6>
+      <ul class="info__ul">
+        <li class="info__item text--cap">
+          region: <span class="info__region"></span>
         </li>
-        <li class="countryInfo__item">
-          capital: <span class="countryInfo__capital">ERFERF</span>
+        <li class="info__item text--cap">
+          capital: <span class="info__capital"></span>
         </li>
-        <li class="countryInfo__item">
-          area: <span class="countryInfo__area">FEREVRE</span>
+        <li class="info__item text--cap">
+          area: <span class="info__area"></span>
         </li>
-        <li class="countryInfo__item">
-          population: <span class="countryInfo__population">VREVERVE</span>
+        <li class="info__item text--cap">
+          population: <span class="info__population"></span>
         </li>
-        <li class="countryInfo__item">
-          currencies: <span class="countryInfo__currencies">VREVE</span>
+        <li class="info__item text--cap">
+          currencies: <span class="info__currencies"></span>
         </li>
-        <li class="countryInfo__item">
-          language: <span class="countryInfo__language">VREV</span>
+        <li class="info__item text--cap">
+          language: <span class="info__language"></span>
         </li>
       </ul>
     </aside>
 
-    <!-- *** POP UP *** -->
-    <div class="popup__overlay hidden--display">
-      <!-- //  -->
+    <!-- *** POP UP *** hidden--display -->
+    <div class="popup__overlay">
       <!-- *** POP UP LEVEL *** -->
-      <div class="popup popup__level hidden--display hidden--opacity">
+      <div class="popup center popup__level hidden--display hidden--opacity">
         <div>
-          <h3 class="popup__title">YOU'RE CURRENTLY IN</h3>
+          <h3 class="popup__title text--cap">you're currently in</h3>
           <h3 class="popup__title">
-            <span class="popup__level__word">EASY</span> LEVEL
+            <span class="popup__level__word text--cap">EASY</span>
           </h3>
         </div>
 
-        <p class="popup__description">Du you want to change the level?</p>
+        <p class="popup__description">Do you want to change the level?</p>
         <div class="popup__btn__container">
           <button
-            class="btn btn--blue btn__popup__level--yes popup__btn btn__popup__yesNO"
-          >
-            yes
-          </button>
-          <button
-            class="btn btn--pink popup__btn btn__popup__level--no btn__popup__yesNO"
+            class="btn btn--pink popup__btn popup__btn__no btn__popup__level--no"
           >
             no
+          </button>
+
+          <button
+            class="btn btn--blue popup__btn popup__btn__yes btn__popup__level--yes"
+          >
+            yes
           </button>
         </div>
       </div>
 
-      <!-- //  -->
-      <!-- *** POP UP QUESTION *** -->
-      <div class="popup popup__question hidden--display">
+      <!-- *** POP UP QUESTION ***  -->
+      <div class="popup popup__question center hidden--display">
         <button class="btn btn__popup__close">x</button>
-        <h3 class="popup__title">question</h3>
+        <h3 class="popup__title text--cap">question</h3>
 
         <div class="popup__question__container">
           <p class="popup__description">What is the rule of the game?</p>
@@ -471,7 +482,7 @@
             What is the difference between different level?
           </p>
           <button
-            class="btn btn--blue btn__popup__question btn__popup__question__diffLevel"
+            class="btn btn--blue btn__popup__question btn__popup__question__level"
           >
             →
           </button>
@@ -489,11 +500,10 @@
         </div>
       </div>
 
-      <!-- //  -->
       <!-- *** POP UP RULE *** -->
-      <div class="popup popup__rule hidden--display">
+      <div class="popup popup__rule center hidden--display">
         <button class="btn btn__popup__close">x</button>
-        <h3 class="popup__title">rule</h3>
+        <h3 class="popup__title text--cap">rule</h3>
         <ol class="popup__rule__list__container">
           <li class="popup__rule__list popup__description">
             There is a bomb number in each game
@@ -518,13 +528,13 @@
           <li class="popup__rule__list popup__description">
             If one of other players guesses the bomb number
             <ol type="I">
-              <li class="popup__rule__nestedList">
+              <li class="popup__rule__nested">
                 Other remaining players can have one more tool to use
               </li>
-              <li class="popup__rule__nestedList">
+              <li class="popup__rule__nested">
                 A new bomb number is re-created
               </li>
-              <li class="popup__rule__nestedList">
+              <li class="popup__rule__nested">
                 A new valid number range is re-set
               </li>
             </ol>
@@ -535,66 +545,73 @@
         </ol>
       </div>
 
-      <!-- //  -->
       <!-- *** POP UP DIFF LEVEL *** -->
-      <div class="popup popup__diffLevel hidden--display">
+      <div class="popup center popup__level hidden--display">
         <button class="btn btn__popup__close">x</button>
-        <h3 class="popup__title">different level</h3>
-        <div class="popup__diffLevel__container">
-          <h5 class="popup__subTitle">easy</h5>
+        <h3 class="popup__title text--cap">different level</h3>
+        <div class="popup__level__container">
+          <h5 class="popup__subtitle">easy</h5>
           <p class="popup__description">
-            You have <span>THREE</span> available counts for different tools
+            Having <span class="text--upper">three</span> available counts for
+            different tools
           </p>
         </div>
-        <div class="popup__diffLevel__container">
-          <h5 class="popup__subTitle">medium</h5>
+        <div class="popup__level__container">
+          <h5 class="popup__subtitle">medium</h5>
           <p class="popup__description">
-            You have
-            <span>TWO</span>
+            Having
+            <span class="text--upper">two</span>
             available counts for different tools
           </p>
         </div>
-        <div class="popup__diffLevel__container">
-          <h5 class="popup__subTitle">hard</h5>
+        <div class="popup__level__container">
+          <h5 class="popup__subtitle">hard</h5>
           <p class="popup__description">
-            You have
-            <span>ONE</span>
+            Having
+            <span class="text--upper">one</span>
             available counts for different tools
           </p>
         </div>
       </div>
 
       <!-- *** POP UP TOOL *** -->
-      <div class="popup popup__tool hidden--display">
+      <div class="popup popup__tool center hidden--display">
         <button class="btn btn__popup__close">x</button>
-        <h3 class="popup__title">tool</h3>
+        <h3 class="popup__title text--cap">tool</h3>
         <div class="popup__tool__container">
-          <h5 class="popup__subTitle">
-            <img class="tool__icon" src="./icon/add-contact.svg" />
+          <h5 class="popup__subtitle">
+            <img
+              class="tool__icon"
+              src="./icon/add-contact.svg"
+              alt="assign icon"
+            />
             assign
           </h5>
           <p>Assign one of players to substitute for you to guess the number</p>
         </div>
         <div class="popup__tool__container">
-          <h5 class="popup__subTitle">
-            <img class="tool__icon" src="./icon/id-card.svg" />
+          <h5 class="popup__subtitle">
+            <img class="tool__icon" src="./icon/id-card.svg" alt="pass icon" />
             pass
           </h5>
           <p>Pass the current guessing, and move to the next player</p>
         </div>
         <div class="popup__tool__container">
-          <h5 class="popup__subTitle">
-            <img class="tool__icon" src="./icon/u-turn.svg" />
+          <h5 class="popup__subtitle">
+            <img class="tool__icon" src="./icon/u-turn.svg" alt="u-turn icon" />
             u-turn
           </h5>
           <p>Pass the current guessing, and move back to the previous player</p>
         </div>
       </div>
 
-      <!-- *** POP UP INVALID INPUT *** -->
-      <div class="popup popup__invalidInput hidden--display hidden--opacity">
+      <!-- TODO: about to remove  -->
+      <!-- *** POP UP INVALID INPUT ***  -->
+      <div
+        class="popup popup__invalidInput center hidden--display hidden--opacity"
+      >
         <h3 class="popup__title">invalid input</h3>
-        <h5 class="popup__subTitle">Your input is invalid</h5>
+        <h5 class="popup__subtitle">Your input is invalid</h5>
         <p class="popup__description">
           Only number inside the valid range <br />
           is acceptable
@@ -605,44 +622,48 @@
       </div>
 
       <!-- *** POP UP USE TOOL *** -->
-      <div class="popup popup__useTool hidden--display">
-        <h3 class="popup__title popup__useTool__title">
+      <div
+        class="popup popup__tool__use center hidden--display hidden--opacity"
+      >
+        <h3 class="popup__title popup__tool__use__title">
           Are you sure to use this tool?
         </h3>
 
-        <!-- <h3 class="popup__useTool__icon"></h3> -->
-
-        <p class="popup__description popup__useTool__description">
+        <p class="popup__description popup__tool__use__description">
           You only have <span class="remaing__counts"></span> times to use tool
         </p>
         <div class="popup__btn__container">
           <button
-            class="btn btn--blue popup__btn btn__popup__useTool__yes btn__popup__yesNO"
-          >
-            yes
-          </button>
-          <button
-            class="btn btn--pink popup__btn btn__popup__useTool__no btn__popup__yesNO"
+            class="btn btn--pink popup__btn btn__popup__tool__use__no popup__btn__no"
           >
             no
+          </button>
+          <button
+            class="btn btn--blue popup__btn btn__popup__tool__use__yes popup__btn__yes"
+          >
+            yes
           </button>
         </div>
       </div>
 
-      <!-- *** POP UP CAN'T USE TOOL ***  -->
-      <div class="popup popup__cantUseTool hidden--display hidden--opacity">
-        <h3 class="popup__title">sorry</h3>
-        <h3 class="popup__subTitle popup__cantUseTool__description"></h3>
+      <!-- *** POP UP CAN'T USE TOOL *** -->
+      <div
+        class="popup popup__cantUseTool center hidden--display hidden--opacity"
+      >
+        <h3 class="popup__title text--cap">sorry</h3>
+        <h3 class="popup__subtitle popup__cantUseTool__description"></h3>
         <button class="btn btn--blue popup__btn btn__popup__cantUseTool">
           back
         </button>
       </div>
 
       <!-- *** POP UP COMPUTER LOSE THE GAME  *** -->
-      <div class="popup popup__computerLoseGame hidden--display">
-        <h3 class="popup__title">congratulation</h3>
-        <h5 class="popup__subTitle popup__computerLoseGame--subTitle">
-          <span class="popup__computerLoseGame__countryName">TAIWAN</span>
+      <div class="popup popup__computerLoseGame center hidden--display">
+        <h3 class="popup__title text--cap">congratulation</h3>
+        <h5 class="popup__computerLoseGame--subTitle text--cap">
+          <span class="popup__computerLoseGame__countryName text--upper"
+            >TAIWAN</span
+          >
           <br />guess the bomb number <br />
           so you get one more tool counts
         </h5>
@@ -656,10 +677,10 @@
         </button>
       </div>
 
-      <!-- *** POP UP USER LOSE THE GAME  *** -->
-      <div class="popup popup__userLoseGame hidden--display">
-        <h3 class="popup__title">sorry</h3>
-        <h5 class="popup__subTitle">You lose the game</h5>
+      <!-- *** POP UP USER LOSE THE GAME  ***  -->
+      <div class="popup popup__userLoseGame center hidden--display">
+        <h3 class="popup__title text--cap">sorry</h3>
+        <h5 class="popup__subtitle">You lose the game</h5>
         <p class="popup__description">
           Bomb Number: <span class="bomb__number--user"></span>
         </p>
@@ -671,9 +692,9 @@
       </div>
 
       <!-- *** POP UP USER WIN THE GAME  *** -->
-      <div class="popup popup__userWinGame hidden--display">
-        <h3 class="popup__title">congratulation</h3>
-        <h5 class="popup__subTitle">
+      <div class="popup popup__userWinGame center hidden--display">
+        <h3 class="popup__title text--cap">congratulation</h3>
+        <h5 class="popup__subtitle">
           You win the game <br />
           in <span class="popup__userWinGame__currentLevel"></span> level
         </h5>
