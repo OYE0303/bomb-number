@@ -162,6 +162,10 @@ select {
   font-size: 2rem;
 }
 
+.font1.5 {
+  font-size: 1.5rem;
+}
+
 .font1 {
   font-size: 1rem;
 }
@@ -892,7 +896,16 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .guess__tool {
+  display: flex;
   top: 50%;
+}
+
+.guess__tool__icon {
+  width: 3.2rem;
+  height: 3.2rem;
+  fill: var(--white-light);
+  margin-left: 10px;
+  align-self: center;
 }
 
 /* animation  */

@@ -149,14 +149,9 @@ export class DOM__SELECTION {
     this.formLevelInputGroup = document.querySelector(
       ".form__level__input__group"
     );
-    this.formLevelInput = document.querySelectorAll(
-      ".form__level__radio--input"
-    );
+    this.formLevelInput = document.querySelectorAll(".form__level__input");
     this.formLevelDescriptionCounts = document.querySelector(
       ".form__level__description--counts"
-    );
-    this.formLevelInput = document.querySelectorAll(
-      ".form__level__radio--input"
     );
     this.btnFormLevelNext = document.querySelector(".form__btn--level-next");
     this.btnFormLevelBack = document.querySelector(".form__btn--level-back");

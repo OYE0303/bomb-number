@@ -7,6 +7,7 @@ const SVG = new SVG__ICON();
 
 class APP {
   constructor() {
+    console.log(SVG.uturnImg);
     // PLAYER INFO
     this.userCountryInfo = new PLAYER__INFO();
     this.Computer1CountryInfo = new PLAYER__INFO();
@@ -19,11 +20,11 @@ class APP {
     );
     this.formOrder = 0;
 
-    // USERNAME
+    // userName
     this.userName;
 
     // LEVEL
-    this.level;
+    this.level = "easy";
 
     // NUMBER
     this.targetNumber;
@@ -52,180 +53,15 @@ class APP {
     // COUNT DOWN (for clearSettimeInterval)
     this.countDown;
 
+    // Guessing Animation Duration
+    this.guessAnimationTime = 5;
+
     // EVENT LISTENER
     this.#addEventListener();
 
     // cache (region) (select)
-    this.cacheRandom = null;
+    this.cacheAllCountryData = null;
     this.cacheRegion = {};
-  }
-
-  ///////////////////////////////////////
-  // *** EVENT LISTENER ***
-  ///////////////////////////////////////
-  #addEventListener() {
-    // TOOL
-    DOM.btnTool.addEventListener("click", this.#toolBtnToggle.bind(this));
-    DOM.toolItemName.forEach((toolName) =>
-      toolName.addEventListener("click", this.#useToolSmall.bind(this))
-    );
-
-    // COUNTRY INFO
-    DOM.btnCountryInfoClose.addEventListener(
-      "click",
-      this.#closeCountryInfo.bind(this)
-    );
-
-    // NAV CHECKBOX & BACKGROUND
-    DOM.btnNavBackground.forEach((btnNav) =>
-      btnNav.addEventListener("click", this.#showPopupLevelSmall.bind(this))
-    );
-    DOM.btnNavBackGroundFaq.addEventListener(
-      "click",
-      this.#showPopupQuestionSmall.bind(this)
-    );
-    DOM.navCheckbox.addEventListener(
-      "click",
-      this.#menuCheckboxToggle.bind(this)
-    );
-    DOM.btnNavQuestion.addEventListener(
-      "click",
-      this.#showPopupQuestion.bind(this)
-    );
-
-    // COUNTRY INFO (SIDE WINDOW)
-    DOM.btnInfo.forEach((btn) =>
-      btn.addEventListener("click", this.#showCountryInfo.bind(this))
-    );
-
-    // POP UP
-    DOM.btnPopupClose.forEach((btnClose) =>
-      btnClose.addEventListener("click", this.#closePopup.bind(this))
-    );
-
-    // POPUP CURRENT LEVEL
-    DOM.btnShowLevel.addEventListener("click", this.#showPopupLevel.bind(this));
-    DOM.navRight.addEventListener("click", this.#showPopupLevel.bind(this));
-    DOM.btnPopupLevelNo.addEventListener(
-      "click",
-      this.#closePopupLevel.bind(this)
-    );
-
-    // POPUP CHANGE LEVEL
-    DOM.btnPopupLevelYes.addEventListener(
-      "click",
-      this.#changeLevel.bind(this)
-    );
-
-    // POPUP QUESTION
-    DOM.popupQuestion.addEventListener(
-      "click",
-      this.#showPopupDiffQuestion.bind(this)
-    );
-
-    // TAKE USER'S GUESS INPUT
-    DOM.btnGuessInput.addEventListener(
-      "click",
-      this.#checkGuessInput.bind(this)
-    );
-    DOM.guessInput.addEventListener(
-      "input",
-      this.#inputChangeHandler.bind(this)
-    );
-
-    // USE TOOL
-    DOM.btnToolUse.forEach((btn) =>
-      btn.addEventListener("click", this.#showPopupUseTool.bind(this))
-    );
-    DOM.btnPopupUseToolNo.addEventListener(
-      "click",
-      this.#closePopupUseTool.bind(this)
-    );
-    DOM.btnPopupUseToolYes.addEventListener("click", this.#useTool.bind(this));
-    DOM.btnToolQuestion.forEach((btn) =>
-      btn.addEventListener("click", this.#showDiffToolUI.bind(this))
-    );
-
-    // POPUP INVALID INPUT
-    DOM.btn__invalidInput.addEventListener(
-      "click",
-      this.#closePopupInvalidInput.bind(this)
-    );
-
-    // POPUP CANT USE TOOL
-    DOM.btnCantUseTool.addEventListener(
-      "click",
-      this.#closePopupCantUseTool.bind(this)
-    );
-
-    // COMPUTER LOSE GAME
-    DOM.btnPopupComputerLoseGame.addEventListener(
-      "click",
-      this.#closePopupComputerLoseGame.bind(this)
-    );
-
-    // form username
-    DOM.btnFormUserNameNext.addEventListener(
-      "click",
-      this.#takeInputName.bind(this)
-    );
-
-    // FORM LEVEL
-    DOM.formLevelInputGroup.addEventListener(
-      "click",
-      this.#showFormDiffLevel.bind(this)
-    );
-    DOM.btnFormLevelNext.addEventListener(
-      "click",
-      this.#takeInputDiffLevel.bind(this)
-    );
-    DOM.btnFormLevelBack.addEventListener(
-      "click",
-      this.#backFormPage.bind(this)
-    );
-
-    // form country
-    DOM.formCountryRegionSelect.addEventListener(
-      "input",
-      this.#takeFormCountryRegionSelect.bind(this)
-    );
-    DOM.formCountryNameSelect.addEventListener(
-      "input",
-      this.#setCountryName.bind(this)
-    );
-    DOM.btnFormCountryNext.addEventListener(
-      "click",
-      this.#takeFormCountryNameSelect.bind(this)
-    );
-    DOM.btnFormCountryBack.addEventListener(
-      "click",
-      this.#backFormPage.bind(this)
-    );
-    DOM.formBtnCountryRandom.addEventListener(
-      "click",
-      this.#btnRandomHandler.bind(this)
-    );
-
-    // form range
-    DOM.btnFormRangeNext.addEventListener(
-      "click",
-      this.#takeFormRange.bind(this)
-    );
-    DOM.btnFormRangeBack.addEventListener(
-      "click",
-      this.#backFormPage.bind(this)
-    );
-
-    DOM.formRangeInput.addEventListener(
-      "input",
-      this.#showFormRange.bind(this)
-    );
-
-    // CHECK RULE
-    DOM.btnFormCheckRule.addEventListener(
-      "click",
-      this.#showCheckRule.bind(this)
-    );
   }
 
   #inputChangeHandler(e) {
@@ -245,149 +81,78 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** RANDOM NUMBER ***
-  ///////////////////////////////////////
-  #createRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
-  ///////////////////////////////////////
-  // *** CREATE TARGET NUMBER ***
-  ///////////////////////////////////////
-  #createTargetNumber() {
-    this.targetNumber = this.#createRandomNumber(1, this.maxNumber - 1);
-  }
-
-  ///////////////////////////////////////
-  // *** DELETE ELEMENT FROM ARRAY ***
-  ///////////////////////////////////////
-  #deleteElementFromArray(arr, element) {
-    return arr.filter((el) => el !== element);
-  }
-
-  ///////////////////////////////////////
-  // *** PROMISIFYING SETTIMEOUT ***
-  ///////////////////////////////////////
-  #timeout(second) {
-    return new Promise(function time(resolve) {
-      setTimeout(resolve, second * 1000);
-    });
-  }
-
-  ///////////////////////////////////////
-  // *** COUNTDOWN ***
-  ///////////////////////////////////////
-  #showCountdown() {
-    let i = 30;
-    DOM.countdownTime.style.color = "var(--white-light)";
-    DOM.countdownTime.textContent = `00:30`;
-    this.countDown = setInterval(() => {
-      if (i >= 10) {
-        DOM.countdownTime.textContent = `00:${i}`;
-      } else {
-        DOM.countdownTime.textContent = `00:0${i}`;
-        DOM.countdownTime.style.color = "var(--pink)";
-      }
-      i--;
-      if (i < 0) {
-        this.#checkGuessInput(null, true);
-        clearInterval(this.countDown);
-        DOM.countdownTime.textContent = ``;
-      }
-    }, 1000);
-  }
-
-  #closeCountDown() {
-    clearInterval(this.countDown);
-    DOM.countdownTime.textContent = ``;
-  }
-
-  ///////////////////////////////////////
-  // *** SET COUNTRY INFO ***
-  ///////////////////////////////////////
-  #setCountryInfo(player, order, toolCounts, data, position) {
-    player.order = order;
-    player.toolCounts = toolCounts;
-    player.countryData = data;
-    player.position = position;
-  }
-
-  ///////////////////////////////////////
-  // *** FORM ORDER***
+  // *** Form Order *** ^^^^^^
   ///////////////////////////////////////
   #nextFormPage() {
     this.formCollection[this.formOrder].classList.add("hidden--display");
 
-    this.formOrder++;
-    this.formCollection[this.formOrder].classList.remove("hidden--display");
+    this.formCollection[++this.formOrder].classList.remove("hidden--display");
   }
 
   #backFormPage() {
     this.formCollection[this.formOrder].classList.add("hidden--display");
 
-    this.formOrder--;
-    this.formCollection[this.formOrder].classList.remove("hidden--display");
+    this.formCollection[--this.formOrder].classList.remove("hidden--display");
   }
 
   ///////////////////////////////////////
-  // *** FORM ***
+  // *** Form *** ^^^^^^
   ///////////////////////////////////////
-  #takeInputName() {
+  #btnFormUserNameNextClickHandler() {
     this.userName = DOM.formInput.value;
 
     this.#nextFormPage();
   }
 
   ///////////////////////////////////////
-  // *** FORM LEVEL***
+  // *** Form Level *** ^^^^^^
   ///////////////////////////////////////
-  #showFormDiffLevel(e) {
+  #formInputLevelClickHandler(e) {
     // note that e.target will select two element at the same time(input & level)
     // (1) find the elemet has data-id attribute
-    const level = e.target.closest(".form__level__input");
+    const inputLevelDom = e.target.closest(".form__level__input");
 
-    console.log(level);
     // (2) filter any possible outcome is null
-    if (level) {
-      DOM.formLevelDescriptionCounts.textContent = level.dataset.id;
+    if (inputLevelDom) {
+      DOM.formLevelDescriptionCounts.textContent = inputLevelDom.dataset.id;
+      this.level = inputLevelDom.value;
     }
   }
 
-  #takeInputDiffLevel() {
-    DOM.formLevelInput.forEach((el) => {
-      if (el.checked) this.level = el.value;
-    });
-
+  #btnFormLevelNextClickHandler() {
     // set tool counts based on level
-    if (this.level === "easy") this.userCountryInfo.toolCounts = 3;
-    else if (this.level === "medium") this.userCountryInfo.toolCounts = 2;
-    else this.userCountryInfo.toolCounts = 1;
+    switch (this.level) {
+      case "easy":
+        this.userCountryInfo.toolCounts = 3;
+        break;
+
+      case "medium":
+        this.userCountryInfo.toolCounts = 2;
+        break;
+
+      case "hard":
+        this.userCountryInfo.toolCounts = 1;
+        break;
+
+      default:
+        break;
+    }
 
     this.#nextFormPage();
   }
 
   ///////////////////////////////////////
-  // *** FORM COUNTRY ***
+  // *** Form Country *** ^^^^^^
   ///////////////////////////////////////
-  async #takeFormCountryRegionSelect() {
-    // get input value(which region)
+  async #formCountryRegionSelectChangeHandler() {
     const region = DOM.formCountryRegionSelect.value;
 
     this.#disabledCountryBtn();
-    await this.#showSelectCountry(region);
+    await this.#showSelectCountryAndImg(region);
     this.#activeCountryBtn();
   }
 
-  async #takeFormCountryNameSelect() {
-    this.userCountryInfo.countryName = DOM.formCountryNameSelect.value;
-
-    this.#nextFormPage();
-
-    // show form range UI
-    this.#showFormRange();
-  }
-
-  async #setCountryName() {
+  async #formCountryNameSelectChangeHandler() {
     const countryName = DOM.formCountryNameSelect.value;
 
     this.#disabledCountryBtn();
@@ -395,21 +160,21 @@ class APP {
     this.#activeCountryBtn();
   }
 
-  #deleteFormCountryName(childrenArr) {
-    childrenArr.forEach((child) => DOM.formCountryNameSelect.remove(child));
+  async #btnFormCountryNextClickHandler() {
+    this.userCountryInfo.countryName = DOM.formCountryNameSelect.value;
+
+    this.#nextFormPage();
+
+    // show form range UI
+    this.#formRangeInputChangeHandler();
   }
 
-  #generateFormCountryNameOptionHtml(countryNameArr) {
+  #showFormCountryNameSelect(countryNameArr) {
     let html = ``;
     countryNameArr.forEach((country) => {
       html += `<option value="${country}">${country}</option>`;
     });
 
-    return html;
-  }
-
-  #showFormCountryName(countryNameArr) {
-    const html = this.#generateFormCountryNameOptionHtml(countryNameArr);
     DOM.formCountryNameSelect.insertAdjacentHTML("beforeend", html);
   }
 
@@ -420,7 +185,6 @@ class APP {
       `https://restcountries.com/v3.1/name/${country}`
     );
 
-    // nice
     const [
       {
         flags: { svg: data },
@@ -432,14 +196,14 @@ class APP {
     this.#removeImgLoading();
   }
 
-  async #btnRandomHandler() {
+  async #btnRandomClickHandler() {
     this.#disabledCountryBtn();
 
-    if (!this.cacheRandom) {
+    if (!this.cacheAllCountryData) {
       try {
         this.#showRandomlySelectLoading();
         const res = await fetch("https://restcountries.com/v3.1/all");
-        this.cacheRandom = await res.json();
+        this.cacheAllCountryData = await res.json();
 
         this.#removeRandomlySelectLoading();
       } catch (err) {
@@ -447,43 +211,45 @@ class APP {
       }
     }
 
-    const randomNum = this.#createRandomNumber(0, this.cacheRandom.length - 1);
-    const randomCountry = this.cacheRandom[randomNum];
+    const randomNum = this.#createRandomNumber(
+      0,
+      this.cacheAllCountryData.length - 1
+    );
+    const randomCountry = this.cacheAllCountryData[randomNum];
     const region = randomCountry.region;
 
     // show the region
     DOM.formCountryRegionSelect.value = randomCountry.region;
 
     // handle the process after seleting the region
-    await this.#showSelectCountry(region, randomCountry.name.official);
+    await this.#showSelectCountryAndImg(region, randomCountry.name.official);
 
     this.#activeCountryBtn();
   }
 
-  async #showSelectCountry(region, randomCountry = null) {
+  async #showSelectCountryAndImg(region, randomCountry = null) {
     this.#removePreCountrySelect();
 
     if (this.cacheRegion[region]) {
-      this.#showFormCountryName(this.cacheRegion[region]);
-
-      await this.#hasRandomCountry(randomCountry, this.cacheRegion[region][0]);
-
+      this.#showFormCountryNameSelect(this.cacheRegion[region]);
+      await this.#hasRandomCountryAndShowImg(
+        randomCountry,
+        this.cacheRegion[region][0]
+      );
       return;
     }
 
     this.#showCountrySelectLoading();
-
-    const countryData = await this.getRegionCountryData(region);
+    const countryData = await this.getCountryDataFromRegion(region);
     this.cacheRegion[region] = countryData;
-
     this.#removeCountrySelectLoading();
 
     // show the next button
     DOM.btnFormCountryNext.classList.remove("hidden--display");
 
-    this.#showFormCountryName(countryData);
+    this.#showFormCountryNameSelect(countryData);
 
-    await this.#hasRandomCountry(randomCountry, countryData[0]);
+    await this.#hasRandomCountryAndShowImg(randomCountry, countryData[0]);
   }
 
   #removePreCountrySelect() {
@@ -491,10 +257,12 @@ class APP {
     const countryNameChildren = Array.from(DOM.formCountryNameSelect.children);
 
     // if selected before, delete original one
-    this.#deleteFormCountryName(countryNameChildren);
+    countryNameChildren.forEach((child) =>
+      DOM.formCountryNameSelect.remove(child)
+    );
   }
 
-  async #hasRandomCountry(randomCountry, countryData) {
+  async #hasRandomCountryAndShowImg(randomCountry, countryData) {
     if (randomCountry) {
       // show the name
       DOM.formCountryNameSelect.value = randomCountry;
@@ -505,9 +273,20 @@ class APP {
     }
   }
 
+  async getCountryDataFromRegion(region) {
+    const res = await fetch(`https://restcountries.com/v3.1/region/${region}`);
+
+    const data = await res.json();
+
+    /*
+    data is an array containing many object
+    But we only want name property
+    */
+    const countryNameArr = data.map(({ name: { official } }) => official);
+    return countryNameArr;
+  }
+
   #showCountrySelectLoading() {
-    // hidden image, setting loading text
-    // DOM.formCountryImg.classList.remove("form__country__img--animation");
     DOM.formCountryImg.classList.add("hidden--opacity");
     DOM.formCountryNameSelect.insertAdjacentHTML(
       "beforeend",
@@ -520,11 +299,9 @@ class APP {
   }
 
   #removeCountrySelectLoading() {
-    // remove the loading text
     DOM.formCountryNameSelect.remove(
       document.querySelector(".form__country__option--loading")
     );
-    // remove the hidden
     DOM.formCountryImg.classList.remove("hidden--opacity");
     DOM.formCountryNameSelect.classList.remove(
       "form__country__select--disabled"
@@ -533,9 +310,6 @@ class APP {
   }
 
   #showRandomlySelectLoading() {
-    // hide image
-    DOM.formCountryImg.classList.add("hidden--opacity");
-
     // add loading text
     DOM.formCountryRegionSelect.insertAdjacentHTML(
       "beforeend",
@@ -543,47 +317,33 @@ class APP {
           loading...
        </option>`
     );
-    DOM.formCountryNameSelect.insertAdjacentHTML(
-      "beforeend",
-      `<option selected disabled class="form__country__option form__country__option--loading form__country__option--loading--country text-cap" value = "loading">
-      loading...
-      </option>`
-    );
 
     // add disabled style
     DOM.formCountryRegionSelect.classList.add(
       "form__country__select--disabled"
     );
-    DOM.formCountryNameSelect.classList.add("form__country__select--disabled");
 
     // set disabled true
     DOM.formCountryRegionSelect.disabled = true;
-    DOM.formCountryNameSelect.disabled = true;
+
+    this.#showCountrySelectLoading();
   }
 
   #removeRandomlySelectLoading() {
-    // remove the hidden image
-    DOM.formCountryImg.classList.remove("hidden--opacity");
-
     // remove loading text
     DOM.formCountryRegionSelect.removeChild(
       document.querySelector(".form__country__option--loading--region")
-    );
-    DOM.formCountryNameSelect.remove(
-      document.querySelector(".form__country__option--loading--country")
     );
 
     // remove disabled style
     DOM.formCountryRegionSelect.classList.remove(
       "form__country__select--disabled"
     );
-    DOM.formCountryNameSelect.classList.remove(
-      "form__country__select--disabled"
-    );
 
     // set disabled false
     DOM.formCountryRegionSelect.disabled = false;
-    DOM.formCountryNameSelect.disabled = false;
+
+    this.#removeCountrySelectLoading();
   }
 
   #disabledCountryBtn() {
@@ -634,9 +394,9 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** FORM RANGE ***
+  // *** Form Range *** ^^^^^^
   ///////////////////////////////////////
-  #takeFormRange() {
+  #btnFormRangeNextClickHandler() {
     this.maxNumber = Number(DOM.formRangeInput.value);
     this.maxNumberNoChange = this.maxNumber;
     DOM.guessInput.setAttribute("max", String(this.maxNumberNoChange - 1));
@@ -646,13 +406,30 @@ class APP {
     this.#showContent();
   }
 
-  #showFormRange() {
+  #formRangeInputChangeHandler() {
     DOM.formRangeOutput.textContent = DOM.formRangeInput.value;
   }
 
+  #hideForm() {
+    DOM.formOverlay.classList.add("hidden--display");
+    this.formCollection.forEach((form) =>
+      form.classList.add("hidden--display")
+    );
+  }
+
   ///////////////////////////////////////
-  // *** MAIN CONTENT ***
+  // *** Main Content *** ^^^^^^
   ///////////////////////////////////////
+  #showContent() {
+    this.#setAllCountentDataAndUI();
+
+    // show all content
+    DOM.page.forEach((page) => page.classList.remove("hidden--display"));
+    this.#timeout(0).then(() => {
+      DOM.page.forEach((page) => page.classList.remove("hidden--opacity"));
+    });
+  }
+
   async #setAllCountentDataAndUI() {
     // set userName on UI
     DOM.userName.textContent = this.userName;
@@ -686,26 +463,6 @@ class APP {
     DOM.btnInfo.forEach((btn) => btn.classList.remove("hidden--display"));
   }
 
-  #showContent() {
-    this.#setAllCountentDataAndUI();
-
-    // show all content
-    DOM.page.forEach((page) => page.classList.remove("hidden--display"));
-    this.#timeout(0).then(() => {
-      DOM.page.forEach((page) => page.classList.remove("hidden--opacity"));
-    });
-  }
-
-  #hideForm() {
-    DOM.formOverlay.classList.add("hidden--display");
-    this.formCollection.forEach((form) =>
-      form.classList.add("hidden--display")
-    );
-  }
-
-  ///////////////////////////////////////
-  // *** COUNTRY DATA (USER & COMPUTER) ***
-  ///////////////////////////////////////
   async #showUserCountryImg() {
     this.#showMainContentLoading(DOM.playerMain, "main");
 
@@ -728,10 +485,10 @@ class APP {
   async #showComputerCountryImg() {
     this.#showMainContentLoading(null, null, true);
 
-    const countryNameArr = await this.#randomlyChooseCountryName();
+    const randomCountryNameArr = await this.#randomlyChooseCountryName();
 
-    for (let i = 0; i < countryNameArr.length; i++) {
-      const countryData = await this.#getOneCountryData(countryNameArr[i]);
+    for (let i = 0; i < randomCountryNameArr.length; i++) {
+      const countryData = randomCountryNameArr[i];
 
       // set computer country data, and show img UI
       switch (i) {
@@ -801,36 +558,16 @@ class APP {
     }
   }
 
-  #showMainContentLoading(player, argIndex, computer = false) {
-    if (computer) {
-      DOM.playerComputer.forEach((computer, index) =>
-        computer.insertAdjacentHTML(
-          "beforeend",
-          `<div class="content__loading content__loading--${index}"></div>`
-        )
-      );
-    } else
-      player.insertAdjacentHTML(
-        "beforeend",
-        `<div class="content__loading content__loading--${argIndex}"></div>`
-      );
-  }
-
-  #removeMainContentLoading(player, index) {
-    player.removeChild(document.querySelector(`.content__loading--${index}`));
-  }
-
-  ///////////////////////////////////////
-  // *** CREATE COUNTRY HTML ***
-  ///////////////////////////////////////
   #createCountryHTMLAndShowUI(data, player, playerOverlay) {
     const countryName = data.name.common;
 
     let htmlCountryName;
 
     // resize the name of country
-    if (countryName.length >= 30)
+    if (countryName.length >= 40)
       htmlCountryName = `<p class = "country__name font1">${countryName}</p>`;
+    else if (countryName.length >= 30 && countryName.length < 40)
+      htmlCountryName = `<p class = "country__name font1.5">${countryName}</p>`;
     else if (countryName.length >= 20 && countryName.length < 30)
       htmlCountryName = `<p class = "country__name font2">${countryName}</p>`;
     else if (countryName.length >= 10 && countryName.length < 20)
@@ -845,19 +582,6 @@ class APP {
     player.insertAdjacentHTML("beforeend", htmlImg);
   }
 
-  ///////////////////////////////////////
-  // *** GET API DATA ***
-  ///////////////////////////////////////
-  async getRegionCountryData(region) {
-    const res = await fetch(`https://restcountries.com/v3.1/region/${region}`);
-
-    const data = await res.json();
-
-    // data is an array containing many object having name property(get rid of object)
-    const countryNameArr = data.map(({ name: { official } }) => official);
-    return countryNameArr;
-  }
-
   async #getOneCountryData(countryName) {
     const res = await fetch(
       `https://restcountries.com/v3.1/name/${countryName}`
@@ -869,23 +593,27 @@ class APP {
   }
 
   async #randomlyChooseCountryName() {
-    let data;
-    try {
-      const res = await fetch("https://restcountries.com/v3.1/all");
-      data = await res.json();
-    } catch (err) {
-      console.log(err);
+    if (!this.cacheAllCountryData) {
+      try {
+        const res = await fetch("https://restcountries.com/v3.1/all");
+        this.cacheAllCountryData = await res.json();
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     const countryNameArr = [];
     let i = 0;
     while (i < 3) {
-      const randomNum = this.#createRandomNumber(0, data.length - 1);
+      const randomNum = this.#createRandomNumber(
+        0,
+        this.cacheAllCountryData.length - 1
+      );
 
       // note that countryName is an object
       const {
-        name: { official: countryName },
-      } = data[randomNum];
+        name: { common: countryName },
+      } = this.cacheAllCountryData[randomNum];
 
       // check random country is not duplicate, and not as same as user's country
       if (
@@ -893,7 +621,8 @@ class APP {
         this.userCountryInfo.countryName !== countryName &&
         countryName
       ) {
-        countryNameArr.push(countryName);
+        // store entire country object
+        countryNameArr.push(this.cacheAllCountryData[randomNum]);
 
         // nice!!!
         // set this.countryInfo in order
@@ -910,6 +639,71 @@ class APP {
     return countryNameArr;
   }
 
+  #showMainContentLoading(player, argIndex, computer = false) {
+    // set loading on computer player
+    if (computer) {
+      DOM.playerComputer.forEach((computer, index) =>
+        computer.insertAdjacentHTML(
+          "beforeend",
+          `<div class="content__loading content__loading--${index}"></div>`
+        )
+      );
+    }
+    // set loading on main player
+    else {
+      player.insertAdjacentHTML(
+        "beforeend",
+        `<div class="content__loading content__loading--${argIndex}"></div>`
+      );
+    }
+  }
+
+  #removeMainContentLoading(player, index) {
+    player.removeChild(document.querySelector(`.content__loading--${index}`));
+  }
+
+  ///////////////////////////////////////
+  // *** Countdown *** ^^^^^^
+  ///////////////////////////////////////
+  #showCountdown() {
+    let i = 30;
+    DOM.countdownTime.style.color = "var(--white-light)";
+    DOM.countdownTime.textContent = `00:30`;
+    this.countDown = setInterval(() => {
+      if (i >= 10) {
+        DOM.countdownTime.textContent = `00:${i}`;
+      } else {
+        DOM.countdownTime.textContent = `00:0${i}`;
+        DOM.countdownTime.style.color = "var(--pink)";
+      }
+      i--;
+      if (i < 0) {
+        this.#btnCheckClickHandler(null, true);
+        clearInterval(this.countDown);
+        DOM.countdownTime.textContent = ``;
+      }
+    }, 1000);
+  }
+
+  #closeCountDown() {
+    clearInterval(this.countDown);
+    DOM.countdownTime.textContent = ``;
+  }
+
+  ///////////////////////////////////////
+  // *** Set Country Info *** ^^^^^^
+  ///////////////////////////////////////
+  #setCountryInfo(player, order, toolCounts, data, position) {
+    player.order = order;
+    player.toolCounts = toolCounts;
+    player.countryData = data;
+    player.position = position;
+  }
+
+  ///////////////////////////////////////
+  // *** GET API DATA ***
+  ///////////////////////////////////////
+
   async #randomlyChooseUserCountryName() {
     let data;
     try {
@@ -925,26 +719,36 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** CHECK ORDER AND UPDATE ***
+  // *** Check Order And Update *** ^^^^^^
   ///////////////////////////////////////
   // use this.reverse to check current order
   #checkOrderAndUpdate() {
     if (this.reverse) {
       this.#updateCounterClockwiseOrder();
-      this.#updateOrderUI(this.currentOrder);
     } else {
       this.#updateClockwiseOrder();
-      this.#updateOrderUI(this.currentOrder);
     }
+    this.#updateOrderUI(this.currentOrder);
+  }
+
+  #updateClockwiseOrder() {
+    this.currentOrder++;
+
+    if (this.currentOrder >= this.allPlayerArr.length) this.currentOrder = 0;
+  }
+
+  #updateCounterClockwiseOrder() {
+    this.currentOrder--;
+
+    if (this.currentOrder <= -1)
+      this.currentOrder = this.allPlayerArr.length - 1;
   }
 
   ///////////////////////////////////////
-  // *** GUESSING NUMBER LOGIC ***
+  // *** Guessing Number Logic ***
   ///////////////////////////////////////
-  // this is only invoked when user submit input
-  #checkGuessInput(e, random = false) {
+  #btnCheckClickHandler(e, random = false) {
     // prevent user accidentally input empty string
-    // only use css to pretend there is no button (check css input button)
     if (!random && DOM.guessInput.value === "") return;
 
     // e may be null (user randomly guess number)
@@ -962,13 +766,6 @@ class APP {
     // manually guess number
     else {
       guessNumber = Number(DOM.guessInput.value);
-      // const checked = this.#checkInput(guessNumber);
-
-      // if (checked) {
-      //   // wrong input UI (stop keeping executing)
-      //   this.#showPopupInvalidInput();
-      //   return;
-      // }
 
       this.#closeCountDown();
     }
@@ -987,6 +784,9 @@ class APP {
 
     // hide submit btn
     DOM.btnGuessInput.classList.add("hidden--display");
+
+    // remove invalid style
+    DOM.guessOrder.classList.remove("guess__number--invalid");
   }
 
   #takeComputerGuessInput() {
@@ -1004,43 +804,46 @@ class APP {
     Here, we have to first check if computer use tool
     Because it doesn't make sense use tool after showing guessing UI(see below)
     If computer decide using tool, diretly use tool, stop keeping executing
-    If computer don't use tool, then keep executing(show guess UI....)
-    */
-    /* 
+    If computer doesn't use tool, then keep executing(show guess UI....)
+ 
     Here, check three things in order
-    (1) If it's computer's guessing round
+    (1) If it's in computer's guessing round
     (2) If computer guess the bomb number
     (3) If computer can use tool(toolCounts may be 0)
-    Again, order does matter here
+    Again, order DOES matter here
     */
     if (
       !userPlayer &&
       this.targetNumber === guessNumber &&
-      !this.#computerGuessNumberLogic()
+      this.#computerGuessNumberLogic()
     ) {
       this.#useToolComputer();
       return;
     }
 
-    DOM.guessOrder.classList.remove("guess__number--invalid");
-
     this.#timeout(0)
+      // guessing UI
       .then(() => {
+        // setting guessing animation time
+        this.guessAnimationTime = this.#createRandomNumber(2, 5);
+
         // guessNumber UI(pink & blue)
         this.#showGuessNumberUI(guessNumber);
 
-        return this.#timeout(5);
+        // wait for the guessing animation time
+        return this.#timeout(this.guessAnimationTime);
       })
-      // guess the bomb number
+      // check guessing number
       .then(() => {
+        // guess the bomb number
         if (guessNumber === this.targetNumber) {
           if (userPlayer) {
-            // user game over UI
+            // user lose game UI
             this.#showPopupUserLoseGame();
           } else {
             // user win the game
             if (this.allPlayerArr.length === 2) {
-              this.#userWinGame();
+              this.#showPopupUserWinGame();
             }
             // not yet win the game
             else this.#computerLoseGame();
@@ -1072,24 +875,25 @@ class APP {
     /*
     first check computer if is out of tool counts
     if yes, lose game
-    then check computer wants use tool
+    then check if computer wants use tool
     */
     if (
       this.#checkComputerUseToolCounts(this.allPlayerArr[this.currentOrder]) ||
       this.#checkIfComputerUseTool()
     ) {
       // lose game
-      return true;
+      return false;
     }
 
     // use tool
-    return false;
+    return true;
   }
 
   #checkIfComputerUseTool() {
-    // if remaining one guess number, defenitely use tool
+    // if remaining only one guess number, defenitely use tool
     if (this.maxNumber - this.minNumber === 2) return false;
 
+    // randomly decide if using the tools
     const randomNum = this.#createRandomNumber(1, 100);
     if (randomNum % 2 === 0) return true;
     else return false;
@@ -1099,6 +903,190 @@ class APP {
     if (player.toolCounts === 0) return true;
     player.toolCounts--;
     return false;
+  }
+
+  #useToolComputer() {
+    // check current player(country)
+    const currentCountryName = this.allPlayerArr[this.currentOrder].countryName;
+    const tool = this.#whichToolComputer();
+
+    this.#useToolLogic(tool, currentCountryName);
+  }
+
+  #whichToolComputer() {
+    const randomNumberTool = this.#createRandomNumber(0, 2);
+
+    // pass
+    if (randomNumberTool == 1) {
+      return "PASS";
+    }
+    // reverse
+    else if (randomNumberTool == 2) {
+      return "U-TURN";
+    }
+    // assign
+    else {
+      return "ASSIGN";
+    }
+  }
+
+  #useToolLogic(tool, playerName) {
+    this.#timeout(0)
+      .then(() => {
+        this.#toolFunctionality(tool);
+      })
+      .then(() => {
+        this.#showUseToolUI(tool, playerName);
+
+        return this.#timeout(3);
+      })
+      .then(() => {
+        // later, close whole UI
+        this.#closeUseToolUI();
+
+        // next round
+        this.#checkOrderAndUpdate();
+      });
+  }
+
+  #toolFunctionality(tool) {
+    // pass
+    if (tool === "PASS") {
+      return;
+    }
+
+    // uturn
+    if (tool === "U-TURN") {
+      this.reverse = !this.reverse;
+      return;
+    }
+
+    // assign
+    const assignOrder = document.querySelector(".popup__assign__select");
+
+    /*
+    If html has popup__assign__select element
+    It means it's the time user using the assign 
+    */
+    if (assignOrder) {
+      this.currentOrder = assignOrder.value;
+    }
+    // computer use assign
+    else {
+      // avoid assign itself
+      let randomNumAssign;
+
+      while (true) {
+        randomNumAssign = this.#createRandomNumber(0, this.allPlayerArr.length);
+
+        /*
+        edge case
+        This is when current player is the last player
+        And it's in reverse order
+        At this point, this player cannot assign 0
+        Because 0 - 1(reverse) = -1
+        And later it will automatically set back to this.allPlayerArr.length - 1
+        Which is the situation assign itself
+        */
+        if (
+          this.currentOrder === this.allPlayerArr.length - 1 &&
+          this.reverse &&
+          randomNumAssign === 0
+        )
+          continue;
+
+        /*
+        avoid assign itself
+        Logic
+        if now it's reverse, we don't wanna select a random number === current order + 1
+        because later will immediately subtract one on current order, then it will back to itself
+        same for non-reverse
+        */
+        if (this.reverse) {
+          if (randomNumAssign !== this.currentOrder + 1) break;
+        } else if (randomNumAssign !== this.currentOrder - 1) break;
+      }
+
+      this.currentOrder = randomNumAssign;
+    }
+  }
+
+  ///////////////////////////////////////
+  // *** Show Use Tool UI *** ^^^^^^
+  ///////////////////////////////////////
+  #showUseToolUI(tool, player) {
+    // re-position based on the length of county name
+    if (player.length >= 20) {
+      DOM.guessUseTool.style.top = "78%";
+      DOM.guessUseToolUserName.style.top = "43%";
+    } else DOM.guessUseTool.style.top = "55%";
+
+    // set tool html and icon
+    const useToolHTML = `use ${tool}`;
+    const toolIcon =
+      tool === "ASSIGN"
+        ? SVG.assignImg
+        : tool === "PASS"
+        ? SVG.passImg
+        : SVG.uturnImg;
+
+    // show tool html and icon on UI
+    DOM.guessUseToolUserName.textContent = `${player}`;
+    DOM.guessUseTool.textContent = useToolHTML;
+    DOM.guessUseTool.insertAdjacentHTML("beforeend", toolIcon);
+
+    // close popup (only need to close if it's user using the tool)
+    if (player === this.userCountryInfo.countryName) this.#closePopupUseTool();
+
+    // add class for animation
+    DOM.guessUseToolUserName.classList.add("guess__tool--animation");
+    DOM.guessUseTool.classList.add("guess__tool--animation");
+  }
+
+  #closeUseToolUI() {
+    DOM.guessUseToolUserName.textContent = "";
+    DOM.guessUseTool.textContent = "";
+    DOM.guessUseTool.removeChild(document.querySelector(".guess__tool__icon"));
+    DOM.guessUseToolUserName.classList.remove("guess__tool--animation");
+    DOM.guessUseTool.classList.remove("guess__tool--animation");
+  }
+
+  ///////////////////////////////////////
+  // *** Use Tool ***
+  ///////////////////////////////////////
+  #useTool(e) {
+    this.userCountryInfo.toolCounts--;
+
+    // reset all counts UI
+    DOM.remaingCounts.forEach(
+      (count) => (count.textContent = this.userCountryInfo.toolCounts)
+    );
+
+    // close "Your turn" UI
+    this.#closePlayerOrderUI();
+
+    // close guess input UI
+    this.#closeGuessInput();
+    DOM.guessInput.value = "";
+
+    // close tool UI
+    this.#toolBtnToggle();
+
+    // not my turn anymore
+    this.myTurn = false;
+
+    // close countdown
+    this.#closeCountDown();
+
+    // close check button
+    DOM.btnGuessInput.classList.add("hidden--display");
+
+    // get the used tool
+    const tool = e.target
+      .closest(".popup__tool__use")
+      .querySelector(".popup__tool__use__icon").dataset.id;
+
+    this.#useToolLogic(tool, this.userCountryInfo.countryName);
   }
 
   ///////////////////////////////////////
@@ -1263,22 +1251,6 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** CLOCKWISE || COUNTERCLOCKWISE ***
-  ///////////////////////////////////////
-  #updateClockwiseOrder() {
-    this.currentOrder++;
-
-    if (this.currentOrder >= this.allPlayerArr.length) this.currentOrder = 0;
-  }
-
-  #updateCounterClockwiseOrder() {
-    this.currentOrder--;
-
-    if (this.currentOrder <= -1)
-      this.currentOrder = this.allPlayerArr.length - 1;
-  }
-
-  ///////////////////////////////////////
   // *** WAIT COMPUTER GUESSING NUMBER ***
   ///////////////////////////////////////
   #waitComputerGuessingNumber(cb1) {
@@ -1297,7 +1269,7 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** GUESS NUMBER UI ***
+  // *** Guess Number UI *** ^^^^^^
   ///////////////////////////////////////
   #showGuessNumberUI(number) {
     DOM.guessNumber.textContent = number;
@@ -1806,8 +1778,8 @@ class APP {
 
     // also remove assign UI
     // have to first check if element exist
-    document.querySelector(".popup__subTitle--assign") !== null &&
-      document.querySelector(".popup__subTitle--assign").remove();
+    document.querySelector(".popup__subtitle--assign") !== null &&
+      document.querySelector(".popup__subtitle--assign").remove();
     document.querySelector(".popup__assign__select") !== null &&
       document.querySelector(".popup__assign__select").remove();
   }
@@ -1837,165 +1809,6 @@ class APP {
     this.#timeout(0).then(() =>
       DOM.popupUseTool.classList.remove("hidden--opacity")
     );
-  }
-
-  ///////////////////////////////////////
-  // *** SHOW USE TOOL UI ***
-  ///////////////////////////////////////
-  #showUseToolUI(tool, player) {
-    // re-position based on the length of county name
-    if (player.length >= 20) {
-      DOM.guessUseTool.style.top = "78%";
-      DOM.guessUseToolUserName.style.top = "43%";
-    } else DOM.guessUseTool.style.top = "55%";
-
-    // set tool html
-    const useToolHTML = `use ${tool}`;
-
-    // show html on UI
-    DOM.guessUseToolUserName.textContent = `${player}`;
-    DOM.guessUseTool.textContent = useToolHTML;
-
-    // close popup (only need to close if it's user using the tool)
-    if (player === this.userCountryInfo.countryName) this.#closePopupUseTool();
-
-    // add class for animation
-    DOM.guessUseToolUserName.classList.add("guess__tool--animation");
-    DOM.guessUseTool.classList.add("guess__tool--animation");
-  }
-
-  #closeUseToolUI() {
-    DOM.guessUseToolUserName.textContent = "";
-    DOM.guessUseTool.textContent = "";
-    DOM.guessUseToolUserName.classList.remove("guess__tool--animation");
-    DOM.guessUseTool.classList.remove("guess__tool--animation");
-  }
-
-  #useTool(e) {
-    this.userCountryInfo.toolCounts--;
-
-    // reset all counts UI
-    DOM.remaingCounts.forEach(
-      (count) => (count.textContent = this.userCountryInfo.toolCounts)
-    );
-
-    // close "Your turn" UI
-    this.#closePlayerOrderUI();
-
-    // close guess input UI
-    this.#closeGuessInput();
-    DOM.guessInput.value = "";
-
-    // close tool UI
-    this.#toolBtnToggle();
-
-    // not my turn anymore
-    this.myTurn = false;
-
-    // close countdown
-    this.#closeCountDown();
-
-    // get the used tool
-    const tool = e.target
-      .closest(".popup__tool__use")
-      .querySelector(".popup__tool__use__icon").dataset.id;
-
-    this.#useToolLogic(tool, this.userCountryInfo.countryName);
-  }
-
-  #useToolComputer() {
-    // check current player(country)
-    const currentCountryName = this.allPlayerArr[this.currentOrder].countryName;
-    const tool = this.#whichToolComputer();
-
-    this.#useToolLogic(tool, currentCountryName);
-  }
-
-  #useToolLogic(tool, playerName) {
-    this.#timeout(0)
-      .then(() => {
-        this.#whichTool(tool);
-      })
-      .then(() => {
-        this.#showUseToolUI(tool, playerName);
-
-        return this.#timeout(3);
-      })
-      .then(() => {
-        // later, close whole UI
-        this.#closeUseToolUI();
-
-        // next round
-        this.#checkOrderAndUpdate();
-      });
-  }
-
-  ///////////////////////////////////////
-  // *** WHICH TOOL ***
-  ///////////////////////////////////////
-  #whichTool(tool) {
-    // pass
-    if (tool === "PASS") {
-      return;
-    }
-
-    // uturn
-    if (tool === "U-TURN") {
-      this.reverse = !this.reverse;
-      return;
-    }
-
-    // assign
-    const assignOrder = document.querySelector(".popup__assign__select");
-
-    // user use assign
-    if (assignOrder) this.currentOrder = assignOrder.value;
-    // computer use assign
-    else {
-      // avoid assign itself
-      let randomNumAssign;
-      while (true) {
-        randomNumAssign = this.#createRandomNumber(0, this.allPlayerArr.length);
-
-        // edge case
-        if (
-          this.currentOrder === this.allPlayerArr.length - 1 &&
-          this.reverse &&
-          randomNumAssign === 0
-        )
-          continue;
-
-        /*
-        avoid assign itself
-        Logic
-        if now it's reverse, we don't wanna select a random number === current order + 1
-        because later will immediately add one on current order, then it will back to itself
-        same for non-reverse
-        */
-        if (this.reverse) {
-          if (randomNumAssign !== this.currentOrder + 1) break;
-        } else if (randomNumAssign !== this.currentOrder - 1) break;
-      }
-
-      this.currentOrder = randomNumAssign;
-    }
-  }
-
-  #whichToolComputer() {
-    const randomNumberTool = this.#createRandomNumber(0, 2);
-
-    // pass
-    if (randomNumberTool == 1) {
-      return "PASS";
-    }
-    // reverse
-    else if (randomNumberTool == 2) {
-      return "U-TURN";
-    }
-    // assign
-    else {
-      return "ASSIGN";
-    }
   }
 
   ///////////////////////////////////////
@@ -2035,7 +1848,7 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** POP UP USER LOSE GAME ***
+  // *** Pop Up User Lose Game *** ^^^^^^
   ///////////////////////////////////////
   #showPopupUserLoseGame() {
     this.#showPopupOverlay();
@@ -2076,9 +1889,9 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** USER WIN THE GAME ***
+  // *** User Win The Game *** ^^^^^^
   ///////////////////////////////////////
-  #userWinGame() {
+  #showPopupUserWinGame() {
     this.#showPopupOverlay();
     DOM.popupUserWinGame.classList.remove("hidden--display");
     document.querySelector(".popup__userWinGame__currentLevel").textContent =
@@ -2108,6 +1921,204 @@ class APP {
 
     DOM.formRange.classList.remove("hidden--display");
     DOM.formOverlay.classList.remove("hidden--display");
+  }
+
+  ///////////////////////////////////////
+  // *** Random Number *** ^^^^^^
+  ///////////////////////////////////////
+  #createRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  ///////////////////////////////////////
+  // *** Create Target Number *** ^^^^^^
+  ///////////////////////////////////////
+  #createTargetNumber() {
+    this.targetNumber = this.#createRandomNumber(1, this.maxNumber - 1);
+  }
+
+  ///////////////////////////////////////
+  // *** Delete Element From Array *** ^^^^^^
+  ///////////////////////////////////////
+  #deleteElementFromArray(arr, element) {
+    return arr.filter((el) => el !== element);
+  }
+
+  ///////////////////////////////////////
+  // *** Promisifying Settimeout *** ^^^^^^
+  ///////////////////////////////////////
+  #timeout(second) {
+    return new Promise(function time(resolve) {
+      setTimeout(resolve, second * 1000);
+    });
+  }
+
+  ///////////////////////////////////////
+  // *** EVENT LISTENER ***
+  ///////////////////////////////////////
+  #addEventListener() {
+    // TOOL
+    DOM.btnTool.addEventListener("click", this.#toolBtnToggle.bind(this));
+    DOM.toolItemName.forEach((toolName) =>
+      toolName.addEventListener("click", this.#useToolSmall.bind(this))
+    );
+
+    // COUNTRY INFO
+    DOM.btnCountryInfoClose.addEventListener(
+      "click",
+      this.#closeCountryInfo.bind(this)
+    );
+
+    // NAV CHECKBOX & BACKGROUND
+    DOM.btnNavBackground.forEach((btnNav) =>
+      btnNav.addEventListener("click", this.#showPopupLevelSmall.bind(this))
+    );
+    DOM.btnNavBackGroundFaq.addEventListener(
+      "click",
+      this.#showPopupQuestionSmall.bind(this)
+    );
+    DOM.navCheckbox.addEventListener(
+      "click",
+      this.#menuCheckboxToggle.bind(this)
+    );
+    DOM.btnNavQuestion.addEventListener(
+      "click",
+      this.#showPopupQuestion.bind(this)
+    );
+
+    // COUNTRY INFO (SIDE WINDOW)
+    DOM.btnInfo.forEach((btn) =>
+      btn.addEventListener("click", this.#showCountryInfo.bind(this))
+    );
+
+    // POP UP
+    DOM.btnPopupClose.forEach((btnClose) =>
+      btnClose.addEventListener("click", this.#closePopup.bind(this))
+    );
+
+    // POPUP CURRENT LEVEL
+    DOM.btnShowLevel.addEventListener("click", this.#showPopupLevel.bind(this));
+    DOM.navRight.addEventListener("click", this.#showPopupLevel.bind(this));
+    DOM.btnPopupLevelNo.addEventListener(
+      "click",
+      this.#closePopupLevel.bind(this)
+    );
+
+    // POPUP CHANGE LEVEL
+    DOM.btnPopupLevelYes.addEventListener(
+      "click",
+      this.#changeLevel.bind(this)
+    );
+
+    // POPUP QUESTION
+    DOM.popupQuestion.addEventListener(
+      "click",
+      this.#showPopupDiffQuestion.bind(this)
+    );
+
+    // TAKE USER'S GUESS INPUT
+    DOM.btnGuessInput.addEventListener(
+      "click",
+      this.#btnCheckClickHandler.bind(this)
+    );
+    DOM.guessInput.addEventListener(
+      "input",
+      this.#inputChangeHandler.bind(this)
+    );
+
+    // USE TOOL
+    DOM.btnToolUse.forEach((btn) =>
+      btn.addEventListener("click", this.#showPopupUseTool.bind(this))
+    );
+    DOM.btnPopupUseToolNo.addEventListener(
+      "click",
+      this.#closePopupUseTool.bind(this)
+    );
+    DOM.btnPopupUseToolYes.addEventListener("click", this.#useTool.bind(this));
+    DOM.btnToolQuestion.forEach((btn) =>
+      btn.addEventListener("click", this.#showDiffToolUI.bind(this))
+    );
+
+    // POPUP INVALID INPUT
+    DOM.btn__invalidInput.addEventListener(
+      "click",
+      this.#closePopupInvalidInput.bind(this)
+    );
+
+    // POPUP CANT USE TOOL
+    DOM.btnCantUseTool.addEventListener(
+      "click",
+      this.#closePopupCantUseTool.bind(this)
+    );
+
+    // COMPUTER LOSE GAME
+    DOM.btnPopupComputerLoseGame.addEventListener(
+      "click",
+      this.#closePopupComputerLoseGame.bind(this)
+    );
+
+    // form username
+    DOM.btnFormUserNameNext.addEventListener(
+      "click",
+      this.#btnFormUserNameNextClickHandler.bind(this)
+    );
+
+    // FORM LEVEL
+    DOM.formLevelInputGroup.addEventListener(
+      "click",
+      this.#formInputLevelClickHandler.bind(this)
+    );
+    DOM.btnFormLevelNext.addEventListener(
+      "click",
+      this.#btnFormLevelNextClickHandler.bind(this)
+    );
+    DOM.btnFormLevelBack.addEventListener(
+      "click",
+      this.#backFormPage.bind(this)
+    );
+
+    // form country
+    DOM.formCountryRegionSelect.addEventListener(
+      "input",
+      this.#formCountryRegionSelectChangeHandler.bind(this)
+    );
+    DOM.formCountryNameSelect.addEventListener(
+      "input",
+      this.#formCountryNameSelectChangeHandler.bind(this)
+    );
+    DOM.btnFormCountryNext.addEventListener(
+      "click",
+      this.#btnFormCountryNextClickHandler.bind(this)
+    );
+    DOM.btnFormCountryBack.addEventListener(
+      "click",
+      this.#backFormPage.bind(this)
+    );
+    DOM.formBtnCountryRandom.addEventListener(
+      "click",
+      this.#btnRandomClickHandler.bind(this)
+    );
+
+    // form range
+    DOM.btnFormRangeNext.addEventListener(
+      "click",
+      this.#btnFormRangeNextClickHandler.bind(this)
+    );
+    DOM.btnFormRangeBack.addEventListener(
+      "click",
+      this.#backFormPage.bind(this)
+    );
+
+    DOM.formRangeInput.addEventListener(
+      "input",
+      this.#formRangeInputChangeHandler.bind(this)
+    );
+
+    // CHECK RULE
+    DOM.btnFormCheckRule.addEventListener(
+      "click",
+      this.#showCheckRule.bind(this)
+    );
   }
 }
 

@@ -94,7 +94,7 @@ export class SVG__ICON {
   </h3> `;
 
     this.assignImg = ` <svg
-    class="guess__useTool"
+    class="guess__tool__icon"
     height="512pt"
     viewBox="0 0 512 511"
     width="512pt"
@@ -105,7 +105,7 @@ export class SVG__ICON {
     />
     </svg>`;
     this.passImg = ` <svg
-    class="guess__useTool"
+    class="guess__tool__icon"
     version="1.1"
     id="Capa_1"
     xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +160,7 @@ export class SVG__ICON {
     </g>
   </svg>`;
     this.uturnImg = `<svg
-    class="guess__useTool"
+    class="guess__tool__icon"
     height="384pt"
     viewBox="0 0 384 384"
     width="384pt"
