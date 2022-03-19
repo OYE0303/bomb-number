@@ -1309,11 +1309,11 @@ And use whitee space to find the child (.nav__menu__icon)
 /* /////////////////////////// */
 /* *** POP UP DIFF LEVEL ***/
 /* /////////////////////////// */
-.popup__level {
+.popup__level__diff {
   height: 70%;
 }
 
-.popup__level span {
+.popup__level__diff span {
   font-weight: 600;
   font-style: italic;
   margin-right: 3px;

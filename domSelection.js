@@ -84,7 +84,7 @@ export class DOM__SELECTION {
     this.popupLevel = document.querySelector(".popup__level");
     this.popupRule = document.querySelector(".popup__rule");
     this.popupQuestion = document.querySelector(".popup__question");
-    this.popupDiffLevel = document.querySelector(".popup__level");
+    this.popupDiffLevel = document.querySelector(".popup__level__diff");
     this.popupTool = document.querySelector(".popup__tool");
 
     // level
@@ -101,7 +101,6 @@ export class DOM__SELECTION {
     // use tool
     this.popupUseTool = document.querySelector(".popup__tool__use");
     this.popupUseToolTitle = document.querySelector(".popup__tool__use__title");
-    this.popupUseToolIcon = document.querySelector(".popup__tool__use__icon");
     this.btnPopupUseToolNo = document.querySelector(
       ".btn__popup__tool__use__no"
     );
@@ -132,6 +131,10 @@ export class DOM__SELECTION {
     );
     this.btnPopupComputerLoseGame = document.querySelector(
       ".btn__popup__computerLoseGame"
+    );
+
+    this.popupComputerLoseGameCountryName = document.querySelector(
+      ".popup__computerLoseGame__countryName"
     );
 
     // invalid input

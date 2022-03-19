@@ -7,7 +7,6 @@ const SVG = new SVG__ICON();
 
 class APP {
   constructor() {
-    console.log(SVG.uturnImg);
     // PLAYER INFO
     this.userCountryInfo = new PLAYER__INFO();
     this.Computer1CountryInfo = new PLAYER__INFO();
@@ -33,8 +32,8 @@ class APP {
     this.maxNumberNoChange;
 
     // CLICK TOGGLE
-    this.firstTimeTool = true;
-    this.firstTimeMenu = true;
+    this.btnToolToggle = true;
+    this.btnMenuToggle = true;
 
     // PLAYER ORDER ARRAY
     this.allPlayerArr = [
@@ -67,17 +66,29 @@ class APP {
   #inputChangeHandler(e) {
     const value = Number(e.target.value);
 
+    // invalid
     if (this.#checkInput(value)) {
       DOM.guessInput.classList.add("guess__input--invalid");
       DOM.btnGuessInput.classList.add("hidden--display");
       DOM.guessOrder.textContent = "Invalid Number";
       DOM.guessOrder.classList.add("guess__number--invalid");
-    } else {
+    }
+    // valid
+    else {
       DOM.guessInput.classList.remove("guess__input--invalid");
       DOM.btnGuessInput.classList.remove("hidden--display");
       DOM.guessOrder.textContent = "Your Turn";
       DOM.guessOrder.classList.remove("guess__number--invalid");
     }
+  }
+
+  #checkInput(input) {
+    return (
+      typeof input !== "number" ||
+      Number.isNaN(input) ||
+      input >= this.maxNumber ||
+      input <= this.minNumber
+    );
   }
 
   ///////////////////////////////////////
@@ -457,7 +468,7 @@ class APP {
     this.#userTurn(true);
 
     // show guess input
-    DOM.guessInput.classList.remove("hidden--display");
+    this.#showGuessInput();
 
     // show info button
     DOM.btnInfo.forEach((btn) => btn.classList.remove("hidden--display"));
@@ -678,6 +689,10 @@ class APP {
       }
       i--;
       if (i < 0) {
+        // close use tool popup and tool extension
+        DOM.popupUseTool.classList.add("hidden--display");
+        this.#closePopupOverlay();
+
         this.#btnCheckClickHandler(null, true);
         clearInterval(this.countDown);
         DOM.countdownTime.textContent = ``;
@@ -745,6 +760,51 @@ class APP {
   }
 
   ///////////////////////////////////////
+  // *** Update Order UI *** ^^^^^^
+  ///////////////////////////////////////
+  #updateOrderUI(order) {
+    // first empty the order UI
+    this.#closePlayerOrderUI();
+
+    // it's user's turn
+    if (order === 0) {
+      this.#userTurn();
+    }
+    // it's computer's turn
+    else {
+      const currentCountryName = this.allPlayerArr[order].countryName;
+
+      // wait for computer's guessing(pretend computer is thinking(guessing))
+      this.#waitComputerGuessingNumber(currentCountryName);
+    }
+  }
+
+  #userTurn(firstTime = false) {
+    if (!firstTime) DOM.btnGuessInput.classList.remove("hidden--display");
+
+    this.#showGuessInput();
+    this.#showPlayerOrderUI("Your turn");
+
+    this.myTurn = true;
+
+    this.#showCountdown();
+  }
+
+  #waitComputerGuessingNumber(currentCountryName) {
+    const randomTime = this.#createRandomNumber(1, 5);
+
+    this.#showComputerWaitingUI(currentCountryName);
+
+    this.#timeout(randomTime).then(() => {
+      // after waiting, do these two things
+      this.#closeComputerWaitingUI();
+
+      // next player
+      this.#takeComputerGuessInput();
+    });
+  }
+
+  ///////////////////////////////////////
   // *** Guessing Number Logic ***
   ///////////////////////////////////////
   #btnCheckClickHandler(e, random = false) {
@@ -756,7 +816,7 @@ class APP {
 
     let guessNumber;
 
-    // randomly guess number
+    // randomly guess number(countdown to 0)
     if (random) {
       guessNumber = this.#createComputerGuessingNumber(
         this.minNumber,
@@ -780,7 +840,6 @@ class APP {
     // close guess input
     // have to put here, or we cannot accept the user's input
     this.#closeGuessInput();
-    DOM.guessInput.value = "";
 
     // hide submit btn
     DOM.btnGuessInput.classList.add("hidden--display");
@@ -1012,6 +1071,13 @@ class APP {
   }
 
   ///////////////////////////////////////
+  // *** Computer Guessing Number *** ^^^^^^
+  ///////////////////////////////////////
+  #createComputerGuessingNumber(min, max) {
+    return this.#createRandomNumber(min + 1, max - 1);
+  }
+
+  ///////////////////////////////////////
   // *** Show Use Tool UI *** ^^^^^^
   ///////////////////////////////////////
   #showUseToolUI(tool, player) {
@@ -1034,6 +1100,7 @@ class APP {
     DOM.guessUseToolUserName.textContent = `${player}`;
     DOM.guessUseTool.textContent = useToolHTML;
     DOM.guessUseTool.insertAdjacentHTML("beforeend", toolIcon);
+    console.log(toolIcon);
 
     // close popup (only need to close if it's user using the tool)
     if (player === this.userCountryInfo.countryName) this.#closePopupUseTool();
@@ -1044,15 +1111,19 @@ class APP {
   }
 
   #closeUseToolUI() {
-    DOM.guessUseToolUserName.textContent = "";
-    DOM.guessUseTool.textContent = "";
+    /*
+    have to first remove the tool icon, then empty the text content(guessUseTool)
+    because tool icon is inside the guessUseTool <p>  <svg></svg> </p>
+    */
     DOM.guessUseTool.removeChild(document.querySelector(".guess__tool__icon"));
     DOM.guessUseToolUserName.classList.remove("guess__tool--animation");
     DOM.guessUseTool.classList.remove("guess__tool--animation");
+    DOM.guessUseToolUserName.textContent = "";
+    DOM.guessUseTool.textContent = "";
   }
 
   ///////////////////////////////////////
-  // *** Use Tool ***
+  // *** Use Tool *** ^^^^^^
   ///////////////////////////////////////
   #useTool(e) {
     this.userCountryInfo.toolCounts--;
@@ -1067,7 +1138,6 @@ class APP {
 
     // close guess input UI
     this.#closeGuessInput();
-    DOM.guessInput.value = "";
 
     // close tool UI
     this.#toolBtnToggle();
@@ -1090,7 +1160,7 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** COMPUTER LOSE GAME ***
+  // *** Computer Lose Game *** ^^^^^^
   ///////////////////////////////////////
   #computerLoseGame() {
     // blur lose image
@@ -1113,9 +1183,8 @@ class APP {
     DOM.popupComputerLoseGame.classList.remove("hidden--display");
 
     // show which conutry(player) lose the game
-    document.querySelector(
-      ".popup__computerLoseGame__countryName"
-    ).textContent = this.allPlayerArr[this.currentOrder].countryName;
+    DOM.popupComputerLoseGameCountryName.textContent =
+      this.allPlayerArr[this.currentOrder].countryName;
 
     // show bomb number
     DOM.bombNumberComputer.textContent = this.targetNumber;
@@ -1141,10 +1210,9 @@ class APP {
       playerElement
     );
 
-    // reset all player all
+    // reset all player array
     this.allPlayerArr = newPlayerArr;
 
-    // reset number range
     this.#resetNumberRange();
 
     // reset target number
@@ -1165,6 +1233,15 @@ class APP {
   #blurCountryImg() {
     const losingCountryOrder = this.allPlayerArr[this.currentOrder].order;
 
+    /*
+    <main class="content">
+    ...
+    <div class="player--main"></div>
+    <div class="player--1"></div>
+    <div class="player--2"></div>
+    <div class="player--3"></div>
+    </main>
+    */
     const contentChildren = Array.from(
       document.querySelector(".content").children
     );
@@ -1180,8 +1257,18 @@ class APP {
   Here, we make sure the next player is correct
   If now it's not reverse, we have to let order be the previose one
   Because later will increase one and this.allPlayerArr is change too
-  If not it's reverse, then do nothing
+  If it's reverse, then do nothing
   (try to graph and think)
+
+  Imagine the current eliminated player is player 1
+  So the length of allPlayerArr = 4 - 1 = 3 [0, 1, 2]
+  In normal case, the next player should still be 1
+  Why?
+  Because the player 1 is the original player 2 after elimination
+  Without this function
+  After eliminating player 1, the next player would skip the player 2
+  Because current order 1 + 1 = 2
+  And the allPlayerArr is [0, 1, 2] after elimination
   */
   #nextPlayerAfterElimination() {
     if (!this.reverse) {
@@ -1190,7 +1277,7 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** UPDATE MIN & MAX RANGE ***
+  // *** Update Min & Max Range *** ^^^^^^
   ///////////////////////////////////////
   #updateMinMaxRange(guessNumber) {
     // change max number and show UI
@@ -1207,65 +1294,26 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** CHECK INPUT ***
+  // *** Range Number Min & Max UI *** ^^^^^^
   ///////////////////////////////////////
-  #checkInput(input) {
-    return (
-      typeof input !== "number" ||
-      Number.isNaN(input) ||
-      input >= this.maxNumber ||
-      input <= this.minNumber
+  #showRangeNumberMinUI(min) {
+    DOM.rangeNumberMin.textContent = min;
+    DOM.rangeNumberMin.classList.add("range__number--animation");
+
+    // remove animation class after animation
+    this.#timeout(4).then(() =>
+      DOM.rangeNumberMin.classList.remove("range__number--animation")
     );
   }
 
-  ///////////////////////////////////////
-  // *** UPDATE ORDER UI ***
-  ///////////////////////////////////////
-  #updateOrderUI(order) {
-    // it's user's turn
-    if (order === 0) {
-      this.#userTurn();
-    }
-    // it's computer's turn
-    else {
-      this.#closePlayerOrderUI();
+  #showRangeNumberMaxUI(max) {
+    DOM.rangeNumberMax.textContent = max;
+    DOM.rangeNumberMax.classList.add("range__number--animation");
 
-      const currentCountryName = this.allPlayerArr[order].countryName;
-
-      // wait for computer's guessing(pretend computer is thinking(guessing))
-      this.#waitComputerGuessingNumber(
-        this.#showComputerWaitingUI.bind(this, `${currentCountryName}`)
-      );
-    }
-  }
-
-  #userTurn(firstTime = false) {
-    if (!firstTime) DOM.btnGuessInput.classList.remove("hidden--display");
-
-    this.#showGuessInput();
-    this.#showPlayerOrderUI("Your turn");
-
-    this.myTurn = true;
-
-    this.#showCountdown();
-  }
-
-  ///////////////////////////////////////
-  // *** WAIT COMPUTER GUESSING NUMBER ***
-  ///////////////////////////////////////
-  #waitComputerGuessingNumber(cb1) {
-    const randomTime = this.#createRandomNumber(1, 5);
-
-    // this.#showComputerWaitingUI
-    cb1();
-
-    this.#timeout(randomTime).then(() => {
-      // after waiting, do these two things
-      this.#closeComputerWaitingUI();
-
-      // next player
-      this.#takeComputerGuessInput();
-    });
+    // remove animation class after animation
+    this.#timeout(4).then(() =>
+      DOM.rangeNumberMax.classList.remove("range__number--animation")
+    );
   }
 
   ///////////////////////////////////////
@@ -1293,29 +1341,7 @@ class APP {
     DOM.guessNumber.classList.remove("pass--animation");
   }
 
-  ///////////////////////////////////////
-  // *** RANGE NUMBER MIN & MAX UI ***
-  ///////////////////////////////////////
-  #showRangeNumberMinUI(min) {
-    DOM.rangeNumberMin.textContent = min;
-    DOM.rangeNumberMin.classList.add("range__number--animation");
-
-    // remove animation class after animation
-    this.#timeout(4).then(() =>
-      DOM.rangeNumberMin.classList.remove("range__number--animation")
-    );
-  }
-
-  #showRangeNumberMaxUI(max) {
-    DOM.rangeNumberMax.textContent = max;
-    DOM.rangeNumberMax.classList.add("range__number--animation");
-
-    // remove animation class after animation
-    this.#timeout(4).then(() =>
-      DOM.rangeNumberMax.classList.remove("range__number--animation")
-    );
-  }
-
+  // !!! about to remove?? !!!
   ///////////////////////////////////////
   // *** POPUP INVAID INPUT ***
   ///////////////////////////////////////
@@ -1338,7 +1364,7 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** SHOW GUESS INPUT ***
+  // *** Show & Close Guess Input *** ^^^^^^
   ///////////////////////////////////////
   #showGuessInput() {
     DOM.guessInput.classList.remove("hidden--display");
@@ -1346,10 +1372,11 @@ class APP {
 
   #closeGuessInput() {
     DOM.guessInput.classList.add("hidden--display");
+    DOM.guessInput.value = "";
   }
 
   ///////////////////////////////////////
-  // *** PLAYER ORDER UI ***
+  // *** Player Order UI *** ^^^^^^
   ///////////////////////////////////////
   #showPlayerOrderUI(order) {
     DOM.guessOrder.textContent = order;
@@ -1362,7 +1389,7 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** COMPUTER WAITING UI ***
+  // *** Computer Waiting UI *** ^^^^^^
   ///////////////////////////////////////
   #showComputerWaitingUI(playerCountry) {
     DOM.guessOrder.textContent = playerCountry;
@@ -1383,33 +1410,20 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** COMPUTER GUESSING NUMBER ***
-  ///////////////////////////////////////
-  #createComputerGuessingNumber(min, max) {
-    return this.#createRandomNumber(min + 1, max - 1);
-  }
-
-  ///////////////////////////////////////
-  // *** TOOL ***
+  // *** Button Tool *** ^^^^^^
   ///////////////////////////////////////
   #showTool() {
-    DOM.toolContainer.classList.remove("hidden--display");
-
-    DOM.toolItem.forEach(function rmToolItemHidden(element) {
-      element.classList.remove("hidden--display");
+    DOM.btnToolUse.forEach((element) => {
+      element.disabled = false;
     });
 
-    this.#timeout(0)
-      .then(() => {
-        document.querySelector(".tool__container").style.height = "20rem";
+    DOM.toolContainer.style.height = "20rem";
 
-        DOM.toolContainer.classList.remove("hidden--opacity");
-      })
-      .then(() => {
-        DOM.toolItem.forEach(function rmToolItemHidden(element) {
-          element.classList.remove("hidden--opacity");
-        });
-      });
+    DOM.toolContainer.classList.remove("hidden--opacity");
+
+    DOM.toolItem.forEach((element) => {
+      element.classList.remove("hidden--opacity");
+    });
   }
 
   #closeTool() {
@@ -1417,23 +1431,27 @@ class APP {
 
     DOM.toolContainer.classList.add("hidden--opacity");
 
-    DOM.toolItem.forEach(function rmToolItemHidden(element) {
+    DOM.toolItem.forEach((element) => {
       element.classList.add("hidden--opacity");
+    });
+
+    DOM.btnToolUse.forEach((element) => {
+      element.disabled = true;
     });
   }
 
   #toolBtnToggle() {
-    if (this.firstTimeTool) {
+    if (this.btnToolToggle) {
       this.#showTool();
-      this.firstTimeTool = false;
+      this.btnToolToggle = false;
     } else {
       this.#closeTool();
-      this.firstTimeTool = true;
+      this.btnToolToggle = true;
     }
   }
 
   ///////////////////////////////////////
-  // *** COUNTRY INFO ***
+  // *** Country Info *** ^^^^^^
   ///////////////////////////////////////
   #showCountryInfo(e) {
     this.#chooseCountryInfo(Number(e.target.dataset.id));
@@ -1466,8 +1484,6 @@ class APP {
     else contryElement.style.fontSize = "5rem";
     contryElement.textContent = this.allPlayerArrNoChange[order].countryName;
 
-    console.log(this.allPlayerArrNoChange[order].countryData);
-
     // manually set country info
     document.querySelector(".info__region").textContent =
       this.allPlayerArrNoChange[order].countryData.region || "NO PROVIDED";
@@ -1481,9 +1497,10 @@ class APP {
       this.#convertNumberToString(
         this.allPlayerArrNoChange[order].countryData.population
       ) || "NO PROVIDED";
-    // document.querySelector(".info__currencies").textContent =
-    //   this.allPlayerArrNoChange[order].countryData.currencies[0].code ||
-    //   "NO PROVIDED";
+    document.querySelector(".info__currencies").textContent = this
+      .allPlayerArrNoChange[order].countryData.currencies
+      ? Object.keys(this.allPlayerArrNoChange[order].countryData.currencies)[0]
+      : "NO PROVIDED";
 
     document.querySelector(".info__language").textContent =
       Object.values(
@@ -1507,12 +1524,12 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** MENU BACKGROUND ***
+  // *** Menu BackGround *** ^^^^^^
   ///////////////////////////////////////
   #showMenuBackground() {
     DOM.navBackground.classList.remove("hidden--display");
 
-    DOM.btnNavBackground.forEach(function rmToolItemHidden(element) {
+    DOM.btnNavBackground.forEach((element) => {
       element.classList.remove("hidden--display");
     });
 
@@ -1523,7 +1540,7 @@ class APP {
         DOM.navBackground.classList.remove("hidden--opacity");
       })
       .then(() =>
-        DOM.btnNavBackground.forEach(function rmToolItemHidden(element) {
+        DOM.btnNavBackground.forEach((element) => {
           element.classList.remove("hidden--opacity");
         })
       );
@@ -1536,31 +1553,31 @@ class APP {
 
     this.#timeout(0)
       .then(() =>
-        DOM.btnNavBackground.forEach(function rmToolItemHidden(element) {
+        DOM.btnNavBackground.forEach((element) => {
           element.classList.add("hidden--opacity");
         })
       )
       .then(() => {
         DOM.navBackground.classList.add("hidden--display");
 
-        DOM.btnNavBackground.forEach(function rmToolItemHidden(element) {
+        DOM.btnNavBackground.forEach((element) => {
           element.classList.add("hidden--display");
         });
       });
   }
 
   #menuCheckboxToggle() {
-    if (this.firstTimeMenu) {
+    if (this.btnMenuToggle) {
       this.#showMenuBackground();
-      this.firstTimeMenu = false;
+      this.btnMenuToggle = false;
     } else {
       this.#closeMenuBackground();
-      this.firstTimeMenu = true;
+      this.btnMenuToggle = true;
     }
   }
 
   ///////////////////////////////////////
-  // *** POPUP OVERLAY ***
+  // *** Popup Overlay *** ^^^^^^
   ///////////////////////////////////////
   #showPopupOverlay() {
     DOM.popupOverlay.classList.remove("hidden--display");
@@ -1571,10 +1588,10 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** CLOSE ALL POP UP ***
+  // *** Close All Popup *** ^^^^^^
   ///////////////////////////////////////
   // add one callback function to different close button
-  // use .closest to check what popup should close
+  // use .closest to check which popup should close
   #closePopup(e) {
     const targetElement = e.target;
 
@@ -1584,7 +1601,7 @@ class APP {
     if (targetElement.closest(".popup__question")) {
       targetElement
         .closest(".popup__question")
-        .classList.toggle("hidden--display");
+        .classList.add("hidden--display");
     }
 
     // rule
@@ -1593,26 +1610,25 @@ class APP {
       if (!this.targetNumber) {
         this.#closeCheckRule();
       } else
-        targetElement
-          .closest(".popup__rule")
-          .classList.toggle("hidden--display");
+        targetElement.closest(".popup__rule").classList.add("hidden--display");
     }
 
     // diff level
-    if (targetElement.closest(".popup__level")) {
+    if (targetElement.closest(".popup__level__diff")) {
       targetElement
-        .closest(".popup__level")
-        .classList.toggle("hidden--display");
+        .closest(".popup__level__diff")
+        .classList.add("hidden--display");
     }
 
     // tool
     if (targetElement.closest(".popup__tool")) {
-      targetElement.closest(".popup__tool").classList.toggle("hidden--display");
+      targetElement.closest(".popup__tool").classList.add("hidden--display");
     }
   }
 
+  // !!! about to remove !!!
   ///////////////////////////////////////
-  // *** POPUP LEVEL ***
+  // *** Popup Level *** ^^^^^^
   ///////////////////////////////////////
   #showPopupLevel(e) {
     // this callback attach on whole div containing three level button
@@ -1652,8 +1668,9 @@ class APP {
     DOM.navCheckbox.checked = false;
   }
 
+  // !!! about to modity !!!
   ///////////////////////////////////////
-  // *** POPUP QUESTION ***
+  // *** Popup Question *** ^^^^^^
   ///////////////////////////////////////
   #showPopupQuestion() {
     this.#showPopupOverlay();
@@ -1664,7 +1681,7 @@ class APP {
     );
   }
 
-  #showPopupQuestionSmall() {
+  #showPopupQuestionSmall(e) {
     this.#showPopupOverlay();
     DOM.popupQuestion.classList.remove("hidden--display");
 
@@ -1678,7 +1695,7 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** POPUP DIFFERENT QUESTION (RULE, LEVEL, TOOL) ***
+  // *** Popup Different Question (Rule, Level, Tool) *** ^^^^^^
   ///////////////////////////////////////
   // use one callback function attach on one enitre question pop up
   // use .contains to check what button is user currently clicking
@@ -1703,13 +1720,99 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** POPUP USE ASSIGN ***
+  // *** Popup Use Tool *** ^^^^^^
   ///////////////////////////////////////
+  #showPopupUseTool(e) {
+    // first check if it's user's turn
+    if (!this.myTurn) {
+      this.#showPopupCantUseTool();
+      return;
+    }
+
+    // then check counts if can use tool
+    if (this.userCountryInfo.toolCounts === 0) {
+      this.#showPopupCantUseTool(true);
+      return;
+    }
+
+    // okay, user can use tool, hide popup use tool
+    this.#showPopupOverlay();
+    DOM.popupUseTool.classList.remove("hidden--display");
+
+    this.#showPopupUseToolUI(e.target.closest(".btn__tool--use").dataset.id);
+  }
+
+  #closePopupUseTool() {
+    DOM.popupUseTool.classList.add("hidden--opacity");
+    DOM.popupUseToolDescription.style.fontSize = "2.5rem";
+
+    this.#timeout(0).then(() => {
+      this.#closePopupOverlay();
+      DOM.popupUseTool.classList.add("hidden--display");
+    });
+
+    /*
+    remove the svg icon in every time closing
+    can't use DOM.popupUseToolIcon
+    because there is no html element at the time we invoking the DOM__SELECTION
+    so DOM.popupUseToolIcon === null
+    popup__tool__use__icon is in the svgIcon
+    which is added in the showPopupUseToolUI below
+    SVG.assign, SVG.pass, SVG.uturn
+    */
+    document.querySelector(".popup__tool__use__icon").remove();
+
+    /*
+    also remove assign UI
+    have to first check if element exist
+    */
+    document.querySelector(".popup__subtitle--assign") !== null &&
+      document.querySelector(".popup__subtitle--assign").remove();
+    document.querySelector(".popup__assign__select") !== null &&
+      document.querySelector(".popup__assign__select").remove();
+  }
+
+  #showPopupUseToolUI(tool) {
+    // assign
+    if (tool === "ASSIGN") {
+      DOM.popupUseToolTitle.insertAdjacentHTML(
+        "afterend",
+        this.#showPopupAssignUI()
+      );
+      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.assign);
+
+      // font size of description smaller
+      // because UI of assign is more
+      DOM.popupUseToolDescription.style.fontSize = "2rem";
+    }
+
+    // pass
+    if (tool === "PASS")
+      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.pass);
+
+    // uturn
+    if (tool === "U-TURN")
+      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
+
+    this.#timeout(0).then(() =>
+      DOM.popupUseTool.classList.remove("hidden--opacity")
+    );
+  }
+
   #showPopupAssignUI() {
     // get current number of player (exclude user player)
     const currentPlayerNumber = this.allPlayerArr.length - 1;
     let result;
 
+    /*
+    Why [2,3,4] and [0,1,2]
+    note that later it will add or subtract 1 after checkOrderAndUpdate()
+    In reverse order, subtract 1
+    [2,3,4] -> [1,2,3]
+    In non-reverse order, add 1
+    [0,1,2] -> [1,2,3]
+    Note player can only assign computer player which is [1,2,3]
+    */
     if (this.reverse) result = [2, 3, 4];
     else result = [0, 1, 2];
 
@@ -1739,79 +1842,6 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** POPUP USE TOOL ***
-  ///////////////////////////////////////
-  #showPopupUseTool(e) {
-    // first check if it's user's turn
-    if (!this.myTurn) {
-      this.#showPopupCantUseTool();
-      return;
-    }
-
-    // then check counts if can use tool
-    if (this.userCountryInfo.toolCounts === 0) {
-      this.#showPopupCantUseTool(true);
-      return;
-    }
-
-    // okay, user can use tool
-    this.#showPopupOverlay();
-    DOM.popupUseTool.classList.remove("hidden--display");
-
-    this.#popupUseToolUI(e.target.closest(".btn__tool--use").dataset.id);
-  }
-
-  #closePopupUseTool() {
-    DOM.popupUseTool.classList.add("hidden--opacity");
-    DOM.popupUseToolDescription.style.fontSize = "2.5rem";
-
-    this.#timeout(0).then(() => {
-      this.#closePopupOverlay();
-      DOM.popupUseTool.classList.add("hidden--display");
-    });
-
-    // remove the svg icon in every time closing
-    // can't use DOM.popupUseToolIcon
-    // because there is no html element at the time we invoking the DOM__SELECTION
-    // so DOM.popupUseToolIcon === null
-    document.querySelector(".popup__tool__use__icon").remove();
-
-    // also remove assign UI
-    // have to first check if element exist
-    document.querySelector(".popup__subtitle--assign") !== null &&
-      document.querySelector(".popup__subtitle--assign").remove();
-    document.querySelector(".popup__assign__select") !== null &&
-      document.querySelector(".popup__assign__select").remove();
-  }
-
-  #popupUseToolUI(tool) {
-    // assign
-    if (tool === "ASSIGN") {
-      DOM.popupUseToolTitle.insertAdjacentHTML(
-        "afterend",
-        this.#showPopupAssignUI()
-      );
-      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.assign);
-
-      // font size of description smaller
-      // because UI of assign is more
-      DOM.popupUseToolDescription.style.fontSize = "2rem";
-    }
-
-    // pass
-    if (tool === "PASS")
-      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.pass);
-
-    // uturn
-    if (tool === "U-TURN")
-      DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
-
-    this.#timeout(0).then(() =>
-      DOM.popupUseTool.classList.remove("hidden--opacity")
-    );
-  }
-
-  ///////////////////////////////////////
   // *** TOOL EXTENSION BTN ***
   ///////////////////////////////////////
   #showDiffToolUI() {
@@ -1820,7 +1850,7 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** POP UP CAN'T USE TOOL ***
+  // *** POP UP CAN'T USE TOOL ***
   ///////////////////////////////////////
   #showPopupCantUseTool(counts = false) {
     this.#showPopupOverlay();
@@ -1884,7 +1914,7 @@ class APP {
       this.#showPopupOverlay();
       DOM.popupUseTool.classList.remove("hidden--display");
 
-      this.#popupUseToolUI(e.target.textContent);
+      this.#showPopupUseToolUI(e.target.textContent);
     }
   }
 
@@ -2123,3 +2153,35 @@ class APP {
 }
 
 const app = new APP();
+
+/*
+  #showTool() {
+    DOM.toolContainer.classList.remove("hidden--display");
+
+    DOM.toolItem.forEach(function rmToolItemHidden(element) {
+      element.classList.remove("hidden--display");
+    });
+
+    this.#timeout(0)
+      .then(() => {
+        document.querySelector(".tool__container").style.height = "20rem";
+
+        DOM.toolContainer.classList.remove("hidden--opacity");
+      })
+      .then(() => {
+        DOM.toolItem.forEach(function rmToolItemHidden(element) {
+          element.classList.remove("hidden--opacity");
+        });
+      });
+  }
+
+  #closeTool() {
+    DOM.toolContainer.style.height = "0";
+
+    DOM.toolContainer.classList.add("hidden--opacity");
+
+    DOM.toolItem.forEach(function rmToolItemHidden(element) {
+      element.classList.add("hidden--opacity");
+    });
+  }
+*/
