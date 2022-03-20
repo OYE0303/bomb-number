@@ -1,20 +1,11 @@
-export class DOM__SELECTION {
+class DOM__SELECTION {
   constructor() {
     this.remaingCounts = document.querySelectorAll(".remaing__counts");
     ///////////////////////////
     // *** NAV BAR ***
     ///////////////////////////
     this.userName = document.querySelector(".nav__username");
-    this.navBackground = document.querySelector(".nav__background");
-    this.btnNavBackground = document.querySelectorAll(".btn__nav--background");
-    this.btnNavBackGroundFaq = document.querySelector(
-      ".btn__nav--background--faq"
-    );
-    this.navCheckbox = document.querySelector(".nav__checkbox");
     this.btnNavQuestion = document.querySelector(".btn__nav__question");
-
-    // event degelation
-    this.navRight = document.querySelector(".nav__right");
 
     ///////////////////////////
     // *** MAIN CONTENT ***
@@ -67,7 +58,7 @@ export class DOM__SELECTION {
     ///////////////////////////
     // *** SHOW LEVEL ***
     ///////////////////////////
-    this.btnShowLevel = document.querySelector(".btn__level--main");
+    this.btnShowLevel = document.querySelector(".btn__level");
 
     ///////////////////////////
     // *** COUNTRY INFO ***
@@ -80,6 +71,9 @@ export class DOM__SELECTION {
     ///////////////////////////
     this.popupOverlay = document.querySelector(".popup__overlay");
     this.btnPopupClose = document.querySelectorAll(".btn__popup__close");
+    this.btnPopupCloseQuestion = document.querySelector(
+      ".btn__popup__close__question"
+    );
 
     this.popupLevel = document.querySelector(".popup__level");
     this.popupRule = document.querySelector(".popup__rule");
@@ -189,7 +183,7 @@ export class DOM__SELECTION {
     this.btnFormRangeNext = document.querySelector(".form__btn--range-next");
     this.btnFormRangeBack = document.querySelector(".form__btn--range-back");
 
-    this.btnFormCheckRule = document.querySelector(".btn__form__rule");
+    this.btnFormCheckFaq = document.querySelector(".btn__form__faq");
     this.formRange = document.querySelector(".form__range");
 
     // user lose game
@@ -203,3 +197,4 @@ export class DOM__SELECTION {
     this.popupUserWinGame = document.querySelector(".popup__userWinGame");
   }
 }
+export const DOM = new DOM__SELECTION();

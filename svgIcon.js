@@ -1,4 +1,4 @@
-export class SVG__ICON {
+class SVG__ICON {
   constructor() {
     this.assign = `  
     <h3 data-id="ASSIGN" class="popup__tool__use__icon">
@@ -175,3 +175,5 @@ export class SVG__ICON {
   </svg>`;
   }
 }
+
+export const SVG = new SVG__ICON();

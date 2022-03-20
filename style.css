@@ -458,7 +458,7 @@ select {
   font-size: 2.5rem;
 }
 
-.btn__form__rule {
+.btn__form__faq {
   padding: 0.7rem 1.2rem;
   font-size: 1.5rem;
 }
@@ -480,8 +480,7 @@ select {
   font-size: 2rem;
 }
 
-.nav__left,
-.nav__right {
+.nav__left {
   display: flex;
   align-items: center;
 }
@@ -489,10 +488,6 @@ select {
 .nav__username {
   color: var(--white-light);
   font-size: 3rem;
-}
-
-.btn__level {
-  margin-right: 0.5rem;
 }
 
 .btn__nav {
@@ -517,118 +512,6 @@ select {
 .nav__logo {
   width: 3.5rem;
   margin: 0 3rem;
-}
-
-/* /////////////////////////// */
-/* *** MENU BAR *** */
-/* /////////////////////////// */
-.nav__checkbox {
-  display: none;
-}
-
-.nav__menu {
-  cursor: pointer;
-
-  margin-right: 10px;
-  justify-self: center;
-  align-self: center;
-
-  /*
-  do not occupy the orignial layout 
-  the reason i don't use display: none
-  is because
-  it's hard to show it later using media queries
-  */
-  position: absolute;
-  z-index: -1000;
-
-  opacity: 0;
-}
-
-.nav__menu__icon,
-.nav__menu__icon::before,
-.nav__menu__icon::after {
-  display: inline-block;
-  width: 3rem;
-  height: 2px;
-  background-color: rgba(252, 252, 252, 0.5);
-
-  transition: all 0.4s;
-}
-
-.nav__menu__icon {
-  position: relative;
-  top: 50%;
-}
-
-.nav__menu__icon::before,
-.nav__menu__icon::after {
-  content: "";
-  position: absolute;
-}
-
-.nav__menu__icon::before {
-  top: -1rem;
-}
-
-.nav__menu__icon::after {
-  top: 1rem;
-}
-
-.nav__menu:hover .nav__menu__icon,
-.nav__menu:hover .nav__menu__icon::before,
-.nav__menu:hover .nav__menu__icon::after {
-  background-color: rgba(252, 252, 252, 1);
-}
-
-.nav__menu:hover .nav__menu__icon::before {
-  transform: translateY(-3px);
-}
-
-.nav__menu:hover .nav__menu__icon::after {
-  transform: translateY(3px);
-}
-
-/*
-Look at the position of .nav__checkbox and .nav__menu__icon in HTML
-Use + to find adjacent sibling (.nav__menu)
-And use whitee space to find the child (.nav__menu__icon)
-*/
-
-/* hide the middle line  */
-.nav__checkbox:checked + .nav__menu .nav__menu__icon {
-  background-color: transparent;
-}
-
-.nav__checkbox:checked + .nav__menu .nav__menu__icon::before {
-  transform: translateY(1rem) rotate(-135deg);
-}
-
-.nav__checkbox:checked + .nav__menu .nav__menu__icon::after {
-  transform: translateY(-1rem) rotate(135deg);
-}
-
-.nav__background {
-  position: absolute;
-  width: 100vw;
-  z-index: 200;
-  background-color: rgba(37, 40, 73, 1);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  /* animation  */
-  height: 1vh;
-  transition: all 0.8s ease;
-}
-
-.btn__nav--background {
-  font-size: 3rem;
-}
-
-.btn__nav--background:not(:last-child) {
-  margin-bottom: 3rem;
 }
 
 /* /////////////////////////// */
@@ -726,6 +609,7 @@ And use whitee space to find the child (.nav__menu__icon)
 
 .country__img {
   width: 80%;
+  height: 100%;
   box-shadow: 15px 15px 10px rgba(0, 0, 0, 0.809);
   transition: 0.5s ease;
 }
@@ -823,8 +707,9 @@ And use whitee space to find the child (.nav__menu__icon)
   font-size: 3rem;
   color: var(--white-normal);
 
-  outline: 3px solid var(--white-light--mid);
+  border: 3px solid var(--white-light--mid);
   border-radius: 30px;
+  outline: none;
 
   transition: 0.5s ease;
 
@@ -837,7 +722,7 @@ And use whitee space to find the child (.nav__menu__icon)
 }
 
 .guess__input--invalid {
-  outline: 3px solid var(--pink);
+  border: 3px solid var(--pink);
 }
 
 .btn__guess__input {
@@ -1091,7 +976,7 @@ And use whitee space to find the child (.nav__menu__icon)
   margin-right: 10px;
 }
 
-.btn__level--main {
+.btn__level {
   font-size: 3rem;
   padding: 1rem 5rem;
   margin-bottom: 10px;
@@ -1228,7 +1113,8 @@ And use whitee space to find the child (.nav__menu__icon)
   margin-left: -2rem;
 }
 
-.btn__popup__close {
+.btn__popup__close,
+.btn__popup__close__question {
   position: absolute;
   top: 3px;
   right: 10px;
@@ -1236,7 +1122,8 @@ And use whitee space to find the child (.nav__menu__icon)
   font-size: 2.5rem;
 }
 
-.btn__popup__close:hover {
+.btn__popup__close:hover,
+.btn__popup__close__question:hover {
   color: var(--white-normal);
 }
 
@@ -1339,17 +1226,6 @@ And use whitee space to find the child (.nav__menu__icon)
 .popup__tool p {
   font-size: 2rem;
   text-align: center;
-}
-
-/* /////////////////////////// */
-/* *** POP UP INVALID INPUT *** */
-/* /////////////////////////// */
-.popup__invalidInput {
-  transition: all 0.5s ease;
-}
-
-.popup__invalidInput h3 {
-  color: var(--pink);
 }
 
 /* /////////////////////////// */
@@ -1973,3 +1849,115 @@ the base state of our website is built for that value range; there is no need to
     transform: rotate(360deg);
   }
 }
+
+/*
+.nav__checkbox {
+  display: none;
+}
+
+.nav__menu {
+  cursor: pointer;
+
+  margin-right: 10px;
+  justify-self: center;
+  align-self: center;
+
+  
+  do not occupy the orignial layout 
+  the reason i don't use display: none
+  is because
+  it's hard to show it later using media queries
+  
+  position: absolute;
+  z-index: -1000;
+
+  opacity: 0;
+}
+
+.nav__menu__icon,
+.nav__menu__icon::before,
+.nav__menu__icon::after {
+  display: inline-block;
+  width: 3rem;
+  height: 2px;
+  background-color: rgba(252, 252, 252, 0.5);
+
+  transition: all 0.4s;
+}
+
+.nav__menu__icon {
+  position: relative;
+  top: 50%;
+}
+
+.nav__menu__icon::before,
+.nav__menu__icon::after {
+  content: "";
+  position: absolute;
+}
+
+.nav__menu__icon::before {
+  top: -1rem;
+}
+
+.nav__menu__icon::after {
+  top: 1rem;
+}
+
+.nav__menu:hover .nav__menu__icon,
+.nav__menu:hover .nav__menu__icon::before,
+.nav__menu:hover .nav__menu__icon::after {
+  background-color: rgba(252, 252, 252, 1);
+}
+
+.nav__menu:hover .nav__menu__icon::before {
+  transform: translateY(-3px);
+}
+
+.nav__menu:hover .nav__menu__icon::after {
+  transform: translateY(3px);
+}
+
+
+Look at the position of .nav__checkbox and .nav__menu__icon in HTML
+Use + to find adjacent sibling (.nav__menu)
+And use whitee space to find the child (.nav__menu__icon)
+
+
+ hide the middle line  
+.nav__checkbox:checked + .nav__menu .nav__menu__icon {
+  background-color: transparent;
+}
+
+.nav__checkbox:checked + .nav__menu .nav__menu__icon::before {
+  transform: translateY(1rem) rotate(-135deg);
+}
+
+.nav__checkbox:checked + .nav__menu .nav__menu__icon::after {
+  transform: translateY(-1rem) rotate(135deg);
+}
+
+.nav__background {
+  position: absolute;
+  width: 100vw;
+  z-index: 200;
+  background-color: rgba(37, 40, 73, 1);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  animation  
+  height: 1vh;
+  transition: all 0.8s ease;
+}
+
+.btn__nav--background {
+  font-size: 3rem;
+}
+
+.btn__nav--background:not(:last-child) {
+  margin-bottom: 3rem;
+}
+
+*/

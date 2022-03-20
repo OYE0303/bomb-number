@@ -205,8 +205,10 @@
           </div>
         </div>
 
-        <button class="btn btn--purple btn__form__rule text--cap">
-          check game rule
+        <button
+          class="btn btn--purple btn__form__faq btn__form__rule text--cap"
+        >
+          check FAQ
         </button>
         <button
           class="btn btn--blue form__btn form__btn--next text--upper form__btn--range-next"
@@ -221,47 +223,13 @@
       </div>
     </div>
 
-    <!-- *** NAV BAR *** -->
+    <!-- *** NAV BAR ***  -->
     <nav class="nav page hidden--display hidden--opacity">
       <div class="nav__left">
         <img class="nav__logo" src="./icon/bomb.svg" />
         <h6 class="nav__username"></h6>
       </div>
-      <div class="nav__right">
-        <button class="btn btn__nav btn__level">EASY</button>
-        <button class="btn btn__nav btn__level">MEDIUM</button>
-        <button class="btn btn__nav btn__level">HARD</button>
-        <button class="btn btn__nav btn__nav__question">FAQ</button>
-      </div>
-
-      <input class="nav__checkbox" id="nav__toggle" type="checkbox" />
-
-      <label class="nav__menu" for="nav__toggle" id="toggle-button">
-        <span class="nav__menu__icon"></span>
-      </label>
-
-      <div class="nav__background hidden--display hidden--opacity">
-        <button
-          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
-        >
-          EASY
-        </button>
-        <button
-          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
-        >
-          MEDIUM
-        </button>
-        <button
-          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
-        >
-          HARD
-        </button>
-        <button
-          class="btn btn__nav btn__nav--background btn__nav--background--faq hidden--display hidden--opacity"
-        >
-          FAQ
-        </button>
-      </div>
+      <button class="btn btn__nav btn__nav__question">FAQ</button>
     </nav>
 
     <!-- *** MAIN CONTENT *** -->
@@ -340,7 +308,7 @@
             src="./icon/add-contact.svg"
             alt="assign icon"
           />
-          <p class="tool__item__name text--upper">assign</p>
+          <p data-id="ASSIGN" class="tool__item__name text--upper">assign</p>
           <div class="tool__item__extension">
             <p class="tool__item__reamaining">
               x<span class="remaing__counts"></span>
@@ -359,7 +327,7 @@
         <hr class="tool__line" />
         <li class="tool__item hidden--opacity">
           <img class="tool__icon" src="./icon/id-card.svg" alt="pass icon" />
-          <p class="tool__item__name text--upper">pass</p>
+          <p data-id="PASS" class="tool__item__name text--upper">pass</p>
           <div class="tool__item__extension">
             <p class="tool__item__reamaining">
               x<span class="remaing__counts"></span>
@@ -378,7 +346,7 @@
         <hr class="tool__line" />
         <li class="tool__item hidden--opacity">
           <img class="tool__icon" src="./icon/u-turn.svg" alt="u-turn icon" />
-          <p class="tool__item__name text--upper">u-turn</p>
+          <p data-id="U-TURNg" class="tool__item__name text--upper">u-turn</p>
           <div class="tool__item__extension">
             <p class="tool__item__reamaining">
               x<span class="remaing__counts"></span>
@@ -405,9 +373,7 @@
 
     <!-- *** SHOW LEVEL *** -->
     <aside class="level page hidden--display hidden--opacity">
-      <button class="btn btn--purple btn__level--main btn__level text--upper">
-        easy
-      </button>
+      <button class="btn btn--purple btn__level text--upper">easy</button>
     </aside>
 
     <!-- *** COUNTRY INFO *** -->
@@ -465,7 +431,7 @@
 
       <!-- *** POP UP QUESTION ***  -->
       <div class="popup popup__question center hidden--display">
-        <button class="btn btn__popup__close">x</button>
+        <button class="btn btn__popup__close__question">x</button>
         <h3 class="popup__title text--cap">question</h3>
 
         <div class="popup__question__container">
@@ -605,9 +571,9 @@
         </div>
       </div>
 
-      <!-- TODO: about to remove  -->
+      <!-- TODO: about to remove 
       <!-- *** POP UP INVALID INPUT ***  -->
-      <div
+      <!-- <div
         class="popup popup__invalidInput center hidden--display hidden--opacity"
       >
         <h3 class="popup__title">invalid input</h3>
@@ -619,7 +585,7 @@
         <button class="btn btn--blue popup__btn btn__invalidInput">
           again
         </button>
-      </div>
+      </div> -->
 
       <!-- *** POP UP USE TOOL *** -->
       <div
@@ -709,3 +675,32 @@
     <script src="script.js" type="module"></script>
   </body>
 </html>
+
+<!-- <input class="nav__checkbox" id="nav__toggle" type="checkbox" />
+
+      <label class="nav__menu" for="nav__toggle" id="toggle-button">
+        <span class="nav__menu__icon"></span>
+      </label> -->
+
+<!-- <div class="nav__background hidden--display hidden--opacity">
+        <button
+          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
+        >
+          EASY
+        </button>
+        <button
+          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
+        >
+          MEDIUM
+        </button>
+        <button
+          class="btn btn__nav btn__nav--background hidden--display hidden--opacity"
+        >
+          HARD
+        </button>
+        <button
+          class="btn btn__nav btn__nav--background btn__nav--background--faq hidden--display hidden--opacity"
+        >
+          FAQ
+        </button>
+      </div> -->

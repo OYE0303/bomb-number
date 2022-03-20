@@ -1,9 +1,6 @@
-import { DOM__SELECTION } from "./domSelection.js";
-import { SVG__ICON } from "./svgIcon.js";
+import { DOM } from "./domSelection.js";
+import { SVG } from "./svgIcon.js";
 import { PLAYER__INFO } from "./playerInfo.js";
-
-const DOM = new DOM__SELECTION();
-const SVG = new SVG__ICON();
 
 class APP {
   constructor() {
@@ -56,18 +53,21 @@ class APP {
     this.guessAnimationTime = 5;
 
     // EVENT LISTENER
-    this.#addEventListener();
+    this.addEventListener();
 
     // cache (region) (select)
     this.cacheAllCountryData = null;
     this.cacheRegion = {};
   }
 
-  #inputChangeHandler(e) {
+  ///////////////////////////////////////
+  // *** Input Change ***
+  ///////////////////////////////////////
+  inputChangeHandler(e) {
     const value = Number(e.target.value);
 
     // invalid
-    if (this.#checkInput(value)) {
+    if (this.checkInput(value)) {
       DOM.guessInput.classList.add("guess__input--invalid");
       DOM.btnGuessInput.classList.add("hidden--display");
       DOM.guessOrder.textContent = "Invalid Number";
@@ -82,7 +82,7 @@ class APP {
     }
   }
 
-  #checkInput(input) {
+  checkInput(input) {
     return (
       typeof input !== "number" ||
       Number.isNaN(input) ||
@@ -92,33 +92,33 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Form Order *** ^^^^^^
+  // *** Form Order ***
   ///////////////////////////////////////
-  #nextFormPage() {
+  nextFormPage() {
     this.formCollection[this.formOrder].classList.add("hidden--display");
 
     this.formCollection[++this.formOrder].classList.remove("hidden--display");
   }
 
-  #backFormPage() {
+  backFormPage() {
     this.formCollection[this.formOrder].classList.add("hidden--display");
 
     this.formCollection[--this.formOrder].classList.remove("hidden--display");
   }
 
   ///////////////////////////////////////
-  // *** Form *** ^^^^^^
+  // *** Form ***
   ///////////////////////////////////////
-  #btnFormUserNameNextClickHandler() {
+  btnFormUserNameNextClickHandler() {
     this.userName = DOM.formInput.value;
 
-    this.#nextFormPage();
+    this.nextFormPage();
   }
 
   ///////////////////////////////////////
-  // *** Form Level *** ^^^^^^
+  // *** Form Level ***
   ///////////////////////////////////////
-  #formInputLevelClickHandler(e) {
+  formInputLevelClickHandler(e) {
     // note that e.target will select two element at the same time(input & level)
     // (1) find the elemet has data-id attribute
     const inputLevelDom = e.target.closest(".form__level__input");
@@ -130,7 +130,7 @@ class APP {
     }
   }
 
-  #btnFormLevelNextClickHandler() {
+  btnFormLevelNextClickHandler() {
     // set tool counts based on level
     switch (this.level) {
       case "easy":
@@ -149,38 +149,38 @@ class APP {
         break;
     }
 
-    this.#nextFormPage();
+    this.nextFormPage();
   }
 
   ///////////////////////////////////////
-  // *** Form Country *** ^^^^^^
+  // *** Form Country ***
   ///////////////////////////////////////
-  async #formCountryRegionSelectChangeHandler() {
+  async formCountryRegionSelectChangeHandler() {
     const region = DOM.formCountryRegionSelect.value;
 
-    this.#disabledCountryBtn();
-    await this.#showSelectCountryAndImg(region);
-    this.#activeCountryBtn();
+    this.disabledCountryBtn();
+    await this.showSelectCountryAndImg(region);
+    this.activeCountryBtn();
   }
 
-  async #formCountryNameSelectChangeHandler() {
+  async formCountryNameSelectChangeHandler() {
     const countryName = DOM.formCountryNameSelect.value;
 
-    this.#disabledCountryBtn();
-    await this.#showFormCountryImg(countryName);
-    this.#activeCountryBtn();
+    this.disabledCountryBtn();
+    await this.showFormCountryImg(countryName);
+    this.activeCountryBtn();
   }
 
-  async #btnFormCountryNextClickHandler() {
+  async btnFormCountryNextClickHandler() {
     this.userCountryInfo.countryName = DOM.formCountryNameSelect.value;
 
-    this.#nextFormPage();
+    this.nextFormPage();
 
     // show form range UI
-    this.#formRangeInputChangeHandler();
+    this.formRangeInputChangeHandler();
   }
 
-  #showFormCountryNameSelect(countryNameArr) {
+  showFormCountryNameSelect(countryNameArr) {
     let html = ``;
     countryNameArr.forEach((country) => {
       html += `<option value="${country}">${country}</option>`;
@@ -189,8 +189,8 @@ class APP {
     DOM.formCountryNameSelect.insertAdjacentHTML("beforeend", html);
   }
 
-  async #showFormCountryImg(country) {
-    this.#showImgLoading();
+  async showFormCountryImg(country) {
+    this.showImgLoading();
 
     const countryFlag = await fetch(
       `https://restcountries.com/v3.1/name/${country}`
@@ -204,25 +204,25 @@ class APP {
 
     // change the image
     DOM.formCountryImg.src = data;
-    this.#removeImgLoading();
+    this.removeImgLoading();
   }
 
-  async #btnRandomClickHandler() {
-    this.#disabledCountryBtn();
+  async btnRandomClickHandler() {
+    this.disabledCountryBtn();
 
     if (!this.cacheAllCountryData) {
       try {
-        this.#showRandomlySelectLoading();
+        this.showRandomlySelectLoading();
         const res = await fetch("https://restcountries.com/v3.1/all");
         this.cacheAllCountryData = await res.json();
 
-        this.#removeRandomlySelectLoading();
+        this.removeRandomlySelectLoading();
       } catch (err) {
         console.error(err);
       }
     }
 
-    const randomNum = this.#createRandomNumber(
+    const randomNum = this.createRandomNumber(
       0,
       this.cacheAllCountryData.length - 1
     );
@@ -233,37 +233,37 @@ class APP {
     DOM.formCountryRegionSelect.value = randomCountry.region;
 
     // handle the process after seleting the region
-    await this.#showSelectCountryAndImg(region, randomCountry.name.official);
+    await this.showSelectCountryAndImg(region, randomCountry.name.official);
 
-    this.#activeCountryBtn();
+    this.activeCountryBtn();
   }
 
-  async #showSelectCountryAndImg(region, randomCountry = null) {
-    this.#removePreCountrySelect();
+  async showSelectCountryAndImg(region, randomCountry = null) {
+    this.removePreCountrySelect();
 
     if (this.cacheRegion[region]) {
-      this.#showFormCountryNameSelect(this.cacheRegion[region]);
-      await this.#hasRandomCountryAndShowImg(
+      this.showFormCountryNameSelect(this.cacheRegion[region]);
+      await this.hasRandomCountryAndShowImg(
         randomCountry,
         this.cacheRegion[region][0]
       );
       return;
     }
 
-    this.#showCountrySelectLoading();
+    this.showCountrySelectLoading();
     const countryData = await this.getCountryDataFromRegion(region);
     this.cacheRegion[region] = countryData;
-    this.#removeCountrySelectLoading();
+    this.removeCountrySelectLoading();
 
     // show the next button
     DOM.btnFormCountryNext.classList.remove("hidden--display");
 
-    this.#showFormCountryNameSelect(countryData);
+    this.showFormCountryNameSelect(countryData);
 
-    await this.#hasRandomCountryAndShowImg(randomCountry, countryData[0]);
+    await this.hasRandomCountryAndShowImg(randomCountry, countryData[0]);
   }
 
-  #removePreCountrySelect() {
+  removePreCountrySelect() {
     // convert children to array
     const countryNameChildren = Array.from(DOM.formCountryNameSelect.children);
 
@@ -273,14 +273,14 @@ class APP {
     );
   }
 
-  async #hasRandomCountryAndShowImg(randomCountry, countryData) {
+  async hasRandomCountryAndShowImg(randomCountry, countryData) {
     if (randomCountry) {
       // show the name
       DOM.formCountryNameSelect.value = randomCountry;
 
-      await this.#showFormCountryImg(randomCountry);
+      await this.showFormCountryImg(randomCountry);
     } else {
-      await this.#showFormCountryImg(countryData);
+      await this.showFormCountryImg(countryData);
     }
   }
 
@@ -297,7 +297,7 @@ class APP {
     return countryNameArr;
   }
 
-  #showCountrySelectLoading() {
+  showCountrySelectLoading() {
     DOM.formCountryImg.classList.add("hidden--opacity");
     DOM.formCountryNameSelect.insertAdjacentHTML(
       "beforeend",
@@ -309,7 +309,7 @@ class APP {
     DOM.formCountryNameSelect.disabled = true;
   }
 
-  #removeCountrySelectLoading() {
+  removeCountrySelectLoading() {
     DOM.formCountryNameSelect.remove(
       document.querySelector(".form__country__option--loading")
     );
@@ -320,7 +320,7 @@ class APP {
     DOM.formCountryNameSelect.disabled = false;
   }
 
-  #showRandomlySelectLoading() {
+  showRandomlySelectLoading() {
     // add loading text
     DOM.formCountryRegionSelect.insertAdjacentHTML(
       "beforeend",
@@ -337,10 +337,10 @@ class APP {
     // set disabled true
     DOM.formCountryRegionSelect.disabled = true;
 
-    this.#showCountrySelectLoading();
+    this.showCountrySelectLoading();
   }
 
-  #removeRandomlySelectLoading() {
+  removeRandomlySelectLoading() {
     // remove loading text
     DOM.formCountryRegionSelect.removeChild(
       document.querySelector(".form__country__option--loading--region")
@@ -354,10 +354,10 @@ class APP {
     // set disabled false
     DOM.formCountryRegionSelect.disabled = false;
 
-    this.#removeCountrySelectLoading();
+    this.removeCountrySelectLoading();
   }
 
-  #disabledCountryBtn() {
+  disabledCountryBtn() {
     DOM.btnFormCountryNext.disabled = true;
     DOM.btnFormCountryBack.disabled = true;
     DOM.formBtnCountryRandom.disabled = true;
@@ -371,7 +371,7 @@ class APP {
     DOM.formBtnCountryRandom.classList.remove("btn--purple");
   }
 
-  #activeCountryBtn() {
+  activeCountryBtn() {
     DOM.btnFormCountryNext.disabled = false;
     DOM.btnFormCountryBack.disabled = false;
     DOM.formBtnCountryRandom.disabled = false;
@@ -385,7 +385,7 @@ class APP {
     DOM.formBtnCountryRandom.classList.add("btn--purple");
   }
 
-  #showImgLoading() {
+  showImgLoading() {
     // hidden the image
     DOM.formCountryImg.classList.add("hidden--display");
 
@@ -396,7 +396,7 @@ class APP {
     );
   }
 
-  #removeImgLoading() {
+  removeImgLoading() {
     // remove the hidden
     DOM.formCountryImg.classList.remove("hidden--display");
 
@@ -405,23 +405,23 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Form Range *** ^^^^^^
+  // *** Form Range ***
   ///////////////////////////////////////
-  #btnFormRangeNextClickHandler() {
+  btnFormRangeNextClickHandler() {
     this.maxNumber = Number(DOM.formRangeInput.value);
     this.maxNumberNoChange = this.maxNumber;
     DOM.guessInput.setAttribute("max", String(this.maxNumberNoChange - 1));
 
     // start the game
-    this.#hideForm();
-    this.#showContent();
+    this.hideForm();
+    this.showContent();
   }
 
-  #formRangeInputChangeHandler() {
+  formRangeInputChangeHandler() {
     DOM.formRangeOutput.textContent = DOM.formRangeInput.value;
   }
 
-  #hideForm() {
+  hideForm() {
     DOM.formOverlay.classList.add("hidden--display");
     this.formCollection.forEach((form) =>
       form.classList.add("hidden--display")
@@ -429,19 +429,19 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Main Content *** ^^^^^^
+  // *** Main Content ***
   ///////////////////////////////////////
-  #showContent() {
-    this.#setAllCountentDataAndUI();
+  showContent() {
+    this.setAllCountentDataAndUI();
 
     // show all content
     DOM.page.forEach((page) => page.classList.remove("hidden--display"));
-    this.#timeout(0).then(() => {
+    this.timeout(0).then(() => {
       DOM.page.forEach((page) => page.classList.remove("hidden--opacity"));
     });
   }
 
-  async #setAllCountentDataAndUI() {
+  async setAllCountentDataAndUI() {
     // set userName on UI
     DOM.userName.textContent = this.userName;
 
@@ -453,8 +453,8 @@ class APP {
     DOM.rangeNumberMax.textContent = this.maxNumber;
 
     // show country image and name on UI
-    await this.#showUserCountryImg();
-    await this.#showComputerCountryImg();
+    await this.showUserCountryImg();
+    await this.showComputerCountryImg();
 
     // show remaining counts of tool
     DOM.remaingCounts.forEach(
@@ -462,41 +462,41 @@ class APP {
     );
 
     // set target number
-    this.#createTargetNumber();
+    this.createTargetNumber();
 
     // user turn
-    this.#userTurn(true);
+    this.userTurn(true);
 
     // show guess input
-    this.#showGuessInput();
+    this.showGuessInput();
 
     // show info button
     DOM.btnInfo.forEach((btn) => btn.classList.remove("hidden--display"));
   }
 
-  async #showUserCountryImg() {
-    this.#showMainContentLoading(DOM.playerMain, "main");
+  async showUserCountryImg() {
+    this.showMainContentLoading(DOM.playerMain, "main");
 
     const countryName = this.userCountryInfo.countryName;
-    const countryData = await this.#getOneCountryData(countryName);
+    const countryData = await this.getOneCountryData(countryName);
 
     // set user country info
     this.userCountryInfo.order = 0;
     this.userCountryInfo.countryData = countryData;
 
-    this.#createCountryHTMLAndShowUI(
+    this.createCountryHTMLAndShowUI(
       countryData,
       DOM.playerMain,
       DOM.playerOverlayMain
     );
 
-    this.#removeMainContentLoading(DOM.playerMain, "main");
+    this.removeMainContentLoading(DOM.playerMain, "main");
   }
 
-  async #showComputerCountryImg() {
-    this.#showMainContentLoading(null, null, true);
+  async showComputerCountryImg() {
+    this.showMainContentLoading(null, null, true);
 
-    const randomCountryNameArr = await this.#randomlyChooseCountryName();
+    const randomCountryNameArr = await this.randomlyChooseCountryName();
 
     for (let i = 0; i < randomCountryNameArr.length; i++) {
       const countryData = randomCountryNameArr[i];
@@ -505,7 +505,7 @@ class APP {
       switch (i) {
         case 0:
           {
-            this.#setCountryInfo(
+            this.setCountryInfo(
               this.Computer1CountryInfo,
               1,
               3,
@@ -513,19 +513,19 @@ class APP {
               "left"
             );
 
-            this.#createCountryHTMLAndShowUI(
+            this.createCountryHTMLAndShowUI(
               countryData,
               DOM.player1,
               DOM.playerOverlay1
             );
 
-            this.#removeMainContentLoading(DOM.player1, i);
+            this.removeMainContentLoading(DOM.player1, i);
           }
           break;
 
         case 1:
           {
-            this.#setCountryInfo(
+            this.setCountryInfo(
               this.Computer2CountryInfo,
               2,
               3,
@@ -533,19 +533,19 @@ class APP {
               "top"
             );
 
-            this.#createCountryHTMLAndShowUI(
+            this.createCountryHTMLAndShowUI(
               countryData,
               DOM.player2,
               DOM.playerOverlay2
             );
 
-            this.#removeMainContentLoading(DOM.player2, i);
+            this.removeMainContentLoading(DOM.player2, i);
           }
           break;
 
         case 2:
           {
-            this.#setCountryInfo(
+            this.setCountryInfo(
               this.Computer3CountryInfo,
               3,
               3,
@@ -553,13 +553,13 @@ class APP {
               "right"
             );
 
-            this.#createCountryHTMLAndShowUI(
+            this.createCountryHTMLAndShowUI(
               countryData,
               DOM.player3,
               DOM.playerOverlay3
             );
 
-            this.#removeMainContentLoading(DOM.player3, i);
+            this.removeMainContentLoading(DOM.player3, i);
           }
           break;
 
@@ -569,7 +569,7 @@ class APP {
     }
   }
 
-  #createCountryHTMLAndShowUI(data, player, playerOverlay) {
+  createCountryHTMLAndShowUI(data, player, playerOverlay) {
     const countryName = data.name.common;
 
     let htmlCountryName;
@@ -593,7 +593,7 @@ class APP {
     player.insertAdjacentHTML("beforeend", htmlImg);
   }
 
-  async #getOneCountryData(countryName) {
+  async getOneCountryData(countryName) {
     const res = await fetch(
       `https://restcountries.com/v3.1/name/${countryName}`
     );
@@ -603,7 +603,7 @@ class APP {
     return data;
   }
 
-  async #randomlyChooseCountryName() {
+  async randomlyChooseCountryName() {
     if (!this.cacheAllCountryData) {
       try {
         const res = await fetch("https://restcountries.com/v3.1/all");
@@ -616,7 +616,7 @@ class APP {
     const countryNameArr = [];
     let i = 0;
     while (i < 3) {
-      const randomNum = this.#createRandomNumber(
+      const randomNum = this.createRandomNumber(
         0,
         this.cacheAllCountryData.length - 1
       );
@@ -650,7 +650,7 @@ class APP {
     return countryNameArr;
   }
 
-  #showMainContentLoading(player, argIndex, computer = false) {
+  showMainContentLoading(player, argIndex, computer = false) {
     // set loading on computer player
     if (computer) {
       DOM.playerComputer.forEach((computer, index) =>
@@ -669,14 +669,14 @@ class APP {
     }
   }
 
-  #removeMainContentLoading(player, index) {
+  removeMainContentLoading(player, index) {
     player.removeChild(document.querySelector(`.content__loading--${index}`));
   }
 
   ///////////////////////////////////////
-  // *** Countdown *** ^^^^^^
+  // *** Countdown ***
   ///////////////////////////////////////
-  #showCountdown() {
+  showCountdown() {
     let i = 30;
     DOM.countdownTime.style.color = "var(--white-light)";
     DOM.countdownTime.textContent = `00:30`;
@@ -691,24 +691,24 @@ class APP {
       if (i < 0) {
         // close use tool popup and tool extension
         DOM.popupUseTool.classList.add("hidden--display");
-        this.#closePopupOverlay();
+        this.closePopupOverlay();
 
-        this.#btnCheckClickHandler(null, true);
+        this.btnCheckClickHandler(null, true);
         clearInterval(this.countDown);
         DOM.countdownTime.textContent = ``;
       }
     }, 1000);
   }
 
-  #closeCountDown() {
+  closeCountDown() {
     clearInterval(this.countDown);
     DOM.countdownTime.textContent = ``;
   }
 
   ///////////////////////////////////////
-  // *** Set Country Info *** ^^^^^^
+  // *** Set Country Info ***
   ///////////////////////////////////////
-  #setCountryInfo(player, order, toolCounts, data, position) {
+  setCountryInfo(player, order, toolCounts, data, position) {
     player.order = order;
     player.toolCounts = toolCounts;
     player.countryData = data;
@@ -716,43 +716,25 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** GET API DATA ***
-  ///////////////////////////////////////
-
-  async #randomlyChooseUserCountryName() {
-    let data;
-    try {
-      const res = await fetch("https://restcountries.com/v3.1/all");
-      data = await res.json();
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
-    const randomNum = this.#createRandomNumber(0, data.length);
-
-    return data[randomNum].name.official;
-  }
-
-  ///////////////////////////////////////
-  // *** Check Order And Update *** ^^^^^^
+  // *** Check Order And Update ***
   ///////////////////////////////////////
   // use this.reverse to check current order
-  #checkOrderAndUpdate() {
+  checkOrderAndUpdate() {
     if (this.reverse) {
-      this.#updateCounterClockwiseOrder();
+      this.updateCounterClockwiseOrder();
     } else {
-      this.#updateClockwiseOrder();
+      this.updateClockwiseOrder();
     }
-    this.#updateOrderUI(this.currentOrder);
+    this.updateOrderUI(this.currentOrder);
   }
 
-  #updateClockwiseOrder() {
+  updateClockwiseOrder() {
     this.currentOrder++;
 
     if (this.currentOrder >= this.allPlayerArr.length) this.currentOrder = 0;
   }
 
-  #updateCounterClockwiseOrder() {
+  updateCounterClockwiseOrder() {
     this.currentOrder--;
 
     if (this.currentOrder <= -1)
@@ -760,54 +742,54 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Update Order UI *** ^^^^^^
+  // *** Update Order UI ***
   ///////////////////////////////////////
-  #updateOrderUI(order) {
+  updateOrderUI(order) {
     // first empty the order UI
-    this.#closePlayerOrderUI();
+    this.closePlayerOrderUI();
 
     // it's user's turn
     if (order === 0) {
-      this.#userTurn();
+      this.userTurn();
     }
     // it's computer's turn
     else {
       const currentCountryName = this.allPlayerArr[order].countryName;
 
       // wait for computer's guessing(pretend computer is thinking(guessing))
-      this.#waitComputerGuessingNumber(currentCountryName);
+      this.waitComputerGuessingNumber(currentCountryName);
     }
   }
 
-  #userTurn(firstTime = false) {
+  userTurn(firstTime = false) {
     if (!firstTime) DOM.btnGuessInput.classList.remove("hidden--display");
 
-    this.#showGuessInput();
-    this.#showPlayerOrderUI("Your turn");
+    this.showGuessInput();
+    this.showPlayerOrderUI("Your turn");
 
     this.myTurn = true;
 
-    this.#showCountdown();
+    this.showCountdown();
   }
 
-  #waitComputerGuessingNumber(currentCountryName) {
-    const randomTime = this.#createRandomNumber(1, 5);
+  waitComputerGuessingNumber(currentCountryName) {
+    const randomTime = this.createRandomNumber(1, 5);
 
-    this.#showComputerWaitingUI(currentCountryName);
+    this.showComputerWaitingUI(currentCountryName);
 
-    this.#timeout(randomTime).then(() => {
+    this.timeout(randomTime).then(() => {
       // after waiting, do these two things
-      this.#closeComputerWaitingUI();
+      this.closeComputerWaitingUI();
 
       // next player
-      this.#takeComputerGuessInput();
+      this.takeComputerGuessInput();
     });
   }
 
   ///////////////////////////////////////
   // *** Guessing Number Logic ***
   ///////////////////////////////////////
-  #btnCheckClickHandler(e, random = false) {
+  btnCheckClickHandler(e, random = false) {
     // prevent user accidentally input empty string
     if (!random && DOM.guessInput.value === "") return;
 
@@ -818,7 +800,7 @@ class APP {
 
     // randomly guess number(countdown to 0)
     if (random) {
-      guessNumber = this.#createComputerGuessingNumber(
+      guessNumber = this.createComputerGuessingNumber(
         this.minNumber,
         this.maxNumber
       );
@@ -827,19 +809,19 @@ class APP {
     else {
       guessNumber = Number(DOM.guessInput.value);
 
-      this.#closeCountDown();
+      this.closeCountDown();
     }
 
-    this.#takeGuessInput(guessNumber);
+    this.takeGuessInput(guessNumber);
 
     this.myTurn = false;
 
     // close "Your turn" UI
-    this.#closePlayerOrderUI();
+    this.closePlayerOrderUI();
 
     // close guess input
     // have to put here, or we cannot accept the user's input
-    this.#closeGuessInput();
+    this.closeGuessInput();
 
     // hide submit btn
     DOM.btnGuessInput.classList.add("hidden--display");
@@ -848,17 +830,17 @@ class APP {
     DOM.guessOrder.classList.remove("guess__number--invalid");
   }
 
-  #takeComputerGuessInput() {
+  takeComputerGuessInput() {
     // create random guessing number for computer
-    const guessNumber = this.#createComputerGuessingNumber(
+    const guessNumber = this.createComputerGuessingNumber(
       this.minNumber,
       this.maxNumber
     );
 
-    this.#takeGuessInput(guessNumber, false);
+    this.takeGuessInput(guessNumber, false);
   }
 
-  #takeGuessInput(guessNumber, userPlayer = true) {
+  takeGuessInput(guessNumber, userPlayer = true) {
     /*
     Here, we have to first check if computer use tool
     Because it doesn't make sense use tool after showing guessing UI(see below)
@@ -874,23 +856,23 @@ class APP {
     if (
       !userPlayer &&
       this.targetNumber === guessNumber &&
-      this.#computerGuessNumberLogic()
+      this.computerGuessNumberLogic()
     ) {
-      this.#useToolComputer();
+      this.useToolComputer();
       return;
     }
 
-    this.#timeout(0)
+    this.timeout(0)
       // guessing UI
       .then(() => {
         // setting guessing animation time
-        this.guessAnimationTime = this.#createRandomNumber(2, 5);
+        this.guessAnimationTime = this.createRandomNumber(2, 5);
 
         // guessNumber UI(pink & blue)
-        this.#showGuessNumberUI(guessNumber);
+        this.showGuessNumberUI(guessNumber);
 
         // wait for the guessing animation time
-        return this.#timeout(this.guessAnimationTime);
+        return this.timeout(this.guessAnimationTime);
       })
       // check guessing number
       .then(() => {
@@ -898,47 +880,47 @@ class APP {
         if (guessNumber === this.targetNumber) {
           if (userPlayer) {
             // user lose game UI
-            this.#showPopupUserLoseGame();
+            this.showPopupUserLoseGame();
           } else {
             // user win the game
             if (this.allPlayerArr.length === 2) {
-              this.#showPopupUserWinGame();
+              this.showPopupUserWinGame();
             }
             // not yet win the game
-            else this.#computerLoseGame();
+            else this.computerLoseGame();
           }
 
-          this.#closeGuessNumberUI();
+          this.closeGuessNumberUI();
           return true;
         } else {
           // not guess the bomb number -> updating UI
-          this.#showPassUI();
-          this.#updateMinMaxRange(guessNumber);
+          this.showPassUI();
+          this.updateMinMaxRange(guessNumber);
 
           // wait another 3 second because showPassUI is exactly 3 second
-          return this.#timeout(3);
+          return this.timeout(3);
         }
       })
       .then((arg) => {
         if (!arg) {
-          this.#closeGuessNumberUI();
-          this.#closePassUI();
+          this.closeGuessNumberUI();
+          this.closePassUI();
 
           // update next order(go to next player)
-          this.#checkOrderAndUpdate();
+          this.checkOrderAndUpdate();
         }
       });
   }
 
-  #computerGuessNumberLogic() {
+  computerGuessNumberLogic() {
     /*
     first check computer if is out of tool counts
     if yes, lose game
     then check if computer wants use tool
     */
     if (
-      this.#checkComputerUseToolCounts(this.allPlayerArr[this.currentOrder]) ||
-      this.#checkIfComputerUseTool()
+      this.checkComputerUseToolCounts(this.allPlayerArr[this.currentOrder]) ||
+      this.checkIfComputerUseTool()
     ) {
       // lose game
       return false;
@@ -948,32 +930,32 @@ class APP {
     return true;
   }
 
-  #checkIfComputerUseTool() {
+  checkIfComputerUseTool() {
     // if remaining only one guess number, defenitely use tool
     if (this.maxNumber - this.minNumber === 2) return false;
 
     // randomly decide if using the tools
-    const randomNum = this.#createRandomNumber(1, 100);
+    const randomNum = this.createRandomNumber(1, 100);
     if (randomNum % 2 === 0) return true;
     else return false;
   }
 
-  #checkComputerUseToolCounts(player) {
+  checkComputerUseToolCounts(player) {
     if (player.toolCounts === 0) return true;
     player.toolCounts--;
     return false;
   }
 
-  #useToolComputer() {
+  useToolComputer() {
     // check current player(country)
     const currentCountryName = this.allPlayerArr[this.currentOrder].countryName;
-    const tool = this.#whichToolComputer();
+    const tool = this.whichToolComputer();
 
-    this.#useToolLogic(tool, currentCountryName);
+    this.useToolLogic(tool, currentCountryName);
   }
 
-  #whichToolComputer() {
-    const randomNumberTool = this.#createRandomNumber(0, 2);
+  whichToolComputer() {
+    const randomNumberTool = this.createRandomNumber(0, 2);
 
     // pass
     if (randomNumberTool == 1) {
@@ -989,26 +971,26 @@ class APP {
     }
   }
 
-  #useToolLogic(tool, playerName) {
-    this.#timeout(0)
+  useToolLogic(tool, playerName) {
+    this.timeout(0)
       .then(() => {
-        this.#toolFunctionality(tool);
+        this.toolFunctionality(tool);
       })
       .then(() => {
-        this.#showUseToolUI(tool, playerName);
+        this.showUseToolUI(tool, playerName);
 
-        return this.#timeout(3);
+        return this.timeout(3);
       })
       .then(() => {
         // later, close whole UI
-        this.#closeUseToolUI();
+        this.closeUseToolUI();
 
         // next round
-        this.#checkOrderAndUpdate();
+        this.checkOrderAndUpdate();
       });
   }
 
-  #toolFunctionality(tool) {
+  toolFunctionality(tool) {
     // pass
     if (tool === "PASS") {
       return;
@@ -1036,7 +1018,7 @@ class APP {
       let randomNumAssign;
 
       while (true) {
-        randomNumAssign = this.#createRandomNumber(0, this.allPlayerArr.length);
+        randomNumAssign = this.createRandomNumber(0, this.allPlayerArr.length);
 
         /*
         edge case
@@ -1071,16 +1053,16 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Computer Guessing Number *** ^^^^^^
+  // *** Computer Guessing Number ***
   ///////////////////////////////////////
-  #createComputerGuessingNumber(min, max) {
-    return this.#createRandomNumber(min + 1, max - 1);
+  createComputerGuessingNumber(min, max) {
+    return this.createRandomNumber(min + 1, max - 1);
   }
 
   ///////////////////////////////////////
-  // *** Show Use Tool UI *** ^^^^^^
+  // *** Show Use Tool UI ***
   ///////////////////////////////////////
-  #showUseToolUI(tool, player) {
+  showUseToolUI(tool, player) {
     // re-position based on the length of county name
     if (player.length >= 20) {
       DOM.guessUseTool.style.top = "78%";
@@ -1100,17 +1082,16 @@ class APP {
     DOM.guessUseToolUserName.textContent = `${player}`;
     DOM.guessUseTool.textContent = useToolHTML;
     DOM.guessUseTool.insertAdjacentHTML("beforeend", toolIcon);
-    console.log(toolIcon);
 
     // close popup (only need to close if it's user using the tool)
-    if (player === this.userCountryInfo.countryName) this.#closePopupUseTool();
+    if (player === this.userCountryInfo.countryName) this.closePopupUseTool();
 
     // add class for animation
     DOM.guessUseToolUserName.classList.add("guess__tool--animation");
     DOM.guessUseTool.classList.add("guess__tool--animation");
   }
 
-  #closeUseToolUI() {
+  closeUseToolUI() {
     /*
     have to first remove the tool icon, then empty the text content(guessUseTool)
     because tool icon is inside the guessUseTool <p>  <svg></svg> </p>
@@ -1123,9 +1104,9 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Use Tool *** ^^^^^^
+  // *** Use Tool ***
   ///////////////////////////////////////
-  #useTool(e) {
+  useTool(e) {
     this.userCountryInfo.toolCounts--;
 
     // reset all counts UI
@@ -1134,19 +1115,19 @@ class APP {
     );
 
     // close "Your turn" UI
-    this.#closePlayerOrderUI();
+    this.closePlayerOrderUI();
 
     // close guess input UI
-    this.#closeGuessInput();
+    this.closeGuessInput();
 
     // close tool UI
-    this.#toolBtnToggle();
+    this.toolBtnToggle();
 
     // not my turn anymore
     this.myTurn = false;
 
     // close countdown
-    this.#closeCountDown();
+    this.closeCountDown();
 
     // close check button
     DOM.btnGuessInput.classList.add("hidden--display");
@@ -1156,18 +1137,18 @@ class APP {
       .closest(".popup__tool__use")
       .querySelector(".popup__tool__use__icon").dataset.id;
 
-    this.#useToolLogic(tool, this.userCountryInfo.countryName);
+    this.useToolLogic(tool, this.userCountryInfo.countryName);
   }
 
   ///////////////////////////////////////
-  // *** Computer Lose Game *** ^^^^^^
+  // *** Computer Lose Game ***
   ///////////////////////////////////////
-  #computerLoseGame() {
+  computerLoseGame() {
     // blur lose image
-    this.#blurCountryImg();
+    this.blurCountryImg();
 
     // show popup UI
-    this.#showPopupComputerLoseGame();
+    this.showPopupComputerLoseGame();
 
     // add user tool counts
     this.userCountryInfo.toolCounts++;
@@ -1178,8 +1159,8 @@ class APP {
     );
   }
 
-  #showPopupComputerLoseGame() {
-    this.#showPopupOverlay();
+  showPopupComputerLoseGame() {
+    this.showPopupOverlay();
     DOM.popupComputerLoseGame.classList.remove("hidden--display");
 
     // show which conutry(player) lose the game
@@ -1190,22 +1171,22 @@ class APP {
     DOM.bombNumberComputer.textContent = this.targetNumber;
   }
 
-  #closePopupComputerLoseGame() {
-    this.#closePopupOverlay();
+  closePopupComputerLoseGame() {
+    this.closePopupOverlay();
     DOM.popupComputerLoseGame.classList.add("hidden--display");
 
     // hide bomb number
     DOM.bombNumberComputer.textContent = "";
 
     // eliminate player
-    this.#eliminatePlayerAndReset(this.currentOrder);
-    this.#checkOrderAndUpdate();
+    this.eliminatePlayerAndReset(this.currentOrder);
+    this.checkOrderAndUpdate();
   }
 
-  #eliminatePlayerAndReset(playerNumber) {
+  eliminatePlayerAndReset(playerNumber) {
     const playerElement = this.allPlayerArr[playerNumber];
 
-    const newPlayerArr = this.#deleteElementFromArray(
+    const newPlayerArr = this.deleteElementFromArray(
       this.allPlayerArr,
       playerElement
     );
@@ -1213,15 +1194,15 @@ class APP {
     // reset all player array
     this.allPlayerArr = newPlayerArr;
 
-    this.#resetNumberRange();
+    this.resetNumberRange();
 
     // reset target number
-    this.#createTargetNumber();
+    this.createTargetNumber();
 
-    this.#nextPlayerAfterElimination();
+    this.nextPlayerAfterElimination();
   }
 
-  #resetNumberRange() {
+  resetNumberRange() {
     this.minNumber = 0;
     this.maxNumber = this.maxNumberNoChange;
 
@@ -1230,7 +1211,7 @@ class APP {
     DOM.rangeNumberMin.textContent = this.minNumber;
   }
 
-  #blurCountryImg() {
+  blurCountryImg() {
     const losingCountryOrder = this.allPlayerArr[this.currentOrder].order;
 
     /*
@@ -1270,73 +1251,73 @@ class APP {
   Because current order 1 + 1 = 2
   And the allPlayerArr is [0, 1, 2] after elimination
   */
-  #nextPlayerAfterElimination() {
+  nextPlayerAfterElimination() {
     if (!this.reverse) {
       this.currentOrder = this.currentOrder - 1;
     }
   }
 
   ///////////////////////////////////////
-  // *** Update Min & Max Range *** ^^^^^^
+  // *** Update Min & Max Range ***
   ///////////////////////////////////////
-  #updateMinMaxRange(guessNumber) {
+  updateMinMaxRange(guessNumber) {
     // change max number and show UI
     if (guessNumber > this.targetNumber) {
       this.maxNumber = guessNumber;
-      this.#showRangeNumberMaxUI(guessNumber);
+      this.showRangeNumberMaxUI(guessNumber);
     }
 
     // change min number and show UI
     else if (guessNumber < this.targetNumber) {
       this.minNumber = guessNumber;
-      this.#showRangeNumberMinUI(guessNumber);
+      this.showRangeNumberMinUI(guessNumber);
     }
   }
 
   ///////////////////////////////////////
-  // *** Range Number Min & Max UI *** ^^^^^^
+  // *** Range Number Min & Max UI ***
   ///////////////////////////////////////
-  #showRangeNumberMinUI(min) {
+  showRangeNumberMinUI(min) {
     DOM.rangeNumberMin.textContent = min;
     DOM.rangeNumberMin.classList.add("range__number--animation");
 
     // remove animation class after animation
-    this.#timeout(4).then(() =>
+    this.timeout(4).then(() =>
       DOM.rangeNumberMin.classList.remove("range__number--animation")
     );
   }
 
-  #showRangeNumberMaxUI(max) {
+  showRangeNumberMaxUI(max) {
     DOM.rangeNumberMax.textContent = max;
     DOM.rangeNumberMax.classList.add("range__number--animation");
 
     // remove animation class after animation
-    this.#timeout(4).then(() =>
+    this.timeout(4).then(() =>
       DOM.rangeNumberMax.classList.remove("range__number--animation")
     );
   }
 
   ///////////////////////////////////////
-  // *** Guess Number UI *** ^^^^^^
+  // *** Guess Number UI ***
   ///////////////////////////////////////
-  #showGuessNumberUI(number) {
+  showGuessNumberUI(number) {
     DOM.guessNumber.textContent = number;
     DOM.guessNumber.classList.remove("hidden--opacity");
     DOM.guessNumber.classList.add("guess__number--animation");
   }
 
-  #closeGuessNumberUI() {
+  closeGuessNumberUI() {
     DOM.guessNumber.textContent = "";
     DOM.guessNumber.classList.add("hidden--opacity");
     DOM.guessNumber.classList.remove("guess__number--animation");
   }
 
-  #showPassUI() {
+  showPassUI() {
     DOM.guessNumber.textContent = "PASS";
     DOM.guessNumber.classList.add("pass--animation");
   }
 
-  #closePassUI() {
+  closePassUI() {
     DOM.guessNumber.textContent = "";
     DOM.guessNumber.classList.remove("pass--animation");
   }
@@ -1345,53 +1326,53 @@ class APP {
   ///////////////////////////////////////
   // *** POPUP INVAID INPUT ***
   ///////////////////////////////////////
-  #showPopupInvalidInput() {
-    this.#showPopupOverlay();
+  showPopupInvalidInput() {
+    this.showPopupOverlay();
     DOM.popupInvalidInput.classList.remove("hidden--display");
 
-    this.#timeout(0).then(() =>
+    this.timeout(0).then(() =>
       DOM.popupInvalidInput.classList.remove("hidden--opacity")
     );
   }
 
-  #closePopupInvalidInput() {
-    this.#closePopupOverlay();
+  closePopupInvalidInput() {
+    this.closePopupOverlay();
     DOM.popupInvalidInput.classList.add("hidden--display");
 
     DOM.popupInvalidInput.classList.add("hidden--opacity");
 
-    this.#showPlayerOrderUI("Your turn");
+    this.showPlayerOrderUI("Your turn");
   }
 
   ///////////////////////////////////////
-  // *** Show & Close Guess Input *** ^^^^^^
+  // *** Show & Close Guess Input ***
   ///////////////////////////////////////
-  #showGuessInput() {
+  showGuessInput() {
     DOM.guessInput.classList.remove("hidden--display");
   }
 
-  #closeGuessInput() {
+  closeGuessInput() {
     DOM.guessInput.classList.add("hidden--display");
     DOM.guessInput.value = "";
   }
 
   ///////////////////////////////////////
-  // *** Player Order UI *** ^^^^^^
+  // *** Player Order UI ***
   ///////////////////////////////////////
-  #showPlayerOrderUI(order) {
+  showPlayerOrderUI(order) {
     DOM.guessOrder.textContent = order;
     DOM.guessOrder.classList.add("player--animation");
   }
 
-  #closePlayerOrderUI() {
+  closePlayerOrderUI() {
     DOM.guessOrder.textContent = "";
     DOM.guessOrder.classList.remove("player--animation");
   }
 
   ///////////////////////////////////////
-  // *** Computer Waiting UI *** ^^^^^^
+  // *** Computer Waiting UI ***
   ///////////////////////////////////////
-  #showComputerWaitingUI(playerCountry) {
+  showComputerWaitingUI(playerCountry) {
     DOM.guessOrder.textContent = playerCountry;
 
     DOM.waiting.forEach((wait) => wait.classList.remove("hidden--display"));
@@ -1400,7 +1381,7 @@ class APP {
     DOM.bounce3.classList.add("spinner--animation3");
   }
 
-  #closeComputerWaitingUI() {
+  closeComputerWaitingUI() {
     DOM.guessOrder.textContent = "";
 
     DOM.waiting.forEach((wait) => wait.classList.add("hidden--display"));
@@ -1410,9 +1391,9 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Button Tool *** ^^^^^^
+  // *** Button Tool ***
   ///////////////////////////////////////
-  #showTool() {
+  showTool() {
     DOM.btnToolUse.forEach((element) => {
       element.disabled = false;
     });
@@ -1426,7 +1407,7 @@ class APP {
     });
   }
 
-  #closeTool() {
+  closeTool() {
     DOM.toolContainer.style.height = "0";
 
     DOM.toolContainer.classList.add("hidden--opacity");
@@ -1440,38 +1421,38 @@ class APP {
     });
   }
 
-  #toolBtnToggle() {
+  toolBtnToggle() {
     if (this.btnToolToggle) {
-      this.#showTool();
+      this.showTool();
       this.btnToolToggle = false;
     } else {
-      this.#closeTool();
+      this.closeTool();
       this.btnToolToggle = true;
     }
   }
 
   ///////////////////////////////////////
-  // *** Country Info *** ^^^^^^
+  // *** Country Info ***
   ///////////////////////////////////////
-  #showCountryInfo(e) {
-    this.#chooseCountryInfo(Number(e.target.dataset.id));
+  showCountryInfo(e) {
+    this.chooseCountryInfo(Number(e.target.dataset.id));
 
     DOM.countryInfo.classList.remove("hidden--display");
 
-    this.#timeout(0).then(() =>
+    this.timeout(0).then(() =>
       DOM.countryInfo.classList.remove("hidden--opacity")
     );
   }
 
-  #closeCountryInfo() {
+  closeCountryInfo() {
     document.querySelector(".info").classList.add("hidden--display");
 
-    this.#timeout(0).then(() =>
+    this.timeout(0).then(() =>
       document.querySelector(".info").classList.add("hidden--opacity")
     );
   }
 
-  #chooseCountryInfo(order) {
+  chooseCountryInfo(order) {
     const countryName = this.allPlayerArrNoChange[order].countryName;
     const contryElement = document.querySelector(".info__name");
 
@@ -1486,29 +1467,29 @@ class APP {
 
     // manually set country info
     document.querySelector(".info__region").textContent =
-      this.allPlayerArrNoChange[order].countryData.region || "NO PROVIDED";
+      this.allPlayerArrNoChange[order].countryData?.region || "NO PROVIDED";
     document.querySelector(".info__capital").textContent =
-      this.allPlayerArrNoChange[order].countryData.capital[0] || "NO PROVIDED";
+      this.allPlayerArrNoChange[order].countryData?.capital[0] || "NO PROVIDED";
     document.querySelector(".info__area").textContent =
-      this.#convertNumberToString(
-        this.allPlayerArrNoChange[order].countryData.area
+      this.convertNumberToString(
+        this.allPlayerArrNoChange[order].countryData?.area
       ) || "NO PROVIDED";
     document.querySelector(".info__population").textContent =
-      this.#convertNumberToString(
-        this.allPlayerArrNoChange[order].countryData.population
+      this.convertNumberToString(
+        this.allPlayerArrNoChange[order].countryData?.population
       ) || "NO PROVIDED";
     document.querySelector(".info__currencies").textContent = this
-      .allPlayerArrNoChange[order].countryData.currencies
-      ? Object.keys(this.allPlayerArrNoChange[order].countryData.currencies)[0]
+      .allPlayerArrNoChange[order].countryData?.currencies
+      ? Object.keys(this.allPlayerArrNoChange[order].countryData?.currencies)[0]
       : "NO PROVIDED";
 
     document.querySelector(".info__language").textContent =
       Object.values(
-        this.allPlayerArrNoChange[order].countryData.languages
+        this.allPlayerArrNoChange[order].countryData?.languages
       )[0] || "NO PROVIDED";
   }
 
-  #convertNumberToString(num) {
+  convertNumberToString(num) {
     if (num === undefined) return null;
 
     let newNum;
@@ -1524,16 +1505,16 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Menu BackGround *** ^^^^^^
+  // *** Menu BackGround ***
   ///////////////////////////////////////
-  #showMenuBackground() {
+  showMenuBackground() {
     DOM.navBackground.classList.remove("hidden--display");
 
     DOM.btnNavBackground.forEach((element) => {
       element.classList.remove("hidden--display");
     });
 
-    this.#timeout(0)
+    this.timeout(0)
       .then(() => {
         DOM.navBackground.style.height = "100vh";
 
@@ -1546,12 +1527,12 @@ class APP {
       );
   }
 
-  #closeMenuBackground() {
+  closeMenuBackground() {
     DOM.navBackground.style.height = "1vh";
 
     DOM.navBackground.classList.add("hidden--opacity");
 
-    this.#timeout(0)
+    this.timeout(0)
       .then(() =>
         DOM.btnNavBackground.forEach((element) => {
           element.classList.add("hidden--opacity");
@@ -1566,36 +1547,36 @@ class APP {
       });
   }
 
-  #menuCheckboxToggle() {
+  menuCheckboxToggle() {
     if (this.btnMenuToggle) {
-      this.#showMenuBackground();
+      this.showMenuBackground();
       this.btnMenuToggle = false;
     } else {
-      this.#closeMenuBackground();
+      this.closeMenuBackground();
       this.btnMenuToggle = true;
     }
   }
 
   ///////////////////////////////////////
-  // *** Popup Overlay *** ^^^^^^
+  // *** Popup Overlay ***
   ///////////////////////////////////////
-  #showPopupOverlay() {
+  showPopupOverlay() {
     DOM.popupOverlay.classList.remove("hidden--display");
   }
 
-  #closePopupOverlay() {
+  closePopupOverlay() {
     DOM.popupOverlay.classList.add("hidden--display");
   }
 
   ///////////////////////////////////////
-  // *** Close All Popup *** ^^^^^^
+  // *** Close All Popup ***
   ///////////////////////////////////////
   // add one callback function to different close button
   // use .closest to check which popup should close
-  #closePopup(e) {
+  closePopup(e) {
     const targetElement = e.target;
 
-    this.#closePopupOverlay();
+    DOM.popupQuestion.classList.remove("hidden--display");
 
     // question
     if (targetElement.closest(".popup__question")) {
@@ -1606,11 +1587,7 @@ class APP {
 
     // rule
     if (targetElement.closest(".popup__rule")) {
-      // check if game is starting (user may check the rule before game)
-      if (!this.targetNumber) {
-        this.#closeCheckRule();
-      } else
-        targetElement.closest(".popup__rule").classList.add("hidden--display");
+      targetElement.closest(".popup__rule").classList.add("hidden--display");
     }
 
     // diff level
@@ -1626,80 +1603,74 @@ class APP {
     }
   }
 
-  // !!! about to remove !!!
   ///////////////////////////////////////
-  // *** Popup Level *** ^^^^^^
+  // *** Popup Level ***
   ///////////////////////////////////////
-  #showPopupLevel(e) {
-    // this callback attach on whole div containing three level button
-    // first check if user click the right place
-    if (e.target.classList.contains("btn__level")) {
-      this.#showPopupOverlay();
+  showPopupLevel(e) {
+    this.showPopupOverlay();
 
-      DOM.popupLevel.classList.remove("hidden--display");
+    DOM.popupLevel.classList.remove("hidden--display");
 
-      this.#timeout(0).then(() => {
-        DOM.popupLevel.classList.remove("hidden--opacity");
-      });
-    }
+    this.timeout(0).then(() => {
+      DOM.popupLevel.classList.remove("hidden--opacity");
+    });
   }
 
-  #closePopupLevel() {
-    this.#closePopupOverlay();
+  closePopupLevel() {
+    this.closePopupOverlay();
 
     DOM.popupLevel.classList.add("hidden--display");
     DOM.popupLevel.classList.add("hidden--opacity");
   }
 
-  #changeLevel() {
+  changeLevel() {
     location.reload();
   }
 
-  #showPopupLevelSmall() {
-    this.#showPopupOverlay();
-
-    DOM.popupLevel.classList.remove("hidden--display");
-
-    this.#timeout(0).then(() => {
-      DOM.popupLevel.classList.remove("hidden--opacity");
-    });
-
-    this.#menuCheckboxToggle();
-    DOM.navCheckbox.checked = false;
-  }
-
-  // !!! about to modity !!!
   ///////////////////////////////////////
-  // *** Popup Question *** ^^^^^^
+  // *** Popup Question ***
   ///////////////////////////////////////
-  #showPopupQuestion() {
-    this.#showPopupOverlay();
+  showPopupQuestion() {
+    this.showPopupOverlay();
     DOM.popupQuestion.classList.remove("hidden--display");
 
-    this.#timeout(0).then(() =>
+    this.timeout(0).then(() =>
       DOM.popupQuestion.classList.remove("hidden--opacity")
     );
   }
 
-  #showPopupQuestionSmall(e) {
-    this.#showPopupOverlay();
+  closePopupQuestion() {
+    if (!this.targetNumber) {
+      this.closePopupQuestionInForm();
+    } else {
+      this.closePopupOverlay();
+      DOM.popupQuestion.classList.add("hidden--display");
+      DOM.popupQuestion.classList.add("hidden--opacity");
+    }
+  }
+
+  showPopupQuestionInForm() {
+    this.showPopupOverlay();
     DOM.popupQuestion.classList.remove("hidden--display");
 
-    this.#timeout(0).then(() =>
-      DOM.popupQuestion.classList.remove("hidden--opacity")
-    );
+    DOM.formRange.classList.add("hidden--display");
+    DOM.formOverlay.classList.add("hidden--display");
+  }
 
-    // close menu background, and set the state back to unchecked
-    this.#menuCheckboxToggle();
-    DOM.navCheckbox.checked = false;
+  closePopupQuestionInForm() {
+    this.closePopupOverlay();
+    DOM.popupQuestion.classList.add("hidden--display");
+
+    DOM.formRange.classList.remove("hidden--display");
+    DOM.formOverlay.classList.remove("hidden--display");
   }
 
   ///////////////////////////////////////
-  // *** Popup Different Question (Rule, Level, Tool) *** ^^^^^^
+  // *** Popup Different Question (Rule, Level, Tool) ***
   ///////////////////////////////////////
   // use one callback function attach on one enitre question pop up
   // use .contains to check what button is user currently clicking
-  #showPopupDiffQuestion(e) {
+  showPopupDiffQuestion(e) {
     const targetElement = e.target;
 
     if (targetElement.classList.contains("btn__popup__question")) {
@@ -1720,34 +1691,34 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Popup Use Tool *** ^^^^^^
+  // *** Popup Use Tool ***
   ///////////////////////////////////////
-  #showPopupUseTool(e) {
+  showPopupUseTool(e) {
     // first check if it's user's turn
     if (!this.myTurn) {
-      this.#showPopupCantUseTool();
+      this.showPopupCantUseTool();
       return;
     }
 
     // then check counts if can use tool
     if (this.userCountryInfo.toolCounts === 0) {
-      this.#showPopupCantUseTool(true);
+      this.showPopupCantUseTool(true);
       return;
     }
 
     // okay, user can use tool, hide popup use tool
-    this.#showPopupOverlay();
+    this.showPopupOverlay();
     DOM.popupUseTool.classList.remove("hidden--display");
 
-    this.#showPopupUseToolUI(e.target.closest(".btn__tool--use").dataset.id);
+    this.showPopupUseToolUI(e.target.closest(".btn__tool--use").dataset.id);
   }
 
-  #closePopupUseTool() {
+  closePopupUseTool() {
     DOM.popupUseTool.classList.add("hidden--opacity");
     DOM.popupUseToolDescription.style.fontSize = "2.5rem";
 
-    this.#timeout(0).then(() => {
-      this.#closePopupOverlay();
+    this.timeout(0).then(() => {
+      this.closePopupOverlay();
       DOM.popupUseTool.classList.add("hidden--display");
     });
 
@@ -1772,12 +1743,12 @@ class APP {
       document.querySelector(".popup__assign__select").remove();
   }
 
-  #showPopupUseToolUI(tool) {
+  showPopupUseToolUI(tool) {
     // assign
     if (tool === "ASSIGN") {
       DOM.popupUseToolTitle.insertAdjacentHTML(
         "afterend",
-        this.#showPopupAssignUI()
+        this.showPopupAssignUI()
       );
       DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.assign);
 
@@ -1794,12 +1765,12 @@ class APP {
     if (tool === "U-TURN")
       DOM.popupUseToolTitle.insertAdjacentHTML("afterend", SVG.uturn);
 
-    this.#timeout(0).then(() =>
+    this.timeout(0).then(() =>
       DOM.popupUseTool.classList.remove("hidden--opacity")
     );
   }
 
-  #showPopupAssignUI() {
+  showPopupAssignUI() {
     // get current number of player (exclude user player)
     const currentPlayerNumber = this.allPlayerArr.length - 1;
     let result;
@@ -1842,18 +1813,44 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** TOOL EXTENSION BTN ***
+  // *** If Screen Getting Smaller (Use Tool) ***
   ///////////////////////////////////////
-  #showDiffToolUI() {
-    this.#showPopupOverlay();
+  useToolSmall(e) {
+    console.log(e.target);
+    if (window.innerWidth <= 1200) {
+      // first check if it's user's turn
+      if (!this.myTurn) {
+        this.showPopupCantUseTool();
+        return;
+      }
+
+      // then check counts if can use tool
+      if (this.userCountryInfo.toolCounts === 0) {
+        this.showPopupCantUseTool(true);
+        return;
+      }
+
+      // okay, user can use tool
+      this.showPopupOverlay();
+      DOM.popupUseTool.classList.remove("hidden--display");
+
+      this.showPopupUseToolUI(e.target.dataset.id);
+    }
+  }
+
+  ///////////////////////////////////////
+  // *** Tool Extension Button (?) ***
+  ///////////////////////////////////////
+  showDiffToolUI() {
+    this.showPopupOverlay();
     DOM.popupTool.classList.remove("hidden--display");
   }
 
   ///////////////////////////////////////
-  // *** POP UP CAN'T USE TOOL ***
+  // *** Popup Can't Use Tool ***
   ///////////////////////////////////////
-  #showPopupCantUseTool(counts = false) {
-    this.#showPopupOverlay();
+  showPopupCantUseTool(counts = false) {
+    this.showPopupOverlay();
 
     // set content of different error
     if (counts) {
@@ -1866,63 +1863,38 @@ class APP {
 
     DOM.popupCantUseTool.classList.remove("hidden--display");
 
-    this.#timeout(0).then(() =>
+    this.timeout(0).then(() =>
       DOM.popupCantUseTool.classList.remove("hidden--opacity")
     );
   }
 
-  #closePopupCantUseTool() {
-    this.#closePopupOverlay();
+  closePopupCantUseTool() {
+    this.closePopupOverlay();
     DOM.popupCantUseTool.classList.add("hidden--display");
     DOM.popupCantUseTool.classList.add("hidden--opacity");
   }
 
   ///////////////////////////////////////
-  // *** Pop Up User Lose Game *** ^^^^^^
+  // *** Pop Up User Lose Game ***
   ///////////////////////////////////////
-  #showPopupUserLoseGame() {
-    this.#showPopupOverlay();
+  showPopupUserLoseGame() {
+    this.showPopupOverlay();
     DOM.popupUserLoseGame.classList.remove("hidden--display");
     DOM.bombNumberUser.textContent = this.targetNumber;
 
     // only user lose the game, add eventlistenr on reload btn
     document
       .querySelector(".btn__popup__restart--lose")
-      .addEventListener("click", function () {
+      .addEventListener("click", () => {
         location.reload();
       });
   }
 
   ///////////////////////////////////////
-  // *** IF SCREEN GETTING SMALLER (USE TOOL) ***
+  // *** User Win The Game ***
   ///////////////////////////////////////
-  #useToolSmall(e) {
-    if (window.innerWidth <= 1200) {
-      // first check if it's user's turn
-      if (!this.myTurn) {
-        this.#showPopupCantUseTool();
-        return;
-      }
-
-      // then check counts if can use tool
-      if (this.userCountryInfo.toolCounts === 0) {
-        this.#showPopupCantUseTool(true);
-        return;
-      }
-
-      // okay, user can use tool
-      this.#showPopupOverlay();
-      DOM.popupUseTool.classList.remove("hidden--display");
-
-      this.#showPopupUseToolUI(e.target.textContent);
-    }
-  }
-
-  ///////////////////////////////////////
-  // *** User Win The Game *** ^^^^^^
-  ///////////////////////////////////////
-  #showPopupUserWinGame() {
-    this.#showPopupOverlay();
+  showPopupUserWinGame() {
+    this.showPopupOverlay();
     DOM.popupUserWinGame.classList.remove("hidden--display");
     document.querySelector(".popup__userWinGame__currentLevel").textContent =
       this.level;
@@ -1935,219 +1907,184 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** FORM RANGE CHECK RULE ***
+  // *** Random Number ***
   ///////////////////////////////////////
-  #showCheckRule() {
-    this.#showPopupOverlay();
-    DOM.popupRule.classList.remove("hidden--display");
-
-    DOM.formRange.classList.add("hidden--display");
-    DOM.formOverlay.classList.add("hidden--display");
-  }
-
-  #closeCheckRule() {
-    this.#closePopupOverlay();
-    DOM.popupRule.classList.add("hidden--display");
-
-    DOM.formRange.classList.remove("hidden--display");
-    DOM.formOverlay.classList.remove("hidden--display");
-  }
-
-  ///////////////////////////////////////
-  // *** Random Number *** ^^^^^^
-  ///////////////////////////////////////
-  #createRandomNumber(min, max) {
+  createRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   ///////////////////////////////////////
-  // *** Create Target Number *** ^^^^^^
+  // *** Create Target Number ***
   ///////////////////////////////////////
-  #createTargetNumber() {
-    this.targetNumber = this.#createRandomNumber(1, this.maxNumber - 1);
+  createTargetNumber() {
+    this.targetNumber = this.createRandomNumber(1, this.maxNumber - 1);
+    console.log(this.targetNumber);
   }
 
   ///////////////////////////////////////
-  // *** Delete Element From Array *** ^^^^^^
+  // *** Delete Element From Array ***
   ///////////////////////////////////////
-  #deleteElementFromArray(arr, element) {
+  deleteElementFromArray(arr, element) {
     return arr.filter((el) => el !== element);
   }
 
   ///////////////////////////////////////
-  // *** Promisifying Settimeout *** ^^^^^^
+  // *** Promisifying Settimeout ***
   ///////////////////////////////////////
-  #timeout(second) {
+  timeout(second) {
     return new Promise(function time(resolve) {
       setTimeout(resolve, second * 1000);
     });
   }
 
   ///////////////////////////////////////
-  // *** EVENT LISTENER ***
+  // *** Event Listener ***
   ///////////////////////////////////////
-  #addEventListener() {
+  addEventListener() {
     // TOOL
-    DOM.btnTool.addEventListener("click", this.#toolBtnToggle.bind(this));
+    DOM.btnTool.addEventListener("click", this.toolBtnToggle.bind(this));
     DOM.toolItemName.forEach((toolName) =>
-      toolName.addEventListener("click", this.#useToolSmall.bind(this))
+      toolName.addEventListener("click", this.useToolSmall.bind(this))
     );
 
     // COUNTRY INFO
     DOM.btnCountryInfoClose.addEventListener(
       "click",
-      this.#closeCountryInfo.bind(this)
+      this.closeCountryInfo.bind(this)
     );
 
-    // NAV CHECKBOX & BACKGROUND
-    DOM.btnNavBackground.forEach((btnNav) =>
-      btnNav.addEventListener("click", this.#showPopupLevelSmall.bind(this))
-    );
-    DOM.btnNavBackGroundFaq.addEventListener(
-      "click",
-      this.#showPopupQuestionSmall.bind(this)
-    );
-    DOM.navCheckbox.addEventListener(
-      "click",
-      this.#menuCheckboxToggle.bind(this)
-    );
     DOM.btnNavQuestion.addEventListener(
       "click",
-      this.#showPopupQuestion.bind(this)
+      this.showPopupQuestion.bind(this)
+    );
+
+    DOM.btnPopupCloseQuestion.addEventListener(
+      "click",
+      this.closePopupQuestion.bind(this)
     );
 
     // COUNTRY INFO (SIDE WINDOW)
     DOM.btnInfo.forEach((btn) =>
-      btn.addEventListener("click", this.#showCountryInfo.bind(this))
+      btn.addEventListener("click", this.showCountryInfo.bind(this))
     );
 
     // POP UP
     DOM.btnPopupClose.forEach((btnClose) =>
-      btnClose.addEventListener("click", this.#closePopup.bind(this))
+      btnClose.addEventListener("click", this.closePopup.bind(this))
     );
 
     // POPUP CURRENT LEVEL
-    DOM.btnShowLevel.addEventListener("click", this.#showPopupLevel.bind(this));
-    DOM.navRight.addEventListener("click", this.#showPopupLevel.bind(this));
+    DOM.btnShowLevel.addEventListener("click", this.showPopupLevel.bind(this));
+    // DOM.navRight.addEventListener("click", this.showPopupLevel.bind(this));
     DOM.btnPopupLevelNo.addEventListener(
       "click",
-      this.#closePopupLevel.bind(this)
+      this.closePopupLevel.bind(this)
     );
 
     // POPUP CHANGE LEVEL
-    DOM.btnPopupLevelYes.addEventListener(
-      "click",
-      this.#changeLevel.bind(this)
-    );
+    DOM.btnPopupLevelYes.addEventListener("click", this.changeLevel.bind(this));
 
     // POPUP QUESTION
     DOM.popupQuestion.addEventListener(
       "click",
-      this.#showPopupDiffQuestion.bind(this)
+      this.showPopupDiffQuestion.bind(this)
     );
 
     // TAKE USER'S GUESS INPUT
     DOM.btnGuessInput.addEventListener(
       "click",
-      this.#btnCheckClickHandler.bind(this)
+      this.btnCheckClickHandler.bind(this)
     );
     DOM.guessInput.addEventListener(
       "input",
-      this.#inputChangeHandler.bind(this)
+      this.inputChangeHandler.bind(this)
     );
 
     // USE TOOL
     DOM.btnToolUse.forEach((btn) =>
-      btn.addEventListener("click", this.#showPopupUseTool.bind(this))
+      btn.addEventListener("click", this.showPopupUseTool.bind(this))
     );
     DOM.btnPopupUseToolNo.addEventListener(
       "click",
-      this.#closePopupUseTool.bind(this)
+      this.closePopupUseTool.bind(this)
     );
-    DOM.btnPopupUseToolYes.addEventListener("click", this.#useTool.bind(this));
+    DOM.btnPopupUseToolYes.addEventListener("click", this.useTool.bind(this));
     DOM.btnToolQuestion.forEach((btn) =>
-      btn.addEventListener("click", this.#showDiffToolUI.bind(this))
-    );
-
-    // POPUP INVALID INPUT
-    DOM.btn__invalidInput.addEventListener(
-      "click",
-      this.#closePopupInvalidInput.bind(this)
+      btn.addEventListener("click", this.showDiffToolUI.bind(this))
     );
 
     // POPUP CANT USE TOOL
     DOM.btnCantUseTool.addEventListener(
       "click",
-      this.#closePopupCantUseTool.bind(this)
+      this.closePopupCantUseTool.bind(this)
     );
 
     // COMPUTER LOSE GAME
     DOM.btnPopupComputerLoseGame.addEventListener(
       "click",
-      this.#closePopupComputerLoseGame.bind(this)
+      this.closePopupComputerLoseGame.bind(this)
     );
 
     // form username
     DOM.btnFormUserNameNext.addEventListener(
       "click",
-      this.#btnFormUserNameNextClickHandler.bind(this)
+      this.btnFormUserNameNextClickHandler.bind(this)
     );
 
     // FORM LEVEL
     DOM.formLevelInputGroup.addEventListener(
       "click",
-      this.#formInputLevelClickHandler.bind(this)
+      this.formInputLevelClickHandler.bind(this)
     );
     DOM.btnFormLevelNext.addEventListener(
       "click",
-      this.#btnFormLevelNextClickHandler.bind(this)
+      this.btnFormLevelNextClickHandler.bind(this)
     );
     DOM.btnFormLevelBack.addEventListener(
       "click",
-      this.#backFormPage.bind(this)
+      this.backFormPage.bind(this)
     );
 
     // form country
     DOM.formCountryRegionSelect.addEventListener(
       "input",
-      this.#formCountryRegionSelectChangeHandler.bind(this)
+      this.formCountryRegionSelectChangeHandler.bind(this)
     );
     DOM.formCountryNameSelect.addEventListener(
       "input",
-      this.#formCountryNameSelectChangeHandler.bind(this)
+      this.formCountryNameSelectChangeHandler.bind(this)
     );
     DOM.btnFormCountryNext.addEventListener(
       "click",
-      this.#btnFormCountryNextClickHandler.bind(this)
+      this.btnFormCountryNextClickHandler.bind(this)
     );
     DOM.btnFormCountryBack.addEventListener(
       "click",
-      this.#backFormPage.bind(this)
+      this.backFormPage.bind(this)
     );
     DOM.formBtnCountryRandom.addEventListener(
       "click",
-      this.#btnRandomClickHandler.bind(this)
+      this.btnRandomClickHandler.bind(this)
     );
 
     // form range
     DOM.btnFormRangeNext.addEventListener(
       "click",
-      this.#btnFormRangeNextClickHandler.bind(this)
+      this.btnFormRangeNextClickHandler.bind(this)
     );
     DOM.btnFormRangeBack.addEventListener(
       "click",
-      this.#backFormPage.bind(this)
+      this.backFormPage.bind(this)
     );
 
     DOM.formRangeInput.addEventListener(
       "input",
-      this.#formRangeInputChangeHandler.bind(this)
+      this.formRangeInputChangeHandler.bind(this)
     );
 
-    // CHECK RULE
-    DOM.btnFormCheckRule.addEventListener(
+    DOM.btnFormCheckFaq.addEventListener(
       "click",
-      this.#showCheckRule.bind(this)
+      this.showPopupQuestionInForm.bind(this)
     );
   }
 }
@@ -2155,14 +2092,14 @@ class APP {
 const app = new APP();
 
 /*
-  #showTool() {
+  showTool() {
     DOM.toolContainer.classList.remove("hidden--display");
 
     DOM.toolItem.forEach(function rmToolItemHidden(element) {
       element.classList.remove("hidden--display");
     });
 
-    this.#timeout(0)
+    this.timeout(0)
       .then(() => {
         document.querySelector(".tool__container").style.height = "20rem";
 
@@ -2175,7 +2112,7 @@ const app = new APP();
       });
   }
 
-  #closeTool() {
+  closeTool() {
     DOM.toolContainer.style.height = "0";
 
     DOM.toolContainer.classList.add("hidden--opacity");
