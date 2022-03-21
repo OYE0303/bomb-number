@@ -58,6 +58,8 @@ class APP {
     // cache (region) (select)
     this.cacheAllCountryData = null;
     this.cacheRegion = {};
+
+    this.btnToolQuestion = false;
   }
 
   ///////////////////////////////////////
@@ -79,6 +81,12 @@ class APP {
       DOM.btnGuessInput.classList.remove("hidden--display");
       DOM.guessOrder.textContent = "Your Turn";
       DOM.guessOrder.classList.remove("guess__number--invalid");
+    }
+  }
+
+  enterPressHandler(e) {
+    if (e.code === "Enter" && !this.checkInput(Number(DOM.guessInput.value))) {
+      this.btnCheckClickHandler();
     }
   }
 
@@ -677,7 +685,7 @@ class APP {
   // *** Countdown ***
   ///////////////////////////////////////
   showCountdown() {
-    let i = 30;
+    let i = 100;
     DOM.countdownTime.style.color = "var(--white-light)";
     DOM.countdownTime.textContent = `00:30`;
     this.countDown = setInterval(() => {
@@ -1322,27 +1330,27 @@ class APP {
     DOM.guessNumber.classList.remove("pass--animation");
   }
 
-  // !!! about to remove?? !!!
-  ///////////////////////////////////////
-  // *** POPUP INVAID INPUT ***
-  ///////////////////////////////////////
-  showPopupInvalidInput() {
-    this.showPopupOverlay();
-    DOM.popupInvalidInput.classList.remove("hidden--display");
+  // // !!! about to remove?? !!!
+  // ///////////////////////////////////////
+  // // *** POPUP INVAID INPUT ***
+  // ///////////////////////////////////////
+  // showPopupInvalidInput() {
+  //   this.showPopupOverlay();
+  //   DOM.popupInvalidInput.classList.remove("hidden--display");
 
-    this.timeout(0).then(() =>
-      DOM.popupInvalidInput.classList.remove("hidden--opacity")
-    );
-  }
+  //   this.timeout(0).then(() =>
+  //     DOM.popupInvalidInput.classList.remove("hidden--opacity")
+  //   );
+  // }
 
-  closePopupInvalidInput() {
-    this.closePopupOverlay();
-    DOM.popupInvalidInput.classList.add("hidden--display");
+  // closePopupInvalidInput() {
+  //   this.closePopupOverlay();
+  //   DOM.popupInvalidInput.classList.add("hidden--display");
 
-    DOM.popupInvalidInput.classList.add("hidden--opacity");
+  //   DOM.popupInvalidInput.classList.add("hidden--opacity");
 
-    this.showPlayerOrderUI("Your turn");
-  }
+  //   this.showPlayerOrderUI("Your turn");
+  // }
 
   ///////////////////////////////////////
   // *** Show & Close Guess Input ***
@@ -1507,55 +1515,55 @@ class APP {
   ///////////////////////////////////////
   // *** Menu BackGround ***
   ///////////////////////////////////////
-  showMenuBackground() {
-    DOM.navBackground.classList.remove("hidden--display");
+  // showMenuBackground() {
+  //   DOM.navBackground.classList.remove("hidden--display");
 
-    DOM.btnNavBackground.forEach((element) => {
-      element.classList.remove("hidden--display");
-    });
+  //   DOM.btnNavBackground.forEach((element) => {
+  //     element.classList.remove("hidden--display");
+  //   });
 
-    this.timeout(0)
-      .then(() => {
-        DOM.navBackground.style.height = "100vh";
+  //   this.timeout(0)
+  //     .then(() => {
+  //       DOM.navBackground.style.height = "100vh";
 
-        DOM.navBackground.classList.remove("hidden--opacity");
-      })
-      .then(() =>
-        DOM.btnNavBackground.forEach((element) => {
-          element.classList.remove("hidden--opacity");
-        })
-      );
-  }
+  //       DOM.navBackground.classList.remove("hidden--opacity");
+  //     })
+  //     .then(() =>
+  //       DOM.btnNavBackground.forEach((element) => {
+  //         element.classList.remove("hidden--opacity");
+  //       })
+  //     );
+  // }
 
-  closeMenuBackground() {
-    DOM.navBackground.style.height = "1vh";
+  // closeMenuBackground() {
+  //   DOM.navBackground.style.height = "1vh";
 
-    DOM.navBackground.classList.add("hidden--opacity");
+  //   DOM.navBackground.classList.add("hidden--opacity");
 
-    this.timeout(0)
-      .then(() =>
-        DOM.btnNavBackground.forEach((element) => {
-          element.classList.add("hidden--opacity");
-        })
-      )
-      .then(() => {
-        DOM.navBackground.classList.add("hidden--display");
+  //   this.timeout(0)
+  //     .then(() =>
+  //       DOM.btnNavBackground.forEach((element) => {
+  //         element.classList.add("hidden--opacity");
+  //       })
+  //     )
+  //     .then(() => {
+  //       DOM.navBackground.classList.add("hidden--display");
 
-        DOM.btnNavBackground.forEach((element) => {
-          element.classList.add("hidden--display");
-        });
-      });
-  }
+  //       DOM.btnNavBackground.forEach((element) => {
+  //         element.classList.add("hidden--display");
+  //       });
+  //     });
+  // }
 
-  menuCheckboxToggle() {
-    if (this.btnMenuToggle) {
-      this.showMenuBackground();
-      this.btnMenuToggle = false;
-    } else {
-      this.closeMenuBackground();
-      this.btnMenuToggle = true;
-    }
-  }
+  // menuCheckboxToggle() {
+  //   if (this.btnMenuToggle) {
+  //     this.showMenuBackground();
+  //     this.btnMenuToggle = false;
+  //   } else {
+  //     this.closeMenuBackground();
+  //     this.btnMenuToggle = true;
+  //   }
+  // }
 
   ///////////////////////////////////////
   // *** Popup Overlay ***
@@ -1576,7 +1584,32 @@ class APP {
   closePopup(e) {
     const targetElement = e.target;
 
-    DOM.popupQuestion.classList.remove("hidden--display");
+    /*
+    Note there are two situations to show the popup__tool
+    1. In the popup__question(in the form & during the game)
+    2. In the tool button question(?)
+
+    In the popup__question
+    we wanna show the popup__question again after closing the popup__tool
+    However, in the tool button question(?)
+    we wanna directly close the popup__tool
+
+    In order to fix the logic
+    Initialize this.btnToolQuestion to false
+    If clicking tool button question(?) to open the popup__tool
+    set it to true
+    So when closing the popup__tool, it won't show the popup__question
+    akso need to set back to false
+    (else condition)
+    If clicking popup__question
+    We wanna show it again after closing popup__tool
+    */
+    if (!this.btnToolQuestion)
+      DOM.popupQuestion.classList.remove("hidden--display");
+    else {
+      this.btnToolQuestion = false;
+      this.closePopupOverlay();
+    }
 
     // question
     if (targetElement.closest(".popup__question")) {
@@ -1844,6 +1877,7 @@ class APP {
   showDiffToolUI() {
     this.showPopupOverlay();
     DOM.popupTool.classList.remove("hidden--display");
+    this.btnToolQuestion = true;
   }
 
   ///////////////////////////////////////
@@ -1937,6 +1971,18 @@ class APP {
     });
   }
 
+  debounce(ms, fn) {
+    let timer;
+
+    return function (...args) {
+      clearTimeout(timer);
+
+      timer = setTimeout(() => {
+        fn(...args);
+      }, ms);
+    };
+  }
+
   ///////////////////////////////////////
   // *** Event Listener ***
   ///////////////////////////////////////
@@ -1975,7 +2021,6 @@ class APP {
 
     // POPUP CURRENT LEVEL
     DOM.btnShowLevel.addEventListener("click", this.showPopupLevel.bind(this));
-    // DOM.navRight.addEventListener("click", this.showPopupLevel.bind(this));
     DOM.btnPopupLevelNo.addEventListener(
       "click",
       this.closePopupLevel.bind(this)
@@ -1998,6 +2043,10 @@ class APP {
     DOM.guessInput.addEventListener(
       "input",
       this.inputChangeHandler.bind(this)
+    );
+    DOM.guessInput.addEventListener(
+      "keypress",
+      this.enterPressHandler.bind(this)
     );
 
     // USE TOOL
