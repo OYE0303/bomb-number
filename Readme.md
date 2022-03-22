@@ -62,6 +62,8 @@ When I was learning Javascript, the instructor led the student to build a simple
 
 ## What’s the main obstacle when building this project?
 
+ewdwe
+
 ## What am I learning from this project?
 
 ## What can be improved in this project?
