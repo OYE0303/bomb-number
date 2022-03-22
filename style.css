@@ -982,6 +982,10 @@ select {
   margin-bottom: 10px;
 }
 
+.btn__level:hover {
+  color: var(--white-light);
+}
+
 /* /////////////////////////// */
 /* *** COUNTRY INFO *** */
 /* /////////////////////////// */
@@ -1083,9 +1087,7 @@ select {
 
 .popup__subtitle {
   font-size: 3rem;
-  /* font-size: 3.5rem; */
   text-align: center;
-  text-transform: uppercase;
 }
 
 .popup__description {
@@ -1278,10 +1280,6 @@ select {
 /* /////////////////////////// */
 .popup__cantUseTool h3:first-child {
   color: var(--pink);
-}
-
-.popup__cantUseTool__description {
-  text-transform: none;
 }
 
 /* /////////////////////////// */
