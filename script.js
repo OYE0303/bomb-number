@@ -685,7 +685,7 @@ class APP {
   // *** Countdown ***
   ///////////////////////////////////////
   showCountdown() {
-    let i = 100;
+    let i = 30;
     DOM.countdownTime.style.color = "var(--white-light)";
     DOM.countdownTime.textContent = `00:30`;
     this.countDown = setInterval(() => {
