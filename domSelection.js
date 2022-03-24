@@ -21,6 +21,7 @@ class DOM__SELECTION {
     this.playerOverlay2 = document.querySelector(".player__overlay--2");
     this.playerOverlay3 = document.querySelector(".player__overlay--3");
     this.btnInfo = document.querySelectorAll(".btn__info");
+    this.info = document.querySelector(".info");
     this.countryInfo = document.querySelector(".countryInfo");
 
     this.guessInput = document.querySelector(".guess__input");
@@ -74,6 +75,7 @@ class DOM__SELECTION {
     this.btnPopupCloseQuestion = document.querySelector(
       ".btn__popup__close__question"
     );
+    this.allPopup = document.querySelectorAll(".popup");
 
     this.popupLevel = document.querySelector(".popup__level");
     this.popupRule = document.querySelector(".popup__rule");
@@ -116,6 +118,8 @@ class DOM__SELECTION {
       ".popup__cantUseTool__description"
     );
 
+    this.popupError = document.querySelector(".popup__error");
+
     // content
     this.page = document.querySelectorAll(".page");
 
@@ -140,6 +144,7 @@ class DOM__SELECTION {
     this.formInput = document.querySelector(".form__input");
     this.btnFormUserNameNext = document.querySelector(".form__btn--name");
     this.formOverlay = document.querySelector(".form__overlay");
+    this.formContainer = document.querySelectorAll(".form__container");
 
     // FORM LEVEL
     this.formLevel = document.querySelector(".form__level");

@@ -1309,6 +1309,17 @@ select {
 }
 
 /* /////////////////////////// */
+/* *** POP UP ERROR *** */
+/* /////////////////////////// */
+.popup__error h3 {
+  color: var(--pink);
+}
+
+.popup__description--error {
+  margin-bottom: 12rem;
+}
+
+/* /////////////////////////// */
 /* *** POP UP USER WIN THE GAME *** */
 /* /////////////////////////// */
 .popup__userWinGame h3 {

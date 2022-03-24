@@ -62,11 +62,23 @@ When I was learning Javascript, the instructor led the student to build a simple
 
 ## What’s the main obstacle when building this project?
 
-ewdwe
+There are two main obstacles when building this project. First one is naming. When the codebase gets larger, trying to come up with a great class name is really hard. I have to spend a great amount of time thinking about the great class name because all the html code is in one file. Second one is game logic. The most hard part of this project is to make sure the game logic doesn’t have any unexpected behavior. For example, the order of guessing number should be reversed if one of the players uses the u-turn tool, when a computer player using the assign tool, it can’t assign itself, and the order should automatically skip the player who loses the game. Moreover, I’ve tried many different scenarios to test if there’s any bugs or unexpected behavior. Although the game logic sounds easy to understand, it’s a lot harder to implement in code.
 
 ## What am I learning from this project?
 
+I’ve learned one thing when I was building this project. As a front-end developer, I have to try to think of all the different scenarios which may have unexpected behavior or bugs beforehand. For example, I’ll ask myself when building this project.
+
+Q: Will users try to click the randomly select country button which will request the data from API a couple times?
+A: Yes. To prevent repeatedly requesting the data from API, I can use cache technique to make sure requesting data only happens once
+
+Q; Will users try to submit the invalid guessing number?
+A: Yes. To prevent that from happening, I have to disable or hide the submit button when the guess number is invalid
+
+Q: Will users try to use the tool when it’s in another player’s round?
+A: Yes. Have to tell the users that they can't use the tool during another player’s round.
+
+There are plenty of situations that may cause some bugs, and I have to fix those beforehand. To build a great web application, I can’t just always assume the user won’t do something unexpectedly, I have to try to think of all the bugs or unexpected behavior beforehand, and fix that for the users.
+
 ## What can be improved in this project?
 
-> Text that is a quote
-> Use `git status` to list all new or modified files that haven't yet been committed.
+There are three things that can be added or improved in this project. First, it can be more like a real online game if adding real time functionality. The idea is great, but I think it’s way much harder for me to implement since I just learn the basic frontend knowledge. Second, this project can add the backend to store the user's data. However, I would like to focus on the frontend in this project, but I will try to add a simple backend in my second project. Third, the code structure in this project is not that good. Because I lacked knowledge about how to manage the code when I built this project, I just put almost all the javascript and css code in one file. Although it seems acceptable at this point, the code has to be seperate when the code base gets larger.Therefore, I’ll try to not put all the code in one file in my next project, so that the code structure can be cleaner a little bit

@@ -167,7 +167,11 @@ class APP {
     const region = DOM.formCountryRegionSelect.value;
 
     this.disabledCountryBtn();
-    await this.showSelectCountryAndImg(region);
+    try {
+      await this.showSelectCountryAndImg(region);
+    } catch (err) {
+      this.showErrorModal();
+    }
     this.activeCountryBtn();
   }
 
@@ -175,7 +179,11 @@ class APP {
     const countryName = DOM.formCountryNameSelect.value;
 
     this.disabledCountryBtn();
-    await this.showFormCountryImg(countryName);
+    try {
+      await this.showFormCountryImg(countryName);
+    } catch (err) {
+      this.showErrorModal();
+    }
     this.activeCountryBtn();
   }
 
@@ -200,19 +208,23 @@ class APP {
   async showFormCountryImg(country) {
     this.showImgLoading();
 
-    const countryFlag = await fetch(
-      `https://restcountries.com/v3.1/name/${country}`
-    );
+    try {
+      const countryFlag = await fetch(
+        `https://restcountries.com/v3.1/name/${country}`
+      );
 
-    const [
-      {
-        flags: { svg: data },
-      },
-    ] = await countryFlag.json();
+      const [
+        {
+          flags: { svg: data },
+        },
+      ] = await countryFlag.json();
 
-    // change the image
-    DOM.formCountryImg.src = data;
-    this.removeImgLoading();
+      // change the image
+      DOM.formCountryImg.src = data;
+      this.removeImgLoading();
+    } catch (err) {
+      this.showErrorModal();
+    }
   }
 
   async btnRandomClickHandler() {
@@ -226,7 +238,7 @@ class APP {
 
         this.removeRandomlySelectLoading();
       } catch (err) {
-        console.error(err);
+        this.showErrorModal();
       }
     }
 
@@ -240,8 +252,12 @@ class APP {
     // show the region
     DOM.formCountryRegionSelect.value = randomCountry.region;
 
-    // handle the process after seleting the region
-    await this.showSelectCountryAndImg(region, randomCountry.name.official);
+    try {
+      // handle the process after seleting the region
+      await this.showSelectCountryAndImg(region, randomCountry.name.official);
+    } catch (err) {
+      this.showErrorModal();
+    }
 
     this.activeCountryBtn();
   }
@@ -251,15 +267,26 @@ class APP {
 
     if (this.cacheRegion[region]) {
       this.showFormCountryNameSelect(this.cacheRegion[region]);
-      await this.hasRandomCountryAndShowImg(
-        randomCountry,
-        this.cacheRegion[region][0]
-      );
+      try {
+        await this.hasRandomCountryAndShowImg(
+          randomCountry,
+          this.cacheRegion[region][0]
+        );
+      } catch (err) {
+        this.showErrorModal();
+      }
       return;
     }
 
     this.showCountrySelectLoading();
-    const countryData = await this.getCountryDataFromRegion(region);
+
+    let countryData;
+    try {
+      countryData = await this.getCountryDataFromRegion(region);
+    } catch (err) {
+      this.showErrorModal();
+    }
+
     this.cacheRegion[region] = countryData;
     this.removeCountrySelectLoading();
 
@@ -268,7 +295,11 @@ class APP {
 
     this.showFormCountryNameSelect(countryData);
 
-    await this.hasRandomCountryAndShowImg(randomCountry, countryData[0]);
+    try {
+      await this.hasRandomCountryAndShowImg(randomCountry, countryData[0]);
+    } catch (err) {
+      this.showErrorModal();
+    }
   }
 
   removePreCountrySelect() {
@@ -286,23 +317,37 @@ class APP {
       // show the name
       DOM.formCountryNameSelect.value = randomCountry;
 
-      await this.showFormCountryImg(randomCountry);
+      try {
+        await this.showFormCountryImg(randomCountry);
+      } catch (err) {
+        this.showErrorModal();
+      }
     } else {
-      await this.showFormCountryImg(countryData);
+      try {
+        await this.showFormCountryImg(countryData);
+      } catch (err) {
+        this.showErrorModal();
+      }
     }
   }
 
   async getCountryDataFromRegion(region) {
-    const res = await fetch(`https://restcountries.com/v3.1/region/${region}`);
+    try {
+      const res = await fetch(
+        `https://restcountries.com/v3.1/region/${region}`
+      );
 
-    const data = await res.json();
+      const data = await res.json();
 
-    /*
-    data is an array containing many object
-    But we only want name property
-    */
-    const countryNameArr = data.map(({ name: { official } }) => official);
-    return countryNameArr;
+      /*
+      data is an array containing many object
+      But we only want name property
+      */
+      const countryNameArr = data.map(({ name: { official } }) => official);
+      return countryNameArr;
+    } catch (err) {
+      this.showErrorModal();
+    }
   }
 
   showCountrySelectLoading() {
@@ -461,8 +506,16 @@ class APP {
     DOM.rangeNumberMax.textContent = this.maxNumber;
 
     // show country image and name on UI
-    await this.showUserCountryImg();
-    await this.showComputerCountryImg();
+    try {
+      await this.showUserCountryImg();
+    } catch (err) {
+      this.showErrorModal();
+    }
+    try {
+      await this.showComputerCountryImg();
+    } catch (err) {
+      this.showErrorModal();
+    }
 
     // show remaining counts of tool
     DOM.remaingCounts.forEach(
@@ -486,7 +539,12 @@ class APP {
     this.showMainContentLoading(DOM.playerMain, "main");
 
     const countryName = this.userCountryInfo.countryName;
-    const countryData = await this.getOneCountryData(countryName);
+    let countryData;
+    try {
+      countryData = await this.getOneCountryData(countryName);
+    } catch (err) {
+      this.showErrorModal();
+    }
 
     // set user country info
     this.userCountryInfo.order = 0;
@@ -504,7 +562,12 @@ class APP {
   async showComputerCountryImg() {
     this.showMainContentLoading(null, null, true);
 
-    const randomCountryNameArr = await this.randomlyChooseCountryName();
+    let randomCountryNameArr;
+    try {
+      randomCountryNameArr = await this.randomlyChooseCountryName();
+    } catch (err) {
+      this.showErrorModal();
+    }
 
     for (let i = 0; i < randomCountryNameArr.length; i++) {
       const countryData = randomCountryNameArr[i];
@@ -602,13 +665,17 @@ class APP {
   }
 
   async getOneCountryData(countryName) {
-    const res = await fetch(
-      `https://restcountries.com/v3.1/name/${countryName}`
-    );
+    try {
+      const res = await fetch(
+        `https://restcountries.com/v3.1/name/${countryName}`
+      );
 
-    const [data] = await res.json();
+      const [data] = await res.json();
 
-    return data;
+      return data;
+    } catch (err) {
+      this.showErrorModal();
+    }
   }
 
   async randomlyChooseCountryName() {
@@ -617,7 +684,7 @@ class APP {
         const res = await fetch("https://restcountries.com/v3.1/all");
         this.cacheAllCountryData = await res.json();
       } catch (err) {
-        console.error(err);
+        this.showErrorModal();
       }
     }
 
@@ -1453,11 +1520,9 @@ class APP {
   }
 
   closeCountryInfo() {
-    document.querySelector(".info").classList.add("hidden--display");
+    DOM.info.classList.add("hidden--display");
 
-    this.timeout(0).then(() =>
-      document.querySelector(".info").classList.add("hidden--opacity")
-    );
+    this.timeout(0).then(() => DOM.info.classList.add("hidden--opacity"));
   }
 
   chooseCountryInfo(order) {
@@ -1941,6 +2006,24 @@ class APP {
   }
 
   ///////////////////////////////////////
+  // *** Error Modal ***
+  ///////////////////////////////////////
+  showErrorModal() {
+    DOM.formContainer.forEach((element) =>
+      element.classList.add("hidden--display")
+    );
+
+    DOM.page.forEach((element) => element.classList.add("hidden--display"));
+
+    DOM.info.classList.add("hidden--display");
+
+    DOM.allPopup.forEach((element) => element.classList.add("hidden--display"));
+
+    this.showPopupOverlay();
+    DOM.popupError.classList.remove("hidden--display");
+  }
+
+  ///////////////////////////////////////
   // *** Random Number ***
   ///////////////////////////////////////
   createRandomNumber(min, max) {
@@ -1952,7 +2035,6 @@ class APP {
   ///////////////////////////////////////
   createTargetNumber() {
     this.targetNumber = this.createRandomNumber(1, this.maxNumber - 1);
-    console.log(this.targetNumber);
   }
 
   ///////////////////////////////////////
