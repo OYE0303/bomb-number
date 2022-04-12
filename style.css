@@ -1108,11 +1108,11 @@ select {
 
 /* fix gap supported  */
 .popup__btn__yes {
-  margin-right: -2rem;
-}
-.popup__btn__no {
   margin-right: 5rem;
   margin-left: -2rem;
+}
+.popup__btn__no {
+  margin-right: -2rem;
 }
 
 .btn__popup__close,
