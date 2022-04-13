@@ -213,11 +213,19 @@ class APP {
         `https://restcountries.com/v3.1/name/${country}`
       );
 
+      if (countryFlag.status !== 200) {
+        throw new Error();
+      }
+
       const [
         {
           flags: { svg: data },
         },
       ] = await countryFlag.json();
+
+      if (data === undefined) {
+        throw new Error();
+      }
 
       // change the image
       DOM.formCountryImg.src = data;
@@ -234,7 +242,18 @@ class APP {
       try {
         this.showRandomlySelectLoading();
         const res = await fetch("https://restcountries.com/v3.1/all");
-        this.cacheAllCountryData = await res.json();
+
+        if (res.status !== 200) {
+          throw new Error();
+        }
+
+        const data = await res.json();
+
+        if (!data) {
+          throw new Error();
+        }
+
+        this.cacheAllCountryData = data || [];
 
         this.removeRandomlySelectLoading();
       } catch (err) {
@@ -337,7 +356,15 @@ class APP {
         `https://restcountries.com/v3.1/region/${region}`
       );
 
+      if (res.status !== 200) {
+        throw new Error();
+      }
+
       const data = await res.json();
+
+      if (!data) {
+        throw new Error();
+      }
 
       /*
       data is an array containing many object
@@ -670,7 +697,15 @@ class APP {
         `https://restcountries.com/v3.1/name/${countryName}`
       );
 
+      if (res.status !== 200) {
+        throw new Error();
+      }
+
       const [data] = await res.json();
+
+      if (!data) {
+        throw new Error();
+      }
 
       return data;
     } catch (err) {
@@ -682,7 +717,18 @@ class APP {
     if (!this.cacheAllCountryData) {
       try {
         const res = await fetch("https://restcountries.com/v3.1/all");
-        this.cacheAllCountryData = await res.json();
+
+        if (res.status !== 200) {
+          throw new Error();
+        }
+
+        const data = await res.json();
+
+        if (!data) {
+          throw new Error();
+        }
+
+        this.cacheAllCountryData = data;
       } catch (err) {
         this.showErrorModal();
       }
