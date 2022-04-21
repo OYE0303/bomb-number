@@ -1,4 +1,6 @@
+import createRandomNumber from "./others/createRandomNumber.js";
 import { DOM } from "./domSelection.js";
+
 import { SVG } from "./svgIcon.js";
 import { PLAYER__INFO } from "./playerInfo.js";
 
