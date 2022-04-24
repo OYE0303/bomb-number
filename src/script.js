@@ -1,8 +1,6 @@
-import createRandomNumber from "./others/createRandomNumber.js";
-import { DOM } from "./domSelection.js";
-
-import { SVG } from "./svgIcon.js";
-import { PLAYER__INFO } from "./playerInfo.js";
+import DOM from "./others/domSelection.js";
+import SVG from "./others/svgIcon.js";
+import PLAYER__INFO from "./others/playerInfo.js";
 
 class APP {
   constructor() {
@@ -25,7 +23,7 @@ class APP {
     this.level = "easy";
 
     // NUMBER
-    this.targetNumber;
+    this.targetNumber = null;
     this.minNumber = 0;
     this.maxNumber;
     this.maxNumberNoChange;
@@ -62,6 +60,8 @@ class APP {
     this.cacheRegion = {};
 
     this.btnToolQuestion = false;
+
+    this.popupOpening = null;
   }
 
   ///////////////////////////////////////
@@ -1626,67 +1626,52 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Menu BackGround ***
-  ///////////////////////////////////////
-  // showMenuBackground() {
-  //   DOM.navBackground.classList.remove("hidden--display");
-
-  //   DOM.btnNavBackground.forEach((element) => {
-  //     element.classList.remove("hidden--display");
-  //   });
-
-  //   this.timeout(0)
-  //     .then(() => {
-  //       DOM.navBackground.style.height = "100vh";
-
-  //       DOM.navBackground.classList.remove("hidden--opacity");
-  //     })
-  //     .then(() =>
-  //       DOM.btnNavBackground.forEach((element) => {
-  //         element.classList.remove("hidden--opacity");
-  //       })
-  //     );
-  // }
-
-  // closeMenuBackground() {
-  //   DOM.navBackground.style.height = "1vh";
-
-  //   DOM.navBackground.classList.add("hidden--opacity");
-
-  //   this.timeout(0)
-  //     .then(() =>
-  //       DOM.btnNavBackground.forEach((element) => {
-  //         element.classList.add("hidden--opacity");
-  //       })
-  //     )
-  //     .then(() => {
-  //       DOM.navBackground.classList.add("hidden--display");
-
-  //       DOM.btnNavBackground.forEach((element) => {
-  //         element.classList.add("hidden--display");
-  //       });
-  //     });
-  // }
-
-  // menuCheckboxToggle() {
-  //   if (this.btnMenuToggle) {
-  //     this.showMenuBackground();
-  //     this.btnMenuToggle = false;
-  //   } else {
-  //     this.closeMenuBackground();
-  //     this.btnMenuToggle = true;
-  //   }
-  // }
-
-  ///////////////////////////////////////
   // *** Popup Overlay ***
   ///////////////////////////////////////
-  showPopupOverlay() {
+  showPopupOverlay(popupOpening) {
+    this.popupOpening = popupOpening;
     DOM.popupOverlay.classList.remove("hidden--display");
   }
 
   closePopupOverlay() {
+    this.popupOpening = null;
     DOM.popupOverlay.classList.add("hidden--display");
+  }
+
+  popupOverlayClick(e) {
+    if (!e.target.classList.contains("popup__overlay")) {
+      return;
+    }
+
+    switch (this.popupOpening) {
+      case "level": {
+        this.closePopupLevel();
+        break;
+      }
+
+      case "question": {
+        this.closePopupQuestion();
+        break;
+      }
+
+      case "useTool": {
+        this.closePopupUseTool();
+        break;
+      }
+
+      case "cantUseTool": {
+        this.closePopupCantUseTool();
+        break;
+      }
+
+      case "tool": {
+        this.closeToolPopup();
+        break;
+      }
+
+      default:
+        break;
+    }
   }
 
   ///////////////////////////////////////
@@ -1717,11 +1702,28 @@ class APP {
     If clicking popup__question
     We wanna show it again after closing popup__tool
     */
-    if (!this.btnToolQuestion)
+    if (!this.btnToolQuestion) {
       DOM.popupQuestion.classList.remove("hidden--display");
-    else {
+
+      /*
+      set back to "question", so that now users can click popup overaly to close the question popup
+
+      Let's reacp the whole logic
+      1. we want to let user close the popup when clicking popup overlay
+      2. the way doing this is adding one eventlistener on popup overlay
+      3. when users click the button to open popup, we set this.popupOpening to certain value
+      4. when users click popup overlay, we use this.popupOpening to check what popup we're gonna close
+      5. when users click question popup, we set this.popupOpening to "question"
+      6. but when users try to click button to specific question content, we set temporarily set this.popupOpening to "question-content"
+      7. so that when users in the question-content, they won't accidentaly close the whole pop-up
+      8. when users close the question-content popup, we set this.popupOpening back to "question"
+      9. so that users can close popup question
+      */
+      this.popupOpening = "question";
+    } else {
       this.btnToolQuestion = false;
       this.closePopupOverlay();
+      return;
     }
 
     // question
@@ -1753,7 +1755,7 @@ class APP {
   // *** Popup Level ***
   ///////////////////////////////////////
   showPopupLevel(e) {
-    this.showPopupOverlay();
+    this.showPopupOverlay("level");
 
     DOM.popupLevel.classList.remove("hidden--display");
 
@@ -1777,7 +1779,8 @@ class APP {
   // *** Popup Question ***
   ///////////////////////////////////////
   showPopupQuestion() {
-    this.showPopupOverlay();
+    this.showPopupOverlay("question");
+
     DOM.popupQuestion.classList.remove("hidden--display");
 
     this.timeout(0).then(() =>
@@ -1820,6 +1823,15 @@ class APP {
     const targetElement = e.target;
 
     if (targetElement.classList.contains("btn__popup__question")) {
+      /*
+      avoid accidentally closing the question popup
+      when showing different question content
+      user can't click overlay to close the popup
+      we have to manually set this.popupOpening to different value
+      so that popupOverlayClick function won't go inside "question" in switch case
+      Later, when closing this content, we set back to "question" (see closePopup function)
+      */
+      this.popupOpening = "question-content";
       DOM.popupQuestion.classList.add("hidden--display");
 
       if (targetElement.classList.contains("btn__popup__question__rule")) {
@@ -1853,7 +1865,7 @@ class APP {
     }
 
     // okay, user can use tool, hide popup use tool
-    this.showPopupOverlay();
+    this.showPopupOverlay("useTool");
     DOM.popupUseTool.classList.remove("hidden--display");
 
     this.showPopupUseToolUI(e.target.closest(".btn__tool--use").dataset.id);
@@ -1962,7 +1974,6 @@ class APP {
   // *** If Screen Getting Smaller (Use Tool) ***
   ///////////////////////////////////////
   useToolSmall(e) {
-    console.log(e.target);
     if (window.innerWidth <= 1200) {
       // first check if it's user's turn
       if (!this.myTurn) {
@@ -1985,19 +1996,24 @@ class APP {
   }
 
   ///////////////////////////////////////
-  // *** Tool Extension Button (?) ***
+  // *** Tool Extension Button (? button) ***
   ///////////////////////////////////////
   showDiffToolUI() {
-    this.showPopupOverlay();
+    this.showPopupOverlay("tool");
     DOM.popupTool.classList.remove("hidden--display");
     this.btnToolQuestion = true;
+  }
+
+  closeToolPopup() {
+    DOM.popupTool.classList.add("hidden--display");
+    this.closePopupOverlay();
   }
 
   ///////////////////////////////////////
   // *** Popup Can't Use Tool ***
   ///////////////////////////////////////
   showPopupCantUseTool(counts = false) {
-    this.showPopupOverlay();
+    this.showPopupOverlay("cantUseTool");
 
     // set content of different error
     if (counts) {
@@ -2264,6 +2280,11 @@ class APP {
     DOM.btnFormCheckFaq.addEventListener(
       "click",
       this.showPopupQuestionInForm.bind(this)
+    );
+
+    DOM.popupOverlay.addEventListener(
+      "click",
+      this.popupOverlayClick.bind(this)
     );
   }
 }

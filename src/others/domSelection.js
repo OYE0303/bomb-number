@@ -202,4 +202,4 @@ class DOM__SELECTION {
     this.popupUserWinGame = document.querySelector(".popup__userWinGame");
   }
 }
-export const DOM = new DOM__SELECTION();
+export default new DOM__SELECTION();

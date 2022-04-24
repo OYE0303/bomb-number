@@ -176,4 +176,4 @@ class SVG__ICON {
   }
 }
 
-export const SVG = new SVG__ICON();
+export default new SVG__ICON();
