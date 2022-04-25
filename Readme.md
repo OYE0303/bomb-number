@@ -76,7 +76,7 @@ When constructing this project, there are two major challenges.
 
    The most difficult aspect of this project is ensuring that the game logic is correct. For example, if one of the players uses the u-turn tool, the order of guessing numbers should be reversed; if a computer player uses the assign tool, it cannot assign itself; and the order should automatically skip the player who loses the game. I've also tried a variety of scenarios to see if there are any potential bugs or unexpected behavior. Although the game logic appears simple, it is much more difficult to implement in code.
 
-## What am I learning from this project?
+## What have I learned from this project?
 
 When I was working on this project, I discovered one thing. As a front-end developer, I must anticipate all possible scenarios that may result in unexpected behavior or bugs. For example, I'll ask myself theses questions while working on this project.
 
