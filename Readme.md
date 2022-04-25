@@ -19,8 +19,6 @@ When I was learning Javascript, the instructor had us create a simple web game a
 
 Here, I'll walk you through the game step by step.
 
-<img src="/img/name.png" width="80%"/>
-
 ![This is an image](/img/name.png)
 &#8594; After entering the game, users can enter any name they want.
 
