@@ -742,9 +742,17 @@ class APP {
         name: { common: countryName },
       } = this.cacheAllCountryData[randomNum]
 
+      console.log(
+        countryNameArr.find(
+          (countryObj) => countryObj.name.common === countryName
+        )
+      )
+
       // check random country is not duplicate, and not as same as user's country
       if (
-        !countryNameArr.includes(countryName) &&
+        !countryNameArr.find(
+          (countryObj) => countryObj.name.common === countryName
+        ) &&
         this.userCountryInfo.countryName !== countryName &&
         countryName
       ) {
