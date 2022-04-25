@@ -1400,15 +1400,6 @@ select {
 /* *** MEDIA QUERY *** */
 /* /////////////////////////// */
 
-/*
-0 - 600px:              Phone
-600 - 900px:            Tablet portrait
-900 - 1200px:           Tablet landscape
-1200 - 1800px:          what we were doing  
-the base state of our website is built for that value range; there is no need to adjust it with media queries for the screen width range that it is already built for.
-1800px + :              Big desktop
-*/
-
 /* /////////////////////////// */
 /* *** 2500px *** */
 /* /////////////////////////// */
