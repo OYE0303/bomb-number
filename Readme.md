@@ -4,9 +4,13 @@
 
 This is a bomb number web game application. In this game, there are three computer players who are competing against the user. The main goal of this game is to avoid guessing the bomb number, and users can use various tools to help them win. The game is over once users guess the bomb number.
 
+&nbsp;
+
 # The motivation behind the project
 
 When I was learning Javascript, the instructor had us create a simple web game application that involved guessing the correct number. I enjoy this game application, but it quickly becomes tedious because users can use binary search logic to guess the correct number. As a result, I decided to create another similar game project, but this time it's more interesting and complicated. That is why I decided to create this project.
+
+&nbsp;
 
 # Technologies used
 
@@ -14,6 +18,8 @@ When I was learning Javascript, the instructor had us create a simple web game a
 - CSS
 - Javascript
 - API - REST COUNTRIES
+
+&nbsp;
 
 # Project overview
 
@@ -76,6 +82,8 @@ When constructing this project, there are two major challenges.
 
    The most difficult aspect of this project is ensuring that the game logic is correct. For example, if one of the players uses the u-turn tool, the order of guessing numbers should be reversed; if a computer player uses the assign tool, it cannot assign itself; and the order should automatically skip the player who loses the game. I've also tried a variety of scenarios to see if there are any potential bugs or unexpected behaviors. Even though the game's logic looks simple, it is much more difficult to implement in code.
 
+&nbsp;
+
 ## What have I learned from this project?
 
 When I was working on this project, I discovered one thing. As a front-end developer, I must anticipate all possible scenarios that may result in unexpected behavior or bugs. For example, I'll ask myself these questions while working on this project.
@@ -93,6 +101,8 @@ When I was working on this project, I discovered one thing. As a front-end devel
    A: Yes. Users must be informed that they are not permitted to use the tool during the round of another player.
 
 To build a great web application, I can't just assume the user will always behave normally; I have to try to anticipate all bugs or unexpected behavior and fix it for the users.
+
+&nbsp;
 
 ## What can be improved in this project?
 
