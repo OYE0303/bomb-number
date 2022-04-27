@@ -749,12 +749,6 @@ class APP {
         name: { common: countryName },
       } = this.cacheAllCountryData[randomNum];
 
-      console.log(
-        countryNameArr.find(
-          (countryObj) => countryObj.name.common === countryName
-        )
-      );
-
       // check random country is not duplicate, and not as same as user's country
       if (
         !countryNameArr.find(
@@ -2209,11 +2203,6 @@ class APP {
     // form username
     DOM.btnFormUserNameNext.addEventListener(
       "click",
-      this.btnFormUserNameNextClickHandler.bind(this)
-    );
-
-    DOM.btnFormUserNameNext.addEventListener(
-      "touch",
       this.btnFormUserNameNextClickHandler.bind(this)
     );
 
