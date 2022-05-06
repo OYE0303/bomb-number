@@ -68,6 +68,42 @@
 
 &nbsp;
 
+![This is a gif](/img/guess.gif)
+
+&#8594; 正常的猜一個數字
+
+&nbsp;
+
+![This is a gif](/img/pass.gif)
+
+&#8594; 使用通過道具
+
+&#8594; 不用猜數字即可跳到下一位玩家
+
+&nbsp;
+
+![This is a gif](/img/assign.gif)
+
+&#8594; 使用指定道具
+
+&#8594; 指定一位玩家來代替您猜數字
+
+&nbsp;
+
+![This is a gif](/img/reverse.gif)
+
+&#8594; 使用迴轉道具
+
+&#8594; 不用猜數字，並且迴轉到上一位使用者
+
+&nbsp;
+
+![This is a gif](/img/can't-use-tool.gif)
+
+&#8594; 不能在其他玩家的回合使用道具
+
+&nbsp;
+
 # 反思
 
 ## 在做這個作品時有遇到什麼主要的困難嗎？
