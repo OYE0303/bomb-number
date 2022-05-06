@@ -69,11 +69,13 @@ Here, I'll walk you through the game step-by-step.
 &nbsp;
 
 ![This is a gif](/img/guess.gif)
+
 &#8594; Normally guess a number
 
 &nbsp;
 
 ![This is a gif](/img/pass.gif)
+
 &#8594; Use pass tool
 
 &#8594; Move on to the next player without having to guess a number
@@ -81,6 +83,7 @@ Here, I'll walk you through the game step-by-step.
 &nbsp;
 
 ![This is a gif](/img/assign.gif)
+
 &#8594; Use assign tool
 
 &#8594; Assign one of the players to stand in for you in guessing the number
@@ -88,6 +91,7 @@ Here, I'll walk you through the game step-by-step.
 &nbsp;
 
 ![This is a gif](/img/reverse.gif)
+
 &#8594; Use u-turn tool
 
 &#8594; Pass the current guessing round and return to the previous player
@@ -95,6 +99,7 @@ Here, I'll walk you through the game step-by-step.
 &nbsp;
 
 ![This is a gif](/img/can't-use-tool.gif)
+
 &#8594; Tool cannot be used during another player's round
 
 &nbsp;
