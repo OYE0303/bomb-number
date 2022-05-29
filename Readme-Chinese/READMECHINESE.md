@@ -1,5 +1,19 @@
 [English Version](../Readme.md)
 
+# 概述
+
+1. [關於這個作品](https://github.com/OYE0303/bomb-number/blob/main/Readme-Chinese/READMECHINESE.md#%E9%97%9C%E6%96%BC%E9%80%99%E5%80%8B%E4%BD%9C%E5%93%81)
+
+2. [作品的動機](https://github.com/OYE0303/bomb-number/blob/main/Readme-Chinese/READMECHINESE.md#%E4%BD%9C%E5%93%81%E7%9A%84%E5%8B%95%E6%A9%9F)
+
+3. [使用的技術](https://github.com/OYE0303/bomb-number/blob/main/Readme-Chinese/READMECHINESE.md#%E4%BD%BF%E7%94%A8%E7%9A%84%E6%8A%80%E8%A1%93)
+
+4. [作品概述](https://github.com/OYE0303/bomb-number/blob/main/Readme-Chinese/READMECHINESE.md#%E4%BD%9C%E5%93%81%E6%A6%82%E8%BF%B0)
+
+5. [反思](https://github.com/OYE0303/bomb-number/blob/main/Readme-Chinese/READMECHINESE.md#%E5%8F%8D%E6%80%9D)
+
+6. [設置](https://github.com/OYE0303/bomb-number/blob/main/Readme-Chinese/READMECHINESE.md#%E8%A8%AD%E7%BD%AE)
+
 # 關於這個作品
 
 這是一個炸彈數字的網頁版應用遊戲。在遊戲裡，有三位電腦玩家會與玩家一起遊玩此遊戲。遊戲的主要目標就是要避免猜到炸彈數字，而且玩家可以使用不同的道具來贏得這場遊戲。一旦猜到炸彈數字，遊戲就結束了。
