@@ -18,6 +18,7 @@
 - CSS
 - Javascript
 - API - REST COUNTRIES
+- Webpack
 
 &nbsp;
 
@@ -155,3 +156,29 @@
 3. 程式碼架構
 
    這份作品的程式碼架構不是很好，我幾乎是把所有 JavaScript 的程式碼都放在ㄧ個檔案裡。即使目前來說是可以接受的，但當程式碼的規模越來越大時，做好程式碼的架構區分是非常重要的。因此，在下一放作品中，我會想辦法把程式碼放在不同的檔案，讓整個架構可以更乾淨許多。
+
+# 設置
+
+### 複製作品
+
+```
+git clone https://github.com/OYE0303/bomb-number.git
+```
+
+### 安裝檔案
+
+```
+npm install
+```
+
+### 啟動作品
+
+```
+npm start
+```
+
+### 打包作品
+
+```
+npm run build
+```

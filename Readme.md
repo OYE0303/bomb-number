@@ -1,5 +1,19 @@
 [中文版本](Readme-Chinese/READMECHINESE.md)
 
+# Overview
+
+1. [About the project](https://github.com/OYE0303/bomb-number#about-the-project)
+
+2. [The motivation behind the project](https://github.com/OYE0303/bomb-number#the-motivation-behind-the-project)
+
+3. [Technologies used](https://github.com/OYE0303/bomb-number#technologies-used)
+
+4. [Project overview](https://github.com/OYE0303/bomb-number#project-overview)
+
+5. [Reflection](https://github.com/OYE0303/bomb-number#reflection)
+
+6. [Setup](https://github.com/OYE0303/bomb-number#setup)
+
 # About the project
 
 This is a bomb number web game application. In this game, there are three computer players who are competing against the user. The main goal of this game is to avoid guessing the bomb number, and users can use various tools to help them win. The game is over once users guess the bomb number.
@@ -18,6 +32,7 @@ When I was learning Javascript, the instructor had us create a simple web game a
 - CSS
 - Javascript
 - API - REST COUNTRIES
+- Webpack
 
 &nbsp;
 
@@ -155,3 +170,29 @@ In this project, there are three things that can be added or improved.
 3. Structure of the code
 
    This project's code structure is not very good. Because I didn't know how to manage code when I built this project, I just threw almost all of the JavaScript and CSS code into one file. Although it appears to be acceptable at this point, the code will need to be separated as the code base grows. As a result, in my next project, I'll try not to put all of the code in one file, so that the code structure can be a little bit cleaner.
+
+# Setup
+
+### Clone project
+
+```
+git clone https://github.com/OYE0303/bomb-number.git
+```
+
+### Install packages
+
+```
+npm install
+```
+
+### Runs the app
+
+```
+npm start
+```
+
+### Builds the app
+
+```
+npm run build
+```
